@@ -1,4 +1,4 @@
 # CS-3110-Final-Project
-# Sophie ()
-# Alexandra ()
-# Juji (jal499)
+Sophie (sz266)
+Alexandra (aom52)
+Juji (jal499)
