@@ -1,3 +1,4 @@
 (library
  (name monopoly)
- (libraries js_of_ocaml-lwt ANSITerminal))
+ (public_name Monopoly)
+ (libraries js_of_ocaml-lwt))
