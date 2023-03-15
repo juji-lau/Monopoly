@@ -1,5 +1,3 @@
-
-
 type t = {
   name : string ;
   board : Board.t ;

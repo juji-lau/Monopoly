@@ -7,9 +7,7 @@ let current_location_test (name : string) (input : string) (expected_output:int)
   
   let current_location_tests =
     [
-      current_room_id_test "ho plaza's current room at start is ho plaza"
-        (init_state (from_json ho))
-        "ho plaza";
+      current_location_test 
     ]
   let suite =
     "test suite for A2"
