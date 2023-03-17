@@ -1,4 +1,4 @@
-open Player
+open Monopoly.Player
 (** [play_game f] starts the adventure in file [f]. *)
 
 let play_game f = raise (Failure "Unimplemented: Main.play_game")
@@ -10,7 +10,7 @@ let main () =
   print_endline "Please enter your name: \n";
   print_string "> ";
   match read_line () with
-  | x -> Player.new_player x
+  | x -> new_player x
 (* match read_line () with | exception End_of_file -> () | file_name ->
    play_game (data_dir_prefix ^ file_name ^ ".json") *)
 
