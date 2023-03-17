@@ -1,9 +1,9 @@
 (** Representation of game board data.
-    
-    This module represents the data stored in each board spot. It
-    handles moving positions on the board. *)
 
-type t 
+    This module represents the data stored in each board spot. It handles moving
+    positions on the board. *)
+
+type t
 (** The abstract type of calues representing a board position. *)
 
 val init : t
