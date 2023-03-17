@@ -1,7 +1,8 @@
 open OUnit2
-open Monopoly.Board
-open Monopoly.Player
-open Monopoly.Position
+open Monopoly
+open Board
+open Player
+open Position
 
 let current_location_test (name : string) (input : string)
     (expected_output : int) : test =

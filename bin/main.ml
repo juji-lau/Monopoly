@@ -1,4 +1,6 @@
-open Monopoly.Player
+open Monopoly
+
+open Player
 (** [play_game f] starts the adventure in file [f]. *)
 
 let play_game f = raise (Failure "Unimplemented: Main.play_game")

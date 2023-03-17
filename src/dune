@@ -1,9 +1,4 @@
-; (library
-;  (name monopoly)
-;  (public_name Monopoly)
-;  (libraries js_of_ocaml-lwt))
-
 (library
  (name monopoly)
- (public_name monopoly)
- (libraries yojson ANSITerminal))
+ (public_name Monopoly)
+ (libraries js_of_ocaml-lwt))
