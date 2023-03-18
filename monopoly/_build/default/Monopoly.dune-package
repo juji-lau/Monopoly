@@ -1,0 +1,57 @@
+(lang dune 3.6)
+(name Monopoly)
+(sections (lib .) (libexec .))
+(files
+ (lib
+  (META
+   board.ml
+   board.mli
+   dune-package
+   monopoly.a
+   monopoly.cma
+   monopoly.cmi
+   monopoly.cmt
+   monopoly.cmx
+   monopoly.cmxa
+   monopoly.ml
+   monopoly__Board.cmi
+   monopoly__Board.cmt
+   monopoly__Board.cmti
+   monopoly__Board.cmx
+   monopoly__Player.cmi
+   monopoly__Player.cmt
+   monopoly__Player.cmti
+   monopoly__Player.cmx
+   opam
+   player.ml
+   player.mli))
+ (libexec (monopoly.cmxs)))
+(library
+ (name Monopoly)
+ (kind normal)
+ (archives (byte monopoly.cma) (native monopoly.cmxa))
+ (plugins (byte monopoly.cma) (native monopoly.cmxs))
+ (native_archives monopoly.a)
+ (main_module_name Monopoly)
+ (modes byte native)
+ (modules
+  (wrapped
+   (main_module_name Monopoly)
+   (modules
+    ((name Board)
+     (obj_name monopoly__Board)
+     (visibility public)
+     (impl)
+     (intf))
+    ((name Player)
+     (obj_name monopoly__Player)
+     (visibility public)
+     (impl)
+     (intf)))
+   (alias_module
+    (name Monopoly)
+    (obj_name monopoly)
+    (visibility public)
+    (kind alias)
+    (impl))
+   (wrapped true))))
