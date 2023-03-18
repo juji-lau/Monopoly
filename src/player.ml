@@ -5,7 +5,7 @@ type t = {
 }
 
 let new_player s = { name = s; board = Board.init; current = 0 }
-let roll_die = Random.int 6
+let roll_die = Random.int 12
 let current_location p = p.current
 
 let move_to p =

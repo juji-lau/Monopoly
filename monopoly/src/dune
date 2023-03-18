@@ -1,4 +1,0 @@
-(library
- (name monopoly)
- (public_name Monopoly)
- (libraries raylib raygui))
