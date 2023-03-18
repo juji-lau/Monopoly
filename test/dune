@@ -1,0 +1,3 @@
+(executable
+ (name main)
+ (libraries monopoly ounit2))
