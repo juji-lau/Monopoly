@@ -1,0 +1,14 @@
+Instructions:
+Enter the following commands followed by a '$' into your terminal
+
+Clone the Code: 
+  $ git clone https://github.coecis.cornell.edu/sz266/CS-3110-Final-Project
+  $ cd CS-3110-Final-Project
+
+Build Instructions:
+  $ make clean
+  $ make build
+
+Play Instructions: 
+  $ make clean
+  $ make play
