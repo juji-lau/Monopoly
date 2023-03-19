@@ -1,0 +1,26 @@
+---
+# Group Members:
+group:
+  - name: Alexandra Martschenko
+    netid: aom32
+  - name: Brooke Hudson
+    netid: bah253
+  - name: Juji Lau
+    netid: jal499
+  - name: Sophie Zhao
+    netid: sz266
+# PM:
+pm:
+  name: Sean Yang
+  netid: smy54
+# Info:
+publish: false
+title: "Monopoly"
+git-repo: "https://github.coecis.cornell.edu/sz266/CS-3110-Final-Project"
+demo-video-url: ""
+desc: >
+  Our project is a basic edition of the multiplayer game, Monopoly. Our project 
+  launches an interactive window, allowing each player to throw a die, can move 
+  spaces, buy property, pay and collect rent, go to and get out of jail, or quit
+  the game on their turn.  Players can view the Monopoly board, their movement,
+  bank accounts, properties owned, and general state of the game.
