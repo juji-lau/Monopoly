@@ -10,12 +10,8 @@ type t
 val new_player : string -> t
 (** [new_player s] is the player that [s] represents. *)
 
-val roll_die : int
-(** [roll_die] is the random number [1,6] inclusive that occurs with probability
-    1/6. *)
-
 val current_location : t -> int
 (** [current_location p] is the current board position of the player [p]. *)
 
-val move_to : t -> t
+val move : t -> t
 (** [move_to p] is the new position of the player [p] after rolling the die. *)
