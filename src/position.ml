@@ -2,6 +2,7 @@ type square =
   | Property of {
       index : int;
       name : string;
+      set : string;
       cost : int;
       rent : int;
       rent_set : int;
@@ -50,6 +51,8 @@ type t = []
 
 exception UnknownBoard of string
 
+
+(*defines the types of the *)
 let (mediterranean_avenue : square) =
   Property
     {
