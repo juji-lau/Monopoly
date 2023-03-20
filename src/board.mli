@@ -4,7 +4,7 @@
     positions on the board. *)
 
 type t
-(** The abstract type of calues representing a board position. *)
+(** The abstract type of values representing a board position. *)
 
 val init : t
 (** [init p] initializes a new board for player [p]. *)

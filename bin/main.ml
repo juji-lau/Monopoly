@@ -11,6 +11,7 @@ type flow =
 let rec player flow play=
 try
   print_endline("Please enter a command.");
+  print_string "> ";
   if flow = Play then
     begin
     match read_line() with 
