@@ -1,17 +1,17 @@
 type square =
   | Property of {
-      position : int;
+      index : int;
       name : string;
       cost : int;
       rent : int;
-      rent_with_color_set : int;
-      rent_with_1_house : int;
-      rent_with_2_houses : int;
-      rent_with_3_houses : int;
-      rent_with_4_houses : int;
-      rent_with_hotel : int;
+      rent_set : int;
+      r_1house : int;
+      r_2house : int;
+      r_3house : int;
+      r_4house : int;
+      r_hotel : int;
       houses_cost : int;
-      hotels_cost : int;
+      hotel_cost : int;
       mortgage : int;
       unmortgage : int;
     }
@@ -53,18 +53,18 @@ exception UnknownBoard of string
 let (mediterranean_avenue : square) =
   Property
     {
-      position = 1;
+      index = 1;
       name = "Mediterranean Avenue";
       cost = 60;
       rent = 2;
-      rent_with_color_set = 4;
-      rent_with_1_house = 10;
-      rent_with_2_houses = 30;
-      rent_with_3_houses = 90;
-      rent_with_4_houses = 160;
-      rent_with_hotel = 250;
+      rent_set = 4;
+      r_1house = 10;
+      r_2houses= 30;
+      r_3house = 90;
+      r_4house = 160;
+      r_hotel = 250;
       houses_cost = 50;
-      hotels_cost = 50;
+      hotel_cost = 50;
       mortgage = 30;
       unmortgage = 33;
     }
