@@ -11,8 +11,7 @@ type square =
       r_3house : int;
       r_4house : int;
       r_hotel : int;
-      houses_cost : int;
-      hotel_cost : int;
+      building_cost : int;
       mortgage : int;
       unmortgage : int;
     }
@@ -38,7 +37,10 @@ type square =
   | Community_Chest of { index : int }
   | Free_Parking of { index : int }
   | Tax of { index : int }
-  | Start of { index : int }
+  | Start of {
+      index : int;
+      name : string;
+    }
 
 type t = []
 
@@ -46,7 +48,7 @@ exception UnknownBoard of string
 
 (*defines the specific squares for a default board *)
 
-let (start_sqr : square) = Start { index = 0 }
+let (start_sqr : square) = Start { index = 0; name = "Go" }
 
 let (mediterranean_avenue : square) =
   Property
@@ -62,8 +64,7 @@ let (mediterranean_avenue : square) =
       r_3house = 90;
       r_4house = 160;
       r_hotel = 250;
-      houses_cost = 50;
-      hotel_cost = 50;
+      building_cost = 50;
       mortgage = 30;
       unmortgage = 33;
     }
@@ -84,8 +85,7 @@ let baltic_Avenue : square =
       r_3house = 180;
       r_4house = 320;
       r_hotel = 450;
-      houses_cost = 50;
-      hotel_cost = 50;
+      building_cost = 50;
       mortgage = 30;
       unmortgage = 33;
     }
@@ -107,8 +107,7 @@ let oriental_Avenue : square =
       r_3house = 270;
       r_4house = 400;
       r_hotel = 550;
-      houses_cost = 50;
-      hotel_cost = 50;
+      building_cost = 50;
       mortgage = 50;
       unmortgage = 55;
     }
@@ -129,8 +128,7 @@ let vermont_Avenue : square =
       r_3house = 270;
       r_4house = 400;
       r_hotel = 550;
-      houses_cost = 50;
-      hotel_cost = 50;
+      building_cost = 50;
       mortgage = 50;
       unmortgage = 55;
     }
@@ -149,8 +147,7 @@ let connecticut_Avenue : square =
       r_3house = 300;
       r_4house = 450;
       r_hotel = 600;
-      houses_cost = 50;
-      hotel_cost = 50;
+      building_cost = 50;
       mortgage = 60;
       unmortgage = 66;
     }
@@ -171,8 +168,7 @@ let charles_Palace : square =
       r_3house = 450;
       r_4house = 625;
       r_hotel = 750;
-      houses_cost = 100;
-      hotel_cost = 100;
+      building_cost = 100;
       mortgage = 70;
       unmortgage = 77;
     }
@@ -193,8 +189,7 @@ let states_Avenue : square =
       r_3house = 450;
       r_4house = 625;
       r_hotel = 750;
-      houses_cost = 100;
-      hotel_cost = 100;
+      building_cost = 100;
       mortgage = 70;
       unmortgage = 77;
     }
@@ -213,8 +208,7 @@ let virginia_Avenue : square =
       r_3house = 500;
       r_4house = 700;
       r_hotel = 900;
-      houses_cost = 100;
-      hotel_cost = 100;
+      building_cost = 100;
       mortgage = 80;
       unmortgage = 88;
     }
@@ -236,8 +230,7 @@ let james_Place : square =
       r_3house = 550;
       r_4house = 750;
       r_hotel = 950;
-      houses_cost = 100;
-      hotel_cost = 100;
+      building_cost = 100;
       mortgage = 90;
       unmortgage = 99;
     }
@@ -258,8 +251,7 @@ let tennessee_Avenue : square =
       r_3house = 550;
       r_4house = 750;
       r_hotel = 950;
-      houses_cost = 100;
-      hotel_cost = 100;
+      building_cost = 100;
       mortgage = 90;
       unmortgage = 99;
     }
@@ -278,10 +270,192 @@ let ny_Avenue : square =
       r_3house = 600;
       r_4house = 800;
       r_hotel = 1000;
-      houses_cost = 100;
-      hotel_cost = 100;
+      building_cost = 100;
       mortgage = 100;
       unmortgage = 110;
+    }
+
+let free_parking : square = Free_Parking { index = 20 }
+
+let kentucky_Avenue : square =
+  Property
+    {
+      index = 21;
+      name = "Kentucky Avenue";
+      set = "red";
+      cost = 220;
+      rent = 18;
+      rent_set = 36;
+      r_1house = 90;
+      r_2house = 250;
+      r_3house = 700;
+      r_4house = 875;
+      r_hotel = 1050;
+      building_cost = 150;
+      mortgage = 110;
+      unmortgage = 121;
+    }
+
+let first_Chance : square = Chance { index = 22 }
+
+let indiana_Avenue : square =
+  Property
+    {
+      index = 23;
+      name = "Indiana Avenue";
+      set = "red";
+      cost = 220;
+      rent = 18;
+      rent_set = 36;
+      r_1house = 90;
+      r_2house = 250;
+      r_3house = 700;
+      r_4house = 875;
+      r_hotel = 1050;
+      building_cost = 150;
+      mortgage = 110;
+      unmortgage = 121;
+    }
+
+let illinois_Avenue : square =
+  Property
+    {
+      index = 24;
+      name = "Illinois Avenue";
+      set = "red";
+      cost = 240;
+      rent = 20;
+      rent_set = 40;
+      r_1house = 100;
+      r_2house = 300;
+      r_3house = 750;
+      r_4house = 925;
+      r_hotel = 1100;
+      building_cost = 150;
+      mortgage = 120;
+      unmortgage = 132;
+    }
+
+let third_Rail : square = Railroad { index = 25; name = "B&O Railroad" }
+
+let atlantic_Avenue : square =
+  Property
+    {
+      index = 26;
+      name = "Atlantic Avenue";
+      set = "yellow";
+      cost = 260;
+      rent = 22;
+      rent_set = 44;
+      r_1house = 110;
+      r_2house = 330;
+      r_3house = 800;
+      r_4house = 975;
+      r_hotel = 1150;
+      building_cost = 150;
+      mortgage = 130;
+      unmortgage = 143;
+    }
+
+let ventnor_Avenue : square =
+  Property
+    {
+      index = 27;
+      name = "Ventnor Avenue";
+      set = "yellow";
+      cost = 240;
+      rent = 22;
+      rent_set = 44;
+      r_1house = 110;
+      r_2house = 330;
+      r_3house = 800;
+      r_4house = 975;
+      r_hotel = 1150;
+      building_cost = 150;
+      mortgage = 130;
+      unmortgage = 143;
+    }
+
+let water_works : square = Utility { index = 28; name = "Water Works" }
+
+let marvin_Gardens : square =
+  Property
+    {
+      index = 29;
+      name = "Marvin Gardens";
+      set = "yellow";
+      cost = 280;
+      rent = 24;
+      rent_set = 48;
+      r_1house = 120;
+      r_2house = 360;
+      r_3house = 850;
+      r_4house = 1025;
+      r_hotel = 1200;
+      building_cost = 150;
+      mortgage = 140;
+      unmortgage = 154;
+    }
+
+let go_to_jail = Go_To_Jail { index = 30 }
+
+let pacific_Avenue : square =
+  Property
+    {
+      index = 31;
+      name = "Pacific Avenue";
+      set = "green";
+      cost = 300;
+      rent = 26;
+      rent_set = 52;
+      r_1house = 130;
+      r_2house = 390;
+      r_3house = 900;
+      r_4house = 1100;
+      r_hotel = 1275;
+      building_cost = 200;
+      mortgage = 150;
+      unmortgage = 165;
+    }
+
+let nc_Avenue : square =
+  Property
+    {
+      index = 32;
+      name = "North Carolina Avenue";
+      set = "green";
+      cost = 300;
+      rent = 26;
+      rent_set = 52;
+      r_1house = 130;
+      r_2house = 390;
+      r_3house = 900;
+      r_4house = 1100;
+      r_hotel = 1275;
+      building_cost = 200;
+      mortgage = 150;
+      unmortgage = 165;
+    }
+
+let third_Chest : square = Community_Chest { index = 33 }
+
+let pennsylvania_Avenue : square =
+  Property
+    {
+      index = 34;
+      name = "Pennsylvania Avenue";
+      set = "green";
+      cost = 320;
+      rent = 28;
+      rent_set = 56;
+      r_1house = 150;
+      r_2house = 450;
+      r_3house = 1000;
+      r_4house = 1200;
+      r_hotel = 1400;
+      building_cost = 200;
+      mortgage = 160;
+      unmortgage = 176;
     }
 
 let new_board =
@@ -306,6 +480,7 @@ let new_board =
     second_Chest;
     tennessee_Avenue;
     ny_Avenue;
+    kentucky_Avenue;
   ]
 
 let clear_board b = new_board
