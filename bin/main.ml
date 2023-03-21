@@ -11,13 +11,14 @@ type flow =
 let rec player flow play=
 try
   print_endline("Please enter a command.");
+  print_string "> ";
   if flow = Play then
     begin
     match read_line() with 
     |str -> let command = Command.parse str in
     match command with
     |Command.Quit -> print_endline("The game has ended."); player End play
-    |Command.Roll -> let nplay = Player.move_to play in 
+    |Command.Roll -> let nplay = Player.move play in 
     print_endline("Dice rolled. New position is: " ^ (string_of_int (Player.current_location nplay))); 
      player Play nplay
     end

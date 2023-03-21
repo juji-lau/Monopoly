@@ -7,8 +7,7 @@
  **********************************************************************)
 
 (** The type [command] represents a player command that is decomposed into a
-    verb and possibly an object phrase. Invariant: the [object_phrase] carried
-    by [Go] must not be empty. *)
+    verb and possibly an object phrase. *)
 type command =
   | Roll
   | Quit
