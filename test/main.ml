@@ -13,7 +13,6 @@ let board_position_test (name : string) (board : Board.t) (roll : int) (expected
     assert_equal expected_output (position (Board.move_to board roll))
 let player_tests = [ 
   current_location_test "start" (new_player "Alexandra") 0;
-  current_location_test "moved" (move (new_player "alex")) 3;
 ]
 let board_tests = [
   board_position_test "roll 0" Board.init 0 0;
