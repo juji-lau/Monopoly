@@ -19,15 +19,17 @@ let rec player flow play =
           let command = Command.parse str in
           match command with
           | Command.Quit ->
-              print_endline "The game has ended.";
+              print_endline "The game has ended. Thanks for playing!";
               player End play
           | Command.Roll ->
-              let nplay = Player.move play in
+              let dice_roll = Random.int 10 + 2 in
+              let nplay = Player.move play dice_roll in
               print_endline
-                ("Dice rolled. New position is: "
+                ("You rolled a " ^ string_of_int dice_roll
+               ^ " and have landed on "
                 ^ string_of_int (Player.current_location nplay));
               player Play nplay)
-    else print_endline "The game has ended, thanks for playing!"
+    else print_endline "The game has ended. Thanks for playing!"
   with
   | Command.Empty ->
       print_endline "Please enter a nonempty command.";

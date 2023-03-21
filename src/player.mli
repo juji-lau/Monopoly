@@ -13,5 +13,6 @@ val new_player : string -> t
 val current_location : t -> int
 (** [current_location p] is the current board position of the player [p]. *)
 
-val move : t -> t
-(** [move_to p] is the new position of the player [p] after rolling the die. *)
+val move : t -> int -> t
+(** [move_to p dice_roll] is the new position of the player [p] after rolling a
+    [dice_roll] on the die. *)
