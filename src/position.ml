@@ -4,7 +4,6 @@ type square =
       name : string;
       cost : int;
       rent : int;
-      rent_with_color_set : int;
       rent_with_1_house : int;
       rent_with_2_houses : int;
       rent_with_3_houses : int;
@@ -57,7 +56,6 @@ let (mediterranean_avenue : square) =
       name = "Mediterranean Avenue";
       cost = 60;
       rent = 2;
-      rent_with_color_set = 4;
       rent_with_1_house = 10;
       rent_with_2_houses = 30;
       rent_with_3_houses = 90;
