@@ -154,11 +154,11 @@ let connecticut_Avenue : square =
 
 let jail_Sqr : square = Jail { index = 10; cost = 50 }
 
-let charles_Palace : square =
+let charles_Place : square =
   Property
     {
       index = 11;
-      name = "St. Charles Palace";
+      name = "St. Charles Place";
       set = "pink";
       cost = 140;
       rent = 10;
@@ -514,7 +514,7 @@ let new_board =
     vermont_Avenue;
     connecticut_Avenue;
     jail_Sqr;
-    charles_Palace;
+    charles_Place;
     electric;
     states_Avenue;
     virginia_Avenue;
