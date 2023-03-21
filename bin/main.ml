@@ -39,7 +39,7 @@ let rec player flow play =
                 | 7 -> "Chance"
                 | 8 -> "Vermont Avenue"
                 | 9 -> "Connecticut Avenue"
-                | 10 -> "Vising Jail"
+                | 10 -> "Visiting Jail"
                 | 11 -> "St. Charles Place"
                 | 12 -> "Electric Company"
                 | 13 -> "States Avenue"
