@@ -22,10 +22,13 @@ let rec player flow play =
               print_endline "The game has ended.";
               player End play
           | Command.Roll ->
-              let nplay = Player.move play in
+            let x = Random.int 12 in
+              let nplay = Player.move play x in
               print_endline
-                ("Dice rolled. New position is: "
-                ^ string_of_int (Player.current_location nplay));
+                ("You rolled a : " 
+                ^ (string_of_int x) ^
+                 " New position is: "
+                ^ (Position.get_name (Board.position (Player.get_board nplay))));
               player Play nplay)
     else print_endline "The game has ended, thanks for playing!"
   with

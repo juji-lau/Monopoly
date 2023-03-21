@@ -1,4 +1,8 @@
 
+
+
+
+(**
 type t = {
   current : int
   }
@@ -10,14 +14,15 @@ let position b = b.current
 let move_to b i = 
   {current = b.current +i}
   
+*)
 
 
 
 
-
-(** (type t = {
+type t = {
   board : Position.square list;
-  current : Position.square
+  current : Position.square;
+  current_int : int
   }
 
 exception UnimplemetedBoard
@@ -25,29 +30,19 @@ let init = let b = Position.new_board in
 match b with
 |[] -> raise UnimplemetedBoard
 |h ::_ -> let curr = h in 
-{board = b ; current = curr }
+{board = b ; current = curr ; current_int = 0}
 
 let position b = b.current
 
+let position_int b = b.current_int
+
 let move_to b i = 
-  let rec mover x i lst= 
-    if x + i < 20 then
-      match lst with 
-      |[] -> raise UnimplemetedBoard
-      |h :: t -> match h with 
-      |Position.square.Property P {index = ind} -> if ind = x+i then 
-        {board = b.board; current = P} else mover x i t
-      |Position.square.Railroad R {index = ind} -> if ind = x+i then 
-        {board = b.board; current = R} else mover x i t
-      |Position.square.Utility U {index = ind} -> if ind = x+i then 
-        {board = b.board; current = U} else mover x i t
-      |Position.square.Rent E {index = ind} -> if ind = x+i then 
-        {board = b.board; current = E} else mover x i t
-    else
-    {position = b.position + i - 36}
-    
-    match position b with 
-| Position.square.Property P {index = x} -> x + i < 20 
-| Position.square.Railroad R {index = x} -> x + i < 20 
+  let x = b.current_int + i in
+  let lst = b.board in 
+  if x > 39 then 
+    let curr = List.nth lst (x-39) in
+  {board = b.board ; current = curr ; current_int = x-39}
+else
+  let curr = List.nth lst x in
+  {board = b.board ; current = curr ; current_int = x}
   
-)*)
