@@ -296,7 +296,7 @@ let kentucky_Avenue : square =
       unmortgage = 121;
     }
 
-let first_Chance : square = Chance { index = 22 }
+let second_Chance : square = Chance { index = 22 }
 
 let indiana_Avenue : square =
   Property
@@ -458,6 +458,49 @@ let pennsylvania_Avenue : square =
       unmortgage = 176;
     }
 
+let fourth_Rail : square = Railroad { index = 35; name = "Short Line Railroad" }
+let third_Chance : square = Chance { index = 36 }
+
+let park_Place : square =
+  Property
+    {
+      index = 37;
+      name = "Park Place";
+      set = "blue";
+      cost = 350;
+      rent = 35;
+      rent_set = 70;
+      r_1house = 175;
+      r_2house = 500;
+      r_3house = 1100;
+      r_4house = 1300;
+      r_hotel = 1500;
+      building_cost = 200;
+      mortgage = 175;
+      unmortgage = 193;
+    }
+
+let second_Tax : square = Tax { index = 38 }
+
+let boardwalk : square =
+  Property
+    {
+      index = 39;
+      name = "Boardwalk";
+      set = "blue";
+      cost = 400;
+      rent = 50;
+      rent_set = 100;
+      r_1house = 200;
+      r_2house = 600;
+      r_3house = 1400;
+      r_4house = 1700;
+      r_hotel = 2000;
+      building_cost = 200;
+      mortgage = 200;
+      unmortgage = 220;
+    }
+
 let new_board =
   [
     start_sqr;
@@ -481,6 +524,24 @@ let new_board =
     tennessee_Avenue;
     ny_Avenue;
     kentucky_Avenue;
+    second_Chance;
+    indiana_Avenue;
+    illinois_Avenue;
+    third_Rail;
+    atlantic_Avenue;
+    ventnor_Avenue;
+    water_works;
+    marvin_Gardens;
+    go_to_jail;
+    pacific_Avenue;
+    nc_Avenue;
+    third_Chest;
+    pennsylvania_Avenue;
+    fourth_Rail;
+    third_Chance;
+    park_Place;
+    second_Tax;
+    boardwalk;
   ]
 
 let clear_board b = new_board
