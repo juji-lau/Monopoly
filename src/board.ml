@@ -34,9 +34,9 @@ let position_int b = b.current_int
 let move_to b i =
   let x = b.current_int + i in
   let lst = b.board in
-  if x > 39 then
-    let curr = List.nth lst (x - 39) in
-    { board = b.board; current = curr; current_int = x - 39 }
+  if x > 38 then
+    let curr = List.nth lst (x - 38) in
+    { board = b.board; current = curr; current_int = x - 38 }
   else
     let curr = List.nth lst x in
     { board = b.board; current = curr; current_int = x }
