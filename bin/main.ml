@@ -22,7 +22,7 @@ let rec player flow play =
               print_endline "The game has ended. Thanks for playing!";
               player End play
           | Command.Roll ->
-              let x = Random.int 12 in
+              let x = Random.int 10 + 2 in
               let nplay = Player.move play x in
               print_endline
                 ("You rolled a " ^ string_of_int x ^ " and have landed on "

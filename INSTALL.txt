@@ -5,6 +5,9 @@ Clone the Code:
   $ git clone https://github.coecis.cornell.edu/sz266/CS-3110-Final-Project
   $ cd CS-3110-Final-Project
 
+Install ANSITerminal
+  $ opam install ANSITerminal
+
 Build Instructions:
   $ make clean
   $ make build
