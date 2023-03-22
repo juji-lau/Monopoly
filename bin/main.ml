@@ -25,7 +25,7 @@ let rec player flow play =
               let x = Random.int 12 in
               let nplay = Player.move play x in
               print_endline
-                ("You rolled a : " ^ string_of_int x ^ " New position is: "
+                ("You rolled a " ^ string_of_int x ^ " and have landed on "
                 ^ Position.get_name (Board.position (Player.get_board nplay)));
               player Play nplay)
     else print_endline "The game has ended. Thanks for playing!"
