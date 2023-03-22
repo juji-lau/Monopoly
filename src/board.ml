@@ -18,12 +18,12 @@ type t = {
   current_int : int;
 }
 
-exception UnimplemetedBoard
+exception UnimplementedBoard
 
 let init =
   let b = Position.new_board in
   match b with
-  | [] -> raise UnimplemetedBoard
+  | [] -> raise UnimplementedBoard
   | h :: _ ->
       let curr = h in
       { board = b; current = curr; current_int = 0 }

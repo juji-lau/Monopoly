@@ -44,19 +44,19 @@ type square =
 
 type t = []
 
-let get_name s = 
-  match s with 
+let get_name s =
+  match s with
   | Property p -> p.name
   | Railroad r -> r.name
   | Utility u -> u.name
   | Rent r -> r.name
   | Jail j -> "Jail"
   | Go_To_Jail g -> "Go to Jail"
-  | Chance c-> "Chance"
+  | Chance c -> "Chance"
   | Community_Chest c -> "Community Chest"
   | Free_Parking f -> "Free Parking"
-  | Tax t-> "Tax"
-  | Start s-> s.name
+  | Tax t -> "Tax"
+  | Start s -> s.name
 
 exception UnknownBoard of string
 
