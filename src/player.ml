@@ -5,9 +5,21 @@ type t = {
 }
 
 let new_player s = { name = s; board = Board.init; current = 0 }
-let current_location p = p.current
+let get_board p = p.board
+let current_location p = p.current;;
 
-let move p dice_roll =
-  let x = current_location p + dice_roll in
-  if x > 39 then { name = p.name; board = p.board; current = x - 40 }
-  else { name = p.name; board = p.board; current = x }
+Random.self_init ()
+
+let move p x =
+  if x >= 36 then
+    {
+      name = p.name;
+      board = Board.move_to p.board x;
+      current = current_location p + x - 36;
+    }
+  else
+    {
+      name = p.name;
+      board = Board.move_to p.board x;
+      current = current_location p + x;
+    }

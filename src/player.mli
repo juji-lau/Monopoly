@@ -10,9 +10,11 @@ type t
 val new_player : string -> t
 (** [new_player s] is the player that [s] represents. *)
 
+val get_board : t -> Board.t
+(** [get_board p] is the board that [p] represents. *)
+
 val current_location : t -> int
 (** [current_location p] is the current board position of the player [p]. *)
 
 val move : t -> int -> t
-(** [move_to p dice_roll] is the new position of the player [p] after rolling a
-    [dice_roll] on the die. *)
+(** [move_to p] is the new position of the player [p] after rolling the die. *)

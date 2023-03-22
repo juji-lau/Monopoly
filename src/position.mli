@@ -10,6 +10,9 @@ type square
 type t
 (** The abstract type of values representing a board*)
 
+val get_name : square -> string
+(**[get_name t] returns the string name of the square represented by [t]. *)
+
 exception UnknownBoard of string
 
 val new_board : square list

@@ -22,54 +22,11 @@ let rec player flow play =
               print_endline "The game has ended. Thanks for playing!";
               player End play
           | Command.Roll ->
-              let dice_roll = Random.int 10 + 2 in
-              let nplay = Player.move play dice_roll in
+              let x = Random.int 12 in
+              let nplay = Player.move play x in
               print_endline
-                ("You rolled a " ^ string_of_int dice_roll
-               ^ " and have landed on "
-                ^
-                match Player.current_location nplay with
-                | 0 -> "Go"
-                | 1 -> "Mediterranean Avenue"
-                | 2 -> "a Community Chest"
-                | 3 -> "Baltic Avenue"
-                | 4 -> "Tax"
-                | 5 -> "Reading Railroad"
-                | 6 -> "Oriental Avenue"
-                | 7 -> "Chance"
-                | 8 -> "Vermont Avenue"
-                | 9 -> "Connecticut Avenue"
-                | 10 -> "Visiting Jail"
-                | 11 -> "St. Charles Place"
-                | 12 -> "Electric Company"
-                | 13 -> "States Avenue"
-                | 14 -> "Virginia Avenue"
-                | 15 -> "Pennsylvania Railroad"
-                | 16 -> "St. James Place"
-                | 17 -> "a Community Chest"
-                | 18 -> "Tennessee Avenue"
-                | 19 -> "New York Avenue"
-                | 20 -> "Free Parking"
-                | 21 -> "Kentucky Avenue"
-                | 22 -> "Chance"
-                | 23 -> "Indiana Avenue"
-                | 24 -> "Illinois Avenue"
-                | 25 -> "B&O Railroad"
-                | 26 -> "Atlantic Avenue"
-                | 27 -> "Ventnor Avenue"
-                | 28 -> "Water Works"
-                | 29 -> "Marvin Gardens"
-                | 30 -> "Go To Jail"
-                | 31 -> "Pacific Avenue"
-                | 32 -> "North Carolina Avenue"
-                | 33 -> "a Community Chest"
-                | 34 -> "Pennsylvania Avenue"
-                | 35 -> "Short Line Railroad"
-                | 36 -> "Chance"
-                | 37 -> "Park Place"
-                | 38 -> "Tax"
-                | 39 -> "Boardwalk"
-                | c -> "Another Dimension!");
+                ("You rolled a : " ^ string_of_int x ^ " New position is: "
+                ^ Position.get_name (Board.position (Player.get_board nplay)));
               player Play nplay)
     else print_endline "The game has ended. Thanks for playing!"
   with
