@@ -1,4 +1,3 @@
 (library
  (name monopoly)
- (public_name Monopoly)
- (libraries js_of_ocaml-lwt))
+ (public_name Monopoly))
