@@ -16,7 +16,7 @@ let current_location_test (name : string) (input : Player.t)
 let board_move_to_test (name : string) (board : Board.t) (roll : int)
     (expected_output : int) : test =
   name >:: fun _ ->
-  assert_equal expected_output (Board.position_int (Board.move_to board roll))
+  assert_equal expected_output (Board.position_int (Board.move_to board roll)) ~printer: string_of_int 
 
 let player_tests = [ current_location_test "start" (new_player "Alexandra") 0 ]
 
