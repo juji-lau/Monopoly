@@ -1,5 +1,5 @@
 Instructions:
-Enter the following commands followed by a '$' into your terminal
+Enter the following commands into your terminal.  Do not enter the '$'.
 
 Clone the Code: 
   $ git clone https://github.coecis.cornell.edu/sz266/CS-3110-Final-Project
