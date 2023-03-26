@@ -12,9 +12,9 @@ val init : t
 val current : t -> int
 (** [current a] gives the current integer amount in account [a]. *)
 
-val pay : int -> t -> unit
+val pay : int -> t -> t
 (** [pay i a] removes [i] dollars from account [a]. If [a] has less than [i] dollars in 
     their account then raises Broke. *)
 
-val recieve : int ->t -> unit
+val recieve : int ->t -> t
 (** [ recieve i a ] adds [i] dollars to account [a]. *)
