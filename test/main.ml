@@ -3,6 +3,7 @@ open Monopoly
 open Board
 open Player
 open Position
+(* open Account *)
 
 let current_location_test (name : string) (input : Player.t)
     (expected_output : int) : test =
@@ -25,6 +26,14 @@ let board_tests =
     board_position_test "roll 12" Board.init 12 12;
     board_position_test "roll 37" Board.init 1 1;
   ]
+
+(* let account_init_test (name : string) (expected_output : Account.t) : test =
+   name >:: fun _ -> assert_equal expected_output new_acct
+
+   let account_pay_test (name : string) (i : int) (a : Account.t)
+   (expected_output : Account.t) : test = name >:: fun _ -> assert_equal
+
+   let account_tests = [] *)
 
 let suite =
   "test suite for Monopoly" >::: List.flatten [ player_tests; board_tests ]
