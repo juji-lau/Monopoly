@@ -9,9 +9,12 @@ type t
 val init : t
 (** [init] initializes a new account with 1500 dollars. *)
 
-val pay : int -> t -> t
+val current : t -> int
+(** [current a] gives the current integer amount in account [a]. *)
+
+val pay : int -> t -> unit
 (** [pay i a] removes [i] dollars from account [a]. If [a] has less than [i] dollars in 
     their account then raises Broke. *)
 
-val recieve : int ->t -> t 
+val recieve : int ->t -> unit
 (** [ recieve i a ] adds [i] dollars to account [a]. *)
