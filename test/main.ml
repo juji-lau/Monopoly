@@ -3,7 +3,7 @@ open Monopoly
 open Board
 open Player
 open Position
-(* open Account *)
+open Account
 
 let current_location_test (name : string) (input : Player.t)
     (expected_output : int) : test =
@@ -27,7 +27,6 @@ let board12 = Board.move_to Board.init 12
 let board21 = Board.move_to Board.init 21
 let board35 = Board.move_to Board.init 35
 let board37 = Board.move_to Board.init 37
-
 
 let board_tests =
   [
