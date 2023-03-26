@@ -16,7 +16,9 @@ let current_location_test (name : string) (input : Player.t)
 let board_move_to_test (name : string) (board : Board.t) (roll : int)
     (expected_output : int) : test =
   name >:: fun _ ->
-  assert_equal expected_output (Board.position_int (Board.move_to board roll)) ~printer: string_of_int 
+  assert_equal expected_output
+    (Board.position_int (Board.move_to board roll))
+    ~printer:string_of_int
 
 let player_tests = [ current_location_test "start" (new_player "Alexandra") 0 ]
 
@@ -68,10 +70,29 @@ let account_init_test (name : string) (expected_output : int) : test =
 
 let account_pay_test (name : string) (i : int) (a : Account.t)
     (expected_output : int) : test =
-  name >:: fun _ -> assert_equal expected_output a
+  name >:: fun _ -> assert_equal expected_output (current (pay i a))
+
+let account_pay_exp_test (name : string) (i : int) (a : Account.t) : test =
+  name >:: fun _ -> assert_raises Broke (fun () -> pay i a)
+
+let account_recieve_test (name : string) (i : int) (a : Account.t)
+    (expected_output : int) : test =
+  name >:: fun _ -> assert_equal expected_output (current (recieve i a))
 
 let account_tests =
-  [ account_init_test "initial amount is 1500" 1500; account_pay_test ]
+  [
+    (*initialize an account*)
+    account_init_test "initial amount is 1500" 1500;
+    (*pay*)
+    account_pay_test "pay 100; 1400 remaining" 100 init 1400;
+    account_pay_test "pay 2; 1498 remaining" 2 init 1498;
+    account_pay_test "pay 1500; 0 remaining" 1500 init 0;
+    account_pay_exp_test "pay 1600; raise broke" 1600 init;
+    (*recieve*)
+    account_recieve_test "recieve 200; 1700 amount" 200 init 1700;
+    account_recieve_test "recieve 1; 1501 amount" 1 init 1501;
+    account_recieve_test "recieve 2000; 3500 amount" 2000 init 3500;
+  ]
 
 let suite =
   "test suite for Monopoly" >::: List.flatten [ player_tests; account_tests ]
