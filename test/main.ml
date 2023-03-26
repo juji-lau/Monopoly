@@ -63,15 +63,17 @@ let board_tests =
     board_move_to_test "roll -12 from 12" board12 (-12) 12;
   ]
 
-(* let account_init_test (name : string) (expected_output : Account.t) : test =
-   name >:: fun _ -> assert_equal expected_output new_acct
+let account_init_test (name : string) (expected_output : int) : test =
+  name >:: fun _ -> assert_equal expected_output (current init)
 
-   let account_pay_test (name : string) (i : int) (a : Account.t)
-   (expected_output : Account.t) : test = name >:: fun _ -> assert_equal
+let account_pay_test (name : string) (i : int) (a : Account.t)
+    (expected_output : int) : test =
+  name >:: fun _ -> assert_equal expected_output a
 
-   let account_tests = [] *)
+let account_tests =
+  [ account_init_test "initial amount is 1500" 1500; account_pay_test ]
 
 let suite =
-  "test suite for Monopoly" >::: List.flatten [ player_tests; board_tests ]
+  "test suite for Monopoly" >::: List.flatten [ player_tests; account_tests ]
 
 let _ = run_test_tt_main suite
