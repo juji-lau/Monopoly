@@ -34,3 +34,11 @@ let move p x =
       current = p.current;
       account = Account.pay x p.account;
     }
+  
+  let recieve p x =
+    {
+      name = p.name;
+      board = p.board;
+      current = p.current;
+      account = Account.recieve x p.account;
+    }
