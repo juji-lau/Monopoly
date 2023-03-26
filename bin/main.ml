@@ -27,7 +27,13 @@ let rec player flow play =
               print_endline
                 ("You rolled a " ^ string_of_int x ^ " and have landed on "
                 ^ Position.get_name (Board.position (Player.get_board nplay)));
-              player Play nplay)
+                player Play nplay
+          |Command.Purchase comm_lst ->
+              let title = String.concat " " comm_lst in 
+              let nplay = Player.buy_property play title in 
+              print_endline (" You have purchased " ^ title);
+              player Play nplay
+      )
     else print_endline "The game has ended. Thanks for playing!"
   with
   | Command.Empty ->
