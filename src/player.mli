@@ -15,17 +15,17 @@ val get_board : t -> Board.t
 
 val get_owned_properties : t -> string list
 (** [get_owned_properties p] is the list of owned properties of player [p]
-categorized by the string titles of the tiles*)
+    categorized by the string titles of the tiles*)
 
 val current_location : t -> int
 (** [current_location p] is the current board position of the player [p]. *)
 
-val move : t -> int -> t
-(** [move_to p] is the new position of the player [p] after rolling the die. *)
+val move : int -> t -> t
+(** [move x p] is the new position of the player [p] after rolling the die. *)
 
 val tile_owned : t -> string -> bool
 (** [tile_owned pl pr] returns true if the property [pr] is owned by player [pl]*)
 
 val buy_property : t -> string -> t
-(** [buy_property pl pr] adds the property string title [pr] to the 
-    purchased properties of player [pl]*)
+(** [buy_property pl pr] adds the property string title [pr] to the purchased
+    properties of player [pl]*)
