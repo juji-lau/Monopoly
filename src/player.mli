@@ -29,3 +29,8 @@ val tile_owned : t -> string -> bool
 val buy_property : t -> string -> t
 (** [buy_property pl pr] adds the property string title [pr] to the purchased
     properties of player [pl]*)
+
+(** questions about buy_property: what happens when: a misspelled or nonexistant
+    property is bought, if a property is bought twice by the same player, when
+    the same property is bought by a different player, how is the string list of
+    properties sortged?*)

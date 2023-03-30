@@ -58,7 +58,7 @@ let board_tests =
 
 (* =============== Player tests: ================ *)
 
-(* make a few players at various locations: *)
+(* make a few players at various locations, with various properties: *)
 let alexandra0 = new_player "Alexandra"
 let brooke21 = move 21 (new_player "Brooke")
 let juji35 = move 35 (new_player "Juji")
@@ -80,16 +80,49 @@ let move_test (name : string) (person : Player.t) (x : int)
     (move x person |> current_location)
     ~printer:string_of_int
 
-(* Test buy_property, get_owned_properties, and bank at the same time *)
+(* [buy_swag p list] calls [Player.buy_property] with each element in the list
+   of properties [plist], on player [p]. [buy_swag] is purely for testing
+   purposes, so it will not check against misspelled, invalid, or duplicate
+   properties bought*)
+let rec buy_swag (p : Player.t) (plist : string list) : Player.t =
+  match plist with
+  | [] -> p
+  | [ h ] -> buy_property p h
+  | h :: t -> buy_swag p t
+
+(* Give the players properties *)
+
+let brookeboard = buy_property brooke21 "Boardwalk"
+
+let jujired =
+  buy_swag juji35 [ "Kentucky Avenue"; "Indiana Avenue"; "Illinois Avenue" ]
+
+let sophierich =
+  buy_swag sophie37
+    [ "Baltic Avenue"; "Oriental Avenue"; "St. James Place"; "Marvin Gardens" ]
+
+(* Tests [get_owned_properites] *)
+let get_owned_properties_test (name : string) (person : Player.t)
+    (expected_output : string list) : test =
+  name >:: fun _ -> assert_equal expected_output (get_owned_properties person)
+
+(* Tests [buy_property] using [get_owned_properties] *)
+let buy_property_test (name : string) (person : Player.t) (property : string)
+    (expected_output : string list) : test =
+  name >:: fun _ ->
+  assert_equal expected_output
+    (buy_property person property |> get_owned_properties)
+(* and bank at the same time *)
 
 (* Test tile_owned *)
 
 (* test abstract: new_player, move, buy_property. Concrete = get_board?
    get_owned_properties, current_location, tile_owned, *)
 
-(* test abstract: , . Concrete = get_board? , tile_owned, *)
+(* test abstract: buy_property. Concrete = get_board? get_owned_properties,
+   tile_owned *)
 
-let player_tests =
+let move_tests =
   [
     new_player_test "starting state" alexandra0;
     (* Don't move *)
@@ -121,6 +154,35 @@ let player_tests =
     move_test "move back 80 from start" alexandra0 (-80) 0;
     move_test "move back 37 from 37" sophie37 (-37) 12;
   ]
+
+let property_tests =
+  [
+    get_owned_properties_test "No properties" alexandra0 [];
+    get_owned_properties_test "One property" brookeboard [ "Boardwalk" ];
+    get_owned_properties_test "A (red) set of properties" jujired
+      [ "Kentucky Avenue"; "Indiana Avenue"; "Illinois Avenue" ];
+    get_owned_properties_test "A lot of random properties" sophierich
+      [
+        "Baltic Avenue"; "Oriental Avenue"; "St. James Place"; "Marvin Gardens";
+      ];
+    buy_property_test "Buy property when having none" alexandra0
+      "Pacific Avenue" [ "Pacific Avenue" ];
+    buy_property_test "Buy property when having a different property"
+      brookeboard "Ventor Avenue"
+      [ "Boardwalk"; "Ventor Avenue" ];
+  ]
+
+let player_tests = move_tests @ property_tests
+(* buy property from nothing. buy property when already having a different
+   property buy property when already having the same property buy property when
+   having many properties buy invalid property: non existent, misspelled, caps,
+   spaces buy someone else's property buy a set *)
+
+(* tile_owned: test on invalid property: non-existent, misspelled, caps, space
+   test false: player does not have the property player does not have any
+   property player has different property in the same set player has many
+   properties, just not that one test true: player does have the property only
+   that property many properties and that one *)
 
 let suite =
   "test suite for Monopoly" >::: List.flatten [ player_tests; board_tests ]
