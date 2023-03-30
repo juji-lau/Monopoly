@@ -4,6 +4,24 @@ open Board
 open Player
 open Position
 
+(** [pp_string s] pretty-prints string [s]. *)
+let pp_string s = "\"" ^ s ^ "\""
+
+(** [pp_list pp_elt lst] pretty-prints list [lst], using [pp_elt] to
+    pretty-print each element of [lst]. *)
+let pp_list pp_elt lst =
+  let pp_elts lst =
+    let rec loop n acc = function
+      | [] -> acc
+      | [ h ] -> acc ^ pp_elt h
+      | h1 :: (h2 :: t as t') ->
+          if n = 100 then acc ^ "..." (* stop printing long list *)
+          else loop (n + 1) (acc ^ pp_elt h1 ^ "; ") t'
+    in
+    loop 0 "" lst
+  in
+  "[" ^ pp_elts lst ^ "]"
+
 (* =============== Board tests: ================ *)
 (* tests init, position_int, and move_to at once *)
 let board_move_to_test (name : string) (board : Board.t) (roll : int)
@@ -80,47 +98,47 @@ let move_test (name : string) (person : Player.t) (x : int)
     (move x person |> current_location)
     ~printer:string_of_int
 
-(* [buy_swag p list] calls [Player.buy_property] with each element in the list
-   of properties [plist], on player [p]. [buy_swag] is purely for testing
-   purposes, so it will not check against misspelled, invalid, or duplicate
-   properties bought*)
-let rec buy_swag (p : Player.t) (plist : string list) : Player.t =
-  match plist with
-  | [] -> p
-  | [ h ] -> buy_property p h
-  | h :: t -> buy_swag p t
-
 (* Give the players properties *)
-
-let brookeboard = buy_property brooke21 "Boardwalk"
+let brookeboard = buy_property "Boardwalk" brooke21
 
 let jujired =
-  buy_swag juji35 [ "Kentucky Avenue"; "Indiana Avenue"; "Illinois Avenue" ]
+  buy_property "Kentucky Avenue" juji35
+  |> buy_property "Indiana Avenue"
+  |> buy_property "Illinois Avenue"
 
 let sophierich =
-  buy_swag sophie37
-    [ "Baltic Avenue"; "Oriental Avenue"; "St. James Place"; "Marvin Gardens" ]
+  buy_property "Baltic Avenue" sophie37
+  |> buy_property "Oriental Avenue"
+  |> buy_property "St. James Place"
+  |> buy_property "Marvin Gardens"
 
 (* Tests [get_owned_properites] *)
 let get_owned_properties_test (name : string) (person : Player.t)
     (expected_output : string list) : test =
-  name >:: fun _ -> assert_equal expected_output (get_owned_properties person)
+  name >:: fun _ ->
+  assert_equal expected_output
+    (get_owned_properties person)
+    ~printer:(pp_list pp_string)
 
 (* Tests [buy_property] using [get_owned_properties] *)
 let buy_property_test (name : string) (person : Player.t) (property : string)
     (expected_output : string list) : test =
   name >:: fun _ ->
   assert_equal expected_output
-    (buy_property person property |> get_owned_properties)
+    (buy_property property person |> get_owned_properties)
+    ~printer:(pp_list pp_string)
 (* and bank at the same time *)
 
-(* Test tile_owned *)
+(* Tests [tile_owned] *)
+let tile_owned_test (name : string) (player : Player.t) (tile : string)
+    (expected_output : bool) : test =
+  name >:: fun _ ->
+  assert_equal expected_output (tile_owned player tile) ~printer:string_of_bool
 
 (* test abstract: new_player, move, buy_property. Concrete = get_board?
    get_owned_properties, current_location, tile_owned, *)
 
-(* test abstract: buy_property. Concrete = get_board? get_owned_properties,
-   tile_owned *)
+(* test abstract: . Concrete = get_board?, tile_owned *)
 
 let move_tests =
   [
@@ -160,29 +178,83 @@ let property_tests =
     get_owned_properties_test "No properties" alexandra0 [];
     get_owned_properties_test "One property" brookeboard [ "Boardwalk" ];
     get_owned_properties_test "A (red) set of properties" jujired
-      [ "Kentucky Avenue"; "Indiana Avenue"; "Illinois Avenue" ];
+      [ "Illinois Avenue"; "Indiana Avenue"; "Kentucky Avenue" ];
     get_owned_properties_test "A lot of random properties" sophierich
       [
-        "Baltic Avenue"; "Oriental Avenue"; "St. James Place"; "Marvin Gardens";
+        "Marvin Gardens"; "St. James Place"; "Oriental Avenue"; "Baltic Avenue";
       ];
-    buy_property_test "Buy property when having none" alexandra0
-      "Pacific Avenue" [ "Pacific Avenue" ];
-    buy_property_test "Buy property when having a different property"
+    buy_property_test "Buy property when having none" alexandra0 "Ventor Avenue"
+      [ "Ventor Avenue" ];
+    buy_property_test "Buy property when having one different property"
       brookeboard "Ventor Avenue"
-      [ "Boardwalk"; "Ventor Avenue" ];
+      [ "Ventor Avenue"; "Boardwalk" ];
+    buy_property_test "Buy property when already having the same property"
+      brookeboard "Boardwalk" [ "Boardwalk" ];
+    buy_property_test "Buy property when having many different properties"
+      sophierich "Ventor Avenue"
+      [
+        "Ventor Avenue";
+        "Marvin Gardens";
+        "St. James Place";
+        "Oriental Avenue";
+        "Baltic Avenue";
+      ];
+    buy_property_test "Buy property when already owning it" sophierich
+      "Marvin Gardens"
+      [
+        "Marvin Gardens"; "St. James Place"; "Oriental Avenue"; "Baltic Avenue";
+      ];
+    buy_property_test "Buy property when already owning it" sophierich
+      "Baltic Avenue"
+      [
+        "Marvin Gardens"; "St. James Place"; "Oriental Avenue"; "Baltic Avenue";
+      ];
+    (* The following should return an error or a nop, please clarify the
+       spec... *)
+    buy_property_test
+      "Buy property that someone else already own (IM ASSUMING THIS IS ILLEGAL)"
+      jujired "Boardwalk"
+      [ "Illinois Avenue"; "Indiana Avenue"; "Kentucky Avenue" ];
+    buy_property_test "Buy invalid property: non existent" jujired ""
+      [ "Illinois Avenue"; "Indiana Avenue"; "Kentucky Avenue" ];
+    buy_property_test "Buy invalid property: misspelled" jujired
+      "Not a property"
+      [ "Illinois Avenue"; "Indiana Avenue"; "Kentucky Avenue" ];
+    buy_property_test "Buy invalid property: Caps" jujired "ventor avenue"
+      [ "Illinois Avenue"; "Indiana Avenue"; "Kentucky Avenue" ];
+    buy_property_test "Buy invalid property: white spaces" jujired
+      "    Ventor   Avenue   "
+      [ "Illinois Avenue"; "Indiana Avenue"; "Kentucky Avenue" ];
+    (* The following should test true*)
+    tile_owned_test "True: One correct property owned" brookeboard "Boardwalk"
+      true;
+    tile_owned_test "True: Property owned among many" sophierich
+      "Marvin Gardens" true;
+    tile_owned_test "True: Property owned among many" sophierich "Baltic Avenue"
+      true;
+    (* The following should test false*)
+    tile_owned_test "False: No properties owned" alexandra0 "Ventor Avenue"
+      false;
+    tile_owned_test "False: Property not owned while owning one property"
+      brookeboard "Ventor Avenue" false;
+    tile_owned_test "False: Property owned by someone else" sophierich
+      "Boardwalk" false;
+    tile_owned_test
+      "False: Property owned by no one (among many properties owned)" sophierich
+      "Ventor Avenue" false;
+    tile_owned_test
+      "False: Player has different property in the same set (orange)" sophierich
+      "Tennessee Avenue" false;
+    (* The following should give an error or false*)
+    tile_owned_test "Invalid property: non existent" jujired "" false;
+    tile_owned_test "Invalid property: misspelled" jujired "Not a property"
+      false;
+    tile_owned_test "Invalid property: Caps" jujired "illinois avenue" false;
+    tile_owned_test "Invalid property: white spaces" jujired
+      "    Kentucky   Avenue   " false;
   ]
 
 let player_tests = move_tests @ property_tests
-(* buy property from nothing. buy property when already having a different
-   property buy property when already having the same property buy property when
-   having many properties buy invalid property: non existent, misspelled, caps,
-   spaces buy someone else's property buy a set *)
-
-(* tile_owned: test on invalid property: non-existent, misspelled, caps, space
-   test false: player does not have the property player does not have any
-   property player has different property in the same set player has many
-   properties, just not that one test true: player does have the property only
-   that property many properties and that one *)
 
 let suite =
   "test suite for Monopoly" >::: List.flatten [ player_tests; board_tests ]

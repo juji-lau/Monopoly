@@ -26,8 +26,8 @@ val move : int -> t -> t
 val tile_owned : t -> string -> bool
 (** [tile_owned pl pr] returns true if the property [pr] is owned by player [pl]*)
 
-val buy_property : t -> string -> t
-(** [buy_property pl pr] adds the property string title [pr] to the purchased
+val buy_property : string -> t -> t
+(** [buy_property pr pl] adds the property string title [pr] to the purchased
     properties of player [pl]*)
 
 (** questions about buy_property: what happens when: a misspelled or nonexistant

@@ -32,7 +32,7 @@ let move x p =
 
 let tile_owned (pl : t) (pr : string) : bool = List.mem pr pl.properties
 
-let buy_property (pl : t) (pr : string) : t =
+let buy_property (pr : string) (pl : t) : t =
   let n_prop =
     if tile_owned pl pr then pl.properties else pr :: pl.properties
   in
