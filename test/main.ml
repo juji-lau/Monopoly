@@ -95,6 +95,7 @@ let account_tests =
   ]
 
 let suite =
-  "test suite for Monopoly" >::: List.flatten [ player_tests; account_tests ]
+  "test suite for Monopoly"
+  >::: List.flatten [ player_tests; board_tests; account_tests ]
 
 let _ = run_test_tt_main suite
