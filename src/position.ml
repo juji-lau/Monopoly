@@ -58,6 +58,8 @@ let get_name s =
   | Tax t -> "Tax"
   | Start s -> s.name
 
+
+
 exception UnknownBoard of string
 
 (*defines the specific squares for a default board *)

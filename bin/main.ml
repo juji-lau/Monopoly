@@ -7,6 +7,7 @@ type flow =
   | Play
   | End
 
+
 (** [player state adv flow] parses the commands of the user into an action of
     the player. *)
 let rec player flow play =
