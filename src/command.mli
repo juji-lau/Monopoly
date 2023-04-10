@@ -10,6 +10,7 @@
     verb and possibly an object phrase. *)
 type command =
   | Roll
+  | Purchase of string list 
   | Quit
 
 exception Empty
