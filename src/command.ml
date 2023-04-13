@@ -22,4 +22,5 @@ let parse str =
     | h :: t2 ->
         if h = "quit" then Quit
         else if h = "roll" then Roll
-        else if h = "purchase" then Purchase t2 else raise Malformed
+        else if h = "purchase" then Purchase t2
+        else raise Malformed

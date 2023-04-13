@@ -1,12 +1,8 @@
-
-
 type t = {
   board : Position.square list;
   current : Position.square;
   current_int : int;
 }
-
-
 
 exception UnimplementedBoard
 
