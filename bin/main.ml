@@ -9,10 +9,9 @@ type flow =
 
 (** [player state adv flow] parses the commands of the user into an action of
     the player. *)
-let rec player flow play name =
+let rec player flow (play : t) =
   try
-    print_endline
-      ("It is your turn, " ^ name "!\nPlease enter a command (roll or quit).");
+    print_endline "Please enter a command (roll or quit).";
     print_string "> ";
     if flow = Play then
       match read_line () with
@@ -21,29 +20,27 @@ let rec player flow play name =
           match command with
           | Command.Quit ->
               print_endline "The game has ended. Thanks for playing!";
-              player End play name
+              player End play
           | Command.Roll ->
               let x = Random.int 10 + 2 in
-              let nplay = Player.move play x in
+              let nplay = Player.move x play in
               print_endline
                 ("You rolled a " ^ string_of_int x ^ " and have landed on "
                 ^ Position.get_name (Board.position (Player.get_board nplay)));
-              player Play nplay name;
-              let position_type = (Board.position (Player.get_board nplay) in
-              match 
+              player Play nplay
           | Command.Purchase comm_lst ->
               let title = String.concat " " comm_lst in
-              let nplay = Player.buy_property play title in
+              let nplay = Player.buy_property title play in
               print_endline (" You have purchased " ^ title);
-              player Play nplay name)
+              player Play nplay)
     else print_endline "The game has ended. Thanks for playing!"
   with
   | Command.Empty ->
       print_endline "Please enter a nonempty command.";
-      player Play play name
+      player Play play
   | Command.Malformed ->
       print_endline "Please enter a valid command.";
-      player Play play name
+      player Play play
 
 (** [main ()] prompts for the game to play, then starts it. *)
 let main () =
@@ -52,8 +49,7 @@ let main () =
   print_string "> ";
   match read_line () with
   | x ->
-      let p = Player.new_player x in
-      player Play p x;
+      player Play (Player.new_player x);
       ()
 
 (* Execute the game engine. *)

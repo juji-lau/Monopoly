@@ -14,7 +14,7 @@ let get_owned_properties (p : t) : string list = p.properties;;
 
 Random.self_init ()
 
-let move p x =
+let move x p =
   if x >= 36 then
     {
       name = p.name;
@@ -32,7 +32,7 @@ let move p x =
 
 let tile_owned (pl : t) (pr : string) : bool = List.mem pr pl.properties
 
-let buy_property (pl : t) (pr : string) : t =
+let buy_property (pr : string) (pl : t) : t =
   let n_prop =
     if tile_owned pl pr then pl.properties else pr :: pl.properties
   in
