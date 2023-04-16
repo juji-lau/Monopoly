@@ -1,4 +1,5 @@
 open Monopoly
+open Raylib
 
 open Player
 (** [play_game f] starts the adventure in file [f]. *)
@@ -45,6 +46,7 @@ let rec player flow play name =
 
 (** [main ()] prompts for the game to play, then starts it. *)
 let main () =
+  Gui.setup () |> Gui.loop;
   ANSITerminal.print_string [ ANSITerminal.red ] "\n\nWelcome to MONOPOLY! \n";
   print_endline "Please enter your name: \n";
   print_string "> ";

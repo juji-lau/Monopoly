@@ -1,3 +1,3 @@
 (executable
  (name main)
- (libraries monopoly yojson ANSITerminal))
+ (libraries monopoly ANSITerminal raylib))
