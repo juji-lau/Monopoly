@@ -9,10 +9,10 @@ type flow =
 
 (** [player state adv flow] parses the commands of the user into an action of
     the player. *)
-let rec player flow (play : t) =
+let rec player flow play name =
   try
-    print_endline "Please enter a command (roll or quit).";
-    print_string "> ";
+    print_endline
+      ("It is your turn, " ^ name ^ "!\nPlease enter a command (roll or quit).");
     if flow = Play then
       match read_line () with
       | str -> (
@@ -20,27 +20,28 @@ let rec player flow (play : t) =
           match command with
           | Command.Quit ->
               print_endline "The game has ended. Thanks for playing!";
-              player End play
+              player End play name
           | Command.Roll ->
               let x = Random.int 10 + 2 in
               let nplay = Player.move x play in
               print_endline
                 ("You rolled a " ^ string_of_int x ^ " and have landed on "
                 ^ Position.get_name (Board.position (Player.get_board nplay)));
-              player Play nplay
+              player Play nplay name
+              (* let position_type *)
           | Command.Purchase comm_lst ->
               let title = String.concat " " comm_lst in
               let nplay = Player.buy_property title play in
               print_endline (" You have purchased " ^ title);
-              player Play nplay)
+              player Play nplay name)
     else print_endline "The game has ended. Thanks for playing!"
   with
   | Command.Empty ->
       print_endline "Please enter a nonempty command.";
-      player Play play
+      player Play play name
   | Command.Malformed ->
       print_endline "Please enter a valid command.";
-      player Play play
+      player Play play name
 
 (** [main ()] prompts for the game to play, then starts it. *)
 let main () =
@@ -49,7 +50,7 @@ let main () =
   print_string "> ";
   match read_line () with
   | x ->
-      player Play (Player.new_player x);
+      player Play (Player.new_player x) x;
       ()
 
 (* Execute the game engine. *)

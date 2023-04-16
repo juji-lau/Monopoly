@@ -361,21 +361,28 @@
   ],
   "community_chests": [
     {
-      "index": 2
+      "index": 2,
+      "name": "a Community Chest"
     },
     {
-      "index": 17
+      "index": 17,
+      "name": "a Community Chest"
     },
     {
-      "index": 33
+      "index": 33,
+      "name": "a Community Chest"
     }
   ],
   "tax": [
     {
-      "index": 4
+      "index": 4,
+      "name": "pay Tax",
+      "cost": 100
     },
     {
-      "index": 38
+      "index": 38,
+      "name": "pay Tax",
+      "cost": 200
     }
   ],
   "railroads": [
@@ -398,19 +405,25 @@
   ],
   "chance": [
     {
-      "index": 7
+      "index": 7,
+      "name": "Chance"
     },
     {
-      "index": 22
+      "index": 22,
+      "name": "Chance"
     },
     {
-      "index": 36
+      "index": 36,
+      "name": "Chance"
     }
   ],
-  "jail": {
-    "index": 10,
-    "cost": 50
-  },
+  "jail": [
+    {
+      "index": 10,
+      "name": "Jail",
+      "cost": 50
+    }
+  ],
   "utility": [
     {
       "index": 12,
@@ -421,10 +434,16 @@
       "name": "Water Works"
     }
   ],
-  "free_parking": {
-    "index": 20
-  },
-  "go_to_jail": {
-    "index": 30
-  }
+  "free_parking": [
+    {
+      "index": 20,
+      "name": "Free Parking"
+    }
+  ],
+  "go_to_jail": [
+    {
+      "index": 30,
+      "name": "Go to Jail"
+    }
+  ]
 }

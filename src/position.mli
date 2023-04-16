@@ -22,3 +22,6 @@ val clear_board : square list -> square list
 (** [clear_board b] is board [b] with unplayed squares as if clearing it become
     a new board. Raises [UnknownBoard b] if [b] is not a board currently being
     played. Example: clearing board b returns a new board.*)
+
+(* val from_json : Yojson.Basic.t -> t (** [from_json j] is the adventure that
+   [j] represents. Requires: [j] is a valid JSON adventure representation. *) *)

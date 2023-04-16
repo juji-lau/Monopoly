@@ -7,7 +7,7 @@ type t = {
 exception UnimplementedBoard
 
 let init =
-  let b = Position.new_board in
+  let (b : Position.square list) = Position.new_board in
   match b with
   | [] -> raise UnimplementedBoard
   | h :: _ ->

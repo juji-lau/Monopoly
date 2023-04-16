@@ -7,6 +7,7 @@ Clone the Code:
 
 Install ANSITerminal
   $ opam install ANSITerminal
+  $ opam install Yojson
 
 Build Instructions:
   $ make clean
