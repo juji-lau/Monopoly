@@ -1,3 +1,4 @@
 (executable
  (name main)
- (libraries monopoly ANSITerminal))
+ (libraries monopoly ANSITerminal raylib))
+
