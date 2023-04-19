@@ -23,6 +23,9 @@ let move_to b i =
   if x >= 40 then
     let curr = List.nth lst (x - 40) in
     { board = b.board; current = curr; current_int = x - 40 }
-  else
+  else if x >= 0 then
     let curr = List.nth lst x in
+    { board = b.board; current = curr; current_int = x }
+  else 
+    let curr = List.nth lst (x+40) in
     { board = b.board; current = curr; current_int = x }
