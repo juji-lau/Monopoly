@@ -18,7 +18,7 @@ Random.self_init ()
 let get_name (player : t) : string = player.name
 
 let move x p =
-  if x >= 36 then
+  if current_location p + x >= 40 then
     {
       name = p.name;
       (* board = Board.move_to p.board x; *)
