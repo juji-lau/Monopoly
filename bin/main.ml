@@ -10,10 +10,11 @@ type flow =
 
 (** [player state adv flow] parses the commands of the user into an action of
     the player. *)
-let rec player flow play name =
+let rec player flow player1 player2 board =
   try
     print_endline
-      ("It is your turn, " ^ name ^ "!\nPlease enter a command (roll or quit).");
+      ("It is your turn, " ^ Player.get_name player1
+     ^ "!\nPlease enter a command (roll or quit).");
     if flow = Play then
       match read_line () with
       | str -> (
@@ -21,39 +22,46 @@ let rec player flow play name =
           match command with
           | Command.Quit ->
               print_endline "The game has ended. Thanks for playing!";
-              player End play name
+              player End player1 player2 board
           | Command.Roll ->
               let x = Random.int 10 + 2 in
-              let nplay = Player.move x play in
+              (* [nplay] is Player1 with new position *)
+              let nplay = Player.move x player1 in
               print_endline
                 ("You rolled a " ^ string_of_int x ^ " and have landed on "
-                ^ Position.get_name (Board.position (Player.get_board nplay)));
-              player Play nplay name
-              (* let position_type *)
+                ^ Position.get_name (Player.current_location nplay));
+              player Play player2 nplay nboard
           | Command.Purchase comm_lst ->
               let title = String.concat " " comm_lst in
-              let nplay = Player.buy_property title play in
+              let nplay = Player.buy_property title player1 in
               print_endline (" You have purchased " ^ title);
-              player Play nplay name)
+              player Play player2 nplay nboard)
     else print_endline "The game has ended. Thanks for playing!"
   with
   | Command.Empty ->
       print_endline "Please enter a nonempty command.";
-      player Play play name
+      player Play player1 player2
   | Command.Malformed ->
       print_endline "Please enter a valid command.";
-      player Play play name
+      player Play player1 player2
 
 (** [main ()] prompts for the game to play, then starts it. *)
 let main () =
   (* Gui.setup () |> Gui.loop; *)
   ANSITerminal.print_string [ ANSITerminal.red ] "\n\nWelcome to MONOPOLY! \n";
-  print_endline "Please enter your name: \n";
+  print_endline "Player1, please enter your name: \n";
   print_string "> ";
-  match read_line () with
-  | x ->
-      player Play (Player.new_player x) x;
-      ()
+  let name1 =
+    match read_line () with
+    | x -> x
+  in
+  print_endline "Player2, please enter your name: \n";
+  print_string "> ";
+  let name2 =
+    match read_line () with
+    | x -> x
+  in
+  player Play (Player.new_player name1) (Player.new_player name2) Board.init
 
 (* Execute the game engine. *)
 let () = main ()

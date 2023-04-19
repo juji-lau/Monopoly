@@ -1,31 +1,34 @@
 type t = {
   name : string;
-  board : Board.t;
-  current : int;
+  (* board : Board.t; *)
+  current : Position.square;
   properties : string list;
 }
 
-let new_player s =
-  { name = s; board = Board.init; current = 0; properties = [] }
+let new_player name board =
+  { name; current = Board.get_initial board; properties = [] }
 
-let get_board p = p.board
+(* board = Board.init; *)
+(* let get_board p = p.board *)
 let current_location p = p.current
 let get_owned_properties (p : t) : string list = p.properties;;
 
 Random.self_init ()
 
+let get_name (player : t) : string = player.name
+
 let move x p =
   if x >= 36 then
     {
       name = p.name;
-      board = Board.move_to p.board x;
+      (* board = Board.move_to p.board x; *)
       current = current_location p + x - 36;
       properties = p.properties;
     }
   else
     {
       name = p.name;
-      board = Board.move_to p.board x;
+      (* board = Board.move_to p.board x; *)
       current = current_location p + x;
       properties = p.properties;
     }
@@ -38,7 +41,7 @@ let buy_property (pr : string) (pl : t) : t =
   in
   {
     name = pl.name;
-    board = pl.board;
+    (* board = pl.board; *)
     current = pl.current;
     properties = n_prop;
   }

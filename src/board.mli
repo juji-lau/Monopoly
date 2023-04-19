@@ -9,11 +9,14 @@ type t
 val init : t
 (** [init p] initializes a new board for player [p]. *)
 
-val position : t -> Position.square
+val get_initial : t -> Position.square
+(** [get_initial b] is the initial position of board [b]*)
+
+(* val position : t -> Position.square *)
 (** [position p] is the current square of player [p]. *)
 
-val position_int : t -> int
+(* val position_int : t -> int *)
 (** [position p] is the current int location of player [p]. *)
 
-val move_to : t -> int -> t
+(* val move_to : t -> int -> t *)
 (** [move_to b i] is the new board value after moving by [i] spots. *)

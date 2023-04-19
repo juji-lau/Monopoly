@@ -15,6 +15,8 @@ val get_name : square -> string
 
 exception UnknownBoard of string
 
+val square_index : square -> int
+
 val new_board : square list
 (** The representation of a new Monopoly board with unplayed squares*)
 
