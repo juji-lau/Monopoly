@@ -155,7 +155,7 @@ let move_tests =
     move_test "move 50 from start" alexandra0 50 10;
     move_test "move 81 from start" alexandra0 81 1;
     move_test "move 4 from 37" sophie37 4 1;
-    move_test "move 33 from 21" brooke21 33 54;
+    move_test "move 33 from 21" brooke21 33 14;
     (*move fowards, end on start*)
     move_test "move 40" alexandra0 40 0;
     move_test "roll 19 from 21" brooke21 19 0;
@@ -171,7 +171,7 @@ let move_tests =
     (*move backwards, land on start*)
     move_test "move back 40 from start" alexandra0 (-40) 0;
     move_test "move back 80 from start" alexandra0 (-80) 0;
-    move_test "move back 37 from 37" sophie37 (-37) 12;
+    move_test "move back 37 from 37" sophie37 (-37) 0;
   ]
 
 let property_tests =

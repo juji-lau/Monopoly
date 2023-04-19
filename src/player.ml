@@ -15,11 +15,11 @@ let get_owned_properties (p : t) : string list = p.properties;;
 Random.self_init ()
 
 let move x p =
-  if x >= 36 then
+  if current_location p + x >= 40 then
     {
       name = p.name;
       board = Board.move_to p.board x;
-      current = current_location p + x - 36;
+      current = current_location p + x - 40;
       properties = p.properties;
     }
   else
