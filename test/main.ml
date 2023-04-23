@@ -86,8 +86,8 @@ let jujired =
 let sophierich =
   buy_property baltic sophie37
   |> buy_property oriental
-  |> buy_property (get_square 16)
-  |> buy_property (get_square 29)
+  |> buy_property james
+  |> buy_property marvin
 
 (* Tests [get_owned_properites] *)
 let get_owned_properties_test (name : string) (person : Player.t)
