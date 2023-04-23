@@ -231,7 +231,16 @@ let get_index (s : square) : int =
   | Tax t -> t.index
   | Start s -> s.index
 
-let square_index (b : t) (i : int) : square = List.nth b.board i
+exception NoSquareOfIndex
+
+let rec square_index (b : t) (i : int) : square =
+  let lst = b.board in
+  let rec helper (lst2 : square list) (i : int) : square =
+    match lst2 with
+    | [] -> raise NoSquareOfIndex
+    | h :: r -> if get_index h = i then h else helper r i
+  in
+  helper lst i
 (******************************************************************************)
 (*End functions that process a Position.square*)
 (******************************************************************************)

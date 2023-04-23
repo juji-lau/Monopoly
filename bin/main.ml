@@ -4,14 +4,65 @@ open Monopoly
 open Player
 (** [play_game f] starts the adventure in file [f]. *)
 
+exception EndGame
+
 type flow =
   | Play
   | End
 
+(** [turn_actions flow player1 player2 board] takes into account turn actions
+    such as purchasing properties or paying taxes*)
+let rec turn_actions (flow : flow) (player1 : Player.t) (player2 : Player.t)
+    (board : Position.t) : Player.t =
+  if flow = End then player1
+  else
+    let location = Player.current_location player1 in
+    match location with
+    | Position.Start data ->
+        print_endline "";
+        Player.deposit 200 player1
+    | Position.Property data -> (
+        let owned =
+          Player.tile_owned player1 location
+          || Player.tile_owned player2 location
+        in
+        if owned then print_endline "This property is already owned."
+        else print_endline "This property is not owned and can be purchased.";
+        match read_line () with
+        | str -> (
+            let command = Command.parse str in
+            match command with
+            | Command.Purchase ->
+                if owned = false then (
+                  print_endline "You have purchased the current property.";
+                  Player.buy_property location player1)
+                else (
+                  print_endline
+                    "This property is already owned and cannot be purchased.";
+                  player1)
+            | Command.Roll ->
+                print_endline
+                  "You have already rolled this turn and cannot roll again";
+                turn_actions flow player1 player2 board
+            | Command.Quit -> raise EndGame))
+    | Position.Railroad data ->
+        raise
+          (Failure
+             "Unimplemented actions when a player lands on Railroads, line 46 \
+              in bin.main/ml")
+    | Position.Utility data -> player1
+    | Position.Rent data -> player1
+    | Position.Jail data -> player1
+    | Position.Go_To_Jail data -> player1
+    | Position.Chance data -> player1
+    | Position.Community_Chest data -> player1
+    | Position.Free_Parking data -> player1
+    | Position.Tax data -> player1
+
 (** [player state adv flow] parses the commands of the user into an action of
     the player. *)
 let rec player (flow : flow) (player1 : Player.t) (player2 : Player.t)
-    (board : Position.t) =
+    (board : Position.t) : unit =
   try
     print_endline
       ("It is your turn, " ^ Player.get_name player1
@@ -31,12 +82,11 @@ let rec player (flow : flow) (player1 : Player.t) (player2 : Player.t)
               print_endline
                 ("You rolled a " ^ string_of_int x ^ " and have landed on "
                 ^ Position.get_name (Player.current_location nplay));
-              player Play player2 nplay board
-          | Command.Purchase comm_lst ->
-              let title = String.concat " " comm_lst in
-              let nplay = Player.buy_property title player1 in
-              print_endline (" You have purchased " ^ title);
-              player Play player2 nplay board)
+              let fplay = turn_actions flow nplay player2 board in
+              player Play player2 fplay board
+          | Command.Purchase ->
+              print_endline " You cannot make a property purchase at this time";
+              player Play player1 player2 board)
     else print_endline "The game has ended. Thanks for playing!"
   with
   | Command.Empty ->
@@ -45,6 +95,7 @@ let rec player (flow : flow) (player1 : Player.t) (player2 : Player.t)
   | Command.Malformed ->
       print_endline "Please enter a valid command.";
       player Play player1 player2 board
+  | EndGame -> print_endline "The game has ended. Thank you for playing!"
 
 (** [main ()] prompts for the game to play, then starts it. *)
 let main () =
@@ -67,3 +118,9 @@ let main () =
 
 (* Execute the game engine. *)
 let () = main ()
+
+(*old version of purchasing commands, please do not delete :
+
+  let title = String.concat " " comm_lst in let nplay = Player.buy_property
+  title player1 in print_endline (" You have purchased " ^ title); player Play
+  player2 nplay board*)
