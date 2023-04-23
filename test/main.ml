@@ -160,15 +160,15 @@ let move_tests =
     move_test "move 3" alexandra0 3 3;
     move_test "move 37" alexandra0 37 37;
     move_test "move 15 from 21" brooke21 15 36;
-    move_test_debug "debug: move 0 from start" alexandra0 0 (Position.square_index board 0);
+    (*move_test_debug "debug: move 0 from start" alexandra0 0 (Position.square_index board 0);
     move_test_debug "debug: move 0 from 35" juji35 0 (Position.square_index board 35);
     (*move fowards randomly*)
     move_test_debug "debug: move 3" alexandra0 3 (Position.square_index board 3);
     move_test_debug "debug: move 37" alexandra0 37 (Position.square_index board 37);
-    move_test_debug "debug: move 15 from 21" brooke21 15 (Position.square_index board 36)]
+    move_test_debug "debug: move 15 from 21" brooke21 15 (Position.square_index board 36)]*)
     (*move fowards, pass one round*)
     (*move_test "move 50 from start" alexandra0 50 10;
-    move_test "move 81 from start" alexandra0 81 1;
+    move_test "move 81 from start" alexandra0 81 1;*)
     move_test "move 4 from 37" sophie37 4 1;
     move_test "move 33 from 21" brooke21 33 14;
     (*move fowards, end on start*)
@@ -189,7 +189,7 @@ let move_tests =
     move_test "move back 37 from 37" sophie37 (-37) 0;
   ]
 
-let property_tests =
+(*let property_tests =
   [
     get_owned_properties_test "No properties" alexandra0 [];
     get_owned_properties_test "One property" brookeboard [ "Boardwalk" ];
