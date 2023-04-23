@@ -13,17 +13,17 @@ type t
 val get_name : square -> string
 (**[get_name t] returns the string name of the square represented by [t]. *)
 
+val get_index : square -> int
+(**[get_index t] returns the integer index position of the square represented by
+   [t] on it's monopoly board. *)
+
+val get_initial : t -> square
+(**[get_initial b] gives the initial square on board b*)
+
 exception UnknownBoard of string
 
-val square_index : square -> int
+val square_index : t -> int -> square
+(**[square_index b i] is the square on the board [b] at position [i]*)
 
-val new_board : square list
+val new_board : t
 (** The representation of a new Monopoly board with unplayed squares*)
-
-val clear_board : square list -> square list
-(** [clear_board b] is board [b] with unplayed squares as if clearing it become
-    a new board. Raises [UnknownBoard b] if [b] is not a board currently being
-    played. Example: clearing board b returns a new board.*)
-
-(* val from_json : Yojson.Basic.t -> t (** [from_json j] is the adventure that
-   [j] represents. Requires: [j] is a valid JSON adventure representation. *) *)

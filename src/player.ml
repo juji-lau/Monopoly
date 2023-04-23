@@ -1,3 +1,5 @@
+open Position
+
 type t = {
   name : string;
   (* board : Board.t; *)
@@ -5,8 +7,8 @@ type t = {
   properties : string list;
 }
 
-let new_player name board =
-  { name; current = Board.get_initial board; properties = [] }
+let new_player (name : string) : t =
+  { name; current = Position.get_initial Position.new_board; properties = [] }
 
 (* board = Board.init; *)
 (* let get_board p = p.board *)
@@ -17,19 +19,19 @@ Random.self_init ()
 
 let get_name (player : t) : string = player.name
 
-let move x p =
-  if current_location p + x >= 40 then
+let move (x : int) (b : Position.t) (p : t) : t =
+  if Position.get_index p.current + x >= 40 then
     {
       name = p.name;
       (* board = Board.move_to p.board x; *)
-      current = current_location p + x - 36;
+      current = Position.square_index b (Position.get_index p.current + x - 36);
       properties = p.properties;
     }
   else
     {
       name = p.name;
       (* board = Board.move_to p.board x; *)
-      current = current_location p + x;
+      current = Position.square_index b (Position.get_index p.current + x);
       properties = p.properties;
     }
 

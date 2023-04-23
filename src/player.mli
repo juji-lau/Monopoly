@@ -23,7 +23,7 @@ val get_owned_properties : t -> string list
 val current_location : t -> Position.square
 (** [current_location p] is the current board position of the player [p]. *)
 
-val move : int -> t -> t
+val move : int -> Position.t -> t -> t
 (** [move x p] is the new position of the player [p] after rolling the die. *)
 
 val tile_owned : t -> string -> bool

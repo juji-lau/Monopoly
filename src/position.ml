@@ -61,30 +61,15 @@ type square =
       cost : int;
     }
 
-type t = square list
-(* { s0 : start; s1 : property; s2 : community_chest; s3 : property; s4 : tax;
-   s5 : railroad; s6 : property; s7 : chance; s8 : property; s9 : property; s10
-   : jail; s11 : property; s12 : utility; s13 : property; s14 : property; s15 :
-   railroad; s16 : property; s17 : community_chest; s18 : property; s19 :
-   property; s20 : free_parking; s21 : property; s22 : chance; s23 : property;
-   s24 : property; s25 : railroad; s26 : property; s27 : property; s28 :
-   utility; s29 : property; s30 : go_to_jail; s31 : property; s32 : property;
-   s33 : community_chest; s34 : property; s35 : railroad; s36 : chance; s37 :
-   property; s38 : tax; s39 : property; } *)
+type t = {
+  board : square list;
+  initial : square;
+  current_int : int;
+}
 
-(* let new_board = [ start_sqr; mediterranean_avenue; first_Chest;
-   baltic_Avenue; first_Tax; first_Rail; oriental_Avenue; first_Chance;
-   vermont_Avenue; connecticut_Avenue; jail_Sqr; charles_Place; electric;
-   states_Avenue; virginia_Avenue; second_Rail; james_Place; second_Chest;
-   tennessee_Avenue; ny_Avenue; free_parking; kentucky_Avenue; second_Chance;
-   indiana_Avenue; illinois_Avenue; third_Rail; atlantic_Avenue; ventnor_Avenue;
-   water_works; marvin_Gardens; go_to_jail; pacific_Avenue; nc_Avenue;
-   third_Chest; pennsylvania_Avenue; fourth_Rail; third_Chance; park_Place;
-   second_Tax; boardwalk; ]
-
-   let clear_board b = new_board *)
-
-(* let new_board = {s0} *)
+(*****************************************************************************)
+(*Helper Functions for Processing the json file*)
+(*****************************************************************************)
 let start_of_j j : square =
   Start
     {
@@ -177,23 +162,13 @@ let tax_of_j j : square =
       cost = j |> member "cost" |> to_int;
     }
 
-let get_name s =
-  match s with
-  | Property p -> p.name
-  | Railroad r -> r.name
-  | Utility u -> u.name
-  | Rent r -> r.name
-  | Jail j -> j.name
-  | Go_To_Jail g -> g.name
-  | Chance c -> c.name
-  | Community_Chest c -> c.name
-  | Free_Parking f -> f.name
-  | Tax t -> t.name
-  | Start s -> s.name
+(******************************************************************************)
+(*End Helper Functions for Processing the json file*)
+(******************************************************************************)
 
 let j = Yojson.Basic.from_file "data/squares.json"
 
-let new_board =
+let sqr_list : square list =
   List.flatten
     ((j |> to_assoc |> List.assoc "start" |> to_list |> List.map start_of_j)
     :: (j |> to_assoc |> List.assoc "property" |> to_list
@@ -216,23 +191,49 @@ let new_board =
          |> List.map go_to_jail_of_j;
        ])
 
+let new_board =
+  match sqr_list with
+  | [] -> raise (Failure "Unimplemented Board")
+  | h :: _ -> { board = sqr_list; initial = h; current_int = 0 }
+
 let clear_board j = new_board
-(* let from_json j = { start = j |> to_assoc |> List.assoc "start" |> List.map
-   start_of_j (* rooms = json |> to_assoc |> List.assoc "rooms" |> to_list |>
-   List.map room_of_json; starting_room = json |> to_assoc |> List.assoc "start
-   room" |> to_string; *); } *)
-
-(* to match index j -> to_assoc -> pattern match for start, property, etc. ->
-   get second element of tuple -> to_list -> for each element -> to_assoc -> rec
-   match for index*)
-(* let rec get_name i = match lst with | [] -> failwith "NoSuchIndex" | h :: t
-   -> if List.assoc "index" h = i then List.assoc "name" h else
-   get_name_from_index i t *)
-
-(* let rec get_square_type_from_index i *)
-(* let rec get_name s json = match json |> to_assoc with | [] -> failwith
-   "get_name error" | h :: t -> ( match h with | property_group, lst -> ( match
-   to_list lst with | [] -> get_name | h :: t -> if List.assoc h "index" = )) *)
-(* *)
 
 exception UnknownBoard of string
+
+(******************************************************************************)
+(*Functions that process a Position.square*)
+(******************************************************************************)
+let get_name (s : square) : string =
+  match s with
+  | Property p -> p.name
+  | Railroad r -> r.name
+  | Utility u -> u.name
+  | Rent r -> r.name
+  | Jail j -> j.name
+  | Go_To_Jail g -> g.name
+  | Chance c -> c.name
+  | Community_Chest c -> c.name
+  | Free_Parking f -> f.name
+  | Tax t -> t.name
+  | Start s -> s.name
+
+let get_index (s : square) : int =
+  match s with
+  | Property p -> p.index
+  | Railroad r -> r.index
+  | Utility u -> u.index
+  | Rent r -> r.index
+  | Jail j -> j.index
+  | Go_To_Jail g -> g.index
+  | Chance c -> c.index
+  | Community_Chest c -> c.index
+  | Free_Parking f -> f.index
+  | Tax t -> t.index
+  | Start s -> s.index
+
+let square_index (b : t) (i : int) : square = List.nth b.board i
+(******************************************************************************)
+(*End functions that process a Position.square*)
+(******************************************************************************)
+
+let get_initial (b : t) : square = b.initial
