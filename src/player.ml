@@ -25,18 +25,19 @@ let get_name (player : t) : string = player.name
 let account (p : t) : int = p.account
 
 let move (x : int) (b : Position.t) (p : t) : t =
-  if Position.get_index p.current + x >= 40 then
-    {
+  let new_position = Position.get_index p.current + x in
+  if new_position >= 0 then
+    {(* move fowards *)
       name = p.name;
       account = p.account;
-      current = Position.square_index b (Position.get_index p.current + x - 40);
+      current = Position.square_index b ((new_position) mod 40);
       properties = p.properties;
     }
   else
-    {
+    {(* move backwards *)
       name = p.name;
       account = p.account;
-      current = Position.square_index b (Position.get_index p.current + x);
+      current = Position.square_index b (40 + new_position);
       properties = p.properties;
     }
 
