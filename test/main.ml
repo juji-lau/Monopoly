@@ -23,63 +23,27 @@ let pp_list pp_elt lst =
   "[" ^ pp_elts lst ^ "]"
 
 (* =============== Player tests: ================ *)
-(* tests init, position_int, and move_to at once *)
-
-(*let player_move_test (name : string) (position : Position.t) (roll : int)
-    (expected_output : int) : test =
-  name >:: fun _ ->
-  assert_equal expected_output
-    (Position.position_int (Player.move_to board roll))
-    ~printer:string_of_int*)
-
-(* make a few positions to test with:*)
-let board0 = Position.get_initial
-(*let board1 = Board.move_to Board.init 1
-let board12 = Board.move_to Board.init 12
-let board21 = Board.move_to Board.init 21
-let board35 = Board.move_to Board.init 35
-let board37 = Board.move_to Board.init 37*)
-
-(*let board_tests =
-  [
-    (* don't move*)
-    board_move_to_test "roll 0" Board.init 0 0;
-    board_move_to_test "roll 0 from 0" board0 0 0;
-    board_move_to_test "roll 0\n   from 35" board35 0 35;
-    (*move fowards randomly*)
-    board_move_to_test "roll 3" Board.init 3 3;
-    board_move_to_test "roll 37" Board.init 37 37;
-    board_move_to_test "roll 16 from 0" board0 16 16;
-    board_move_to_test "roll 15\n   from 21" board21 15 36;
-    (*move fowards pass one round*)
-    board_move_to_test "roll 50" Board.init 50 10;
-    board_move_to_test "roll 81" Board.init 81 1;
-    board_move_to_test "roll 4 from 37" board37 4 1;
-    board_move_to_test "roll 33\n   from 21" board21 33 54;
-    (*move fowards land on start*)
-    board_move_to_test "roll 40" Board.init 40 0;
-    board_move_to_test "roll 19 from 21" board21 19 0;
-    (*move backwards randomly*)
-    board_move_to_test "roll -3" Board.init (-3) 37;
-    board_move_to_test "roll -16 from 0" board0 (-16) 24;
-    board_move_to_test "roll -15 from 21" board21 (-15) 6;
-    board_move_to_test "roll -6 from 37" board37 (-6) 31;
-    (*move backwards pass one round*)
-    board_move_to_test "roll\n   -50" Board.init (-50) 30;
-    board_move_to_test "roll -81" Board.init (-81) 39;
-    board_move_to_test "roll -14 from 12" board12 (-14) 38;
-    board_move_to_test "roll -33 from 21" board21 (-33) 28;
-    (*move backwards land on 0*)
-    board_move_to_test "roll -40" Board.init (-40) 0;
-    board_move_to_test "roll\n   -80 from 0" board0 (-80) 0;
-    board_move_to_test "roll -12 from 12" board12 (-12) 12;
-  ]*)
-
-(* =============== Player tests: ================ *)
-(* make a few positions *)
+(* make a board *)
 let board = Position.new_board
 
-let print_position position = "square name: " ^ get_name position ^ " at position: " ^ string_of_int (get_index position)
+let print_position position =
+  "square name: " ^ get_name position ^ " at position: "
+  ^ string_of_int (get_index position)
+
+(* helper function to get the square from the name *)
+let get_square_name pos = Position.square_name board pos
+
+(* grab a few squares: *)
+let baltic = get_square_name "Baltic Avenue"
+let oriental = get_square_name "Oriental Avenue"
+let james = get_square_name "St. James Place"
+let tennessee = get_square_name "Tennessee Avenue"
+let ventnor = get_square_name "Ventnor Avenue"
+let kentucky = get_square_name "Kentucky Avenue"
+let indiana = get_square_name "Indiana Avenue"
+let illinois = get_square_name "Illinois Avenue"
+let marvin = get_square_name "Marvin Gardens"
+let boardwalk = get_square_name "Boardwalk"
 
 (* make a few players at various locations, with various properties: *)
 let alexandra0 = new_player "Alexandra"
@@ -89,58 +53,63 @@ let sophie37 = move 37 Position.new_board (new_player "Sophie")
 
 (* Tests that [new_player] is initialized to the correct values using
    [current_location], [get_owned_properties], and [get_board]*)
-let new_player_test (name : string) (player_name: string) (player : Player.t) : test =
+let new_player_test (name : string) (player_name : string) (player : Player.t) :
+    test =
   name >:: fun _ ->
   assert_equal player_name (Player.get_name player);
-  assert_equal (Position.get_initial Position.new_board) (current_location player);
+  assert_equal
+    (Position.get_initial Position.new_board)
+    (current_location player);
   assert_equal [] (get_owned_properties player)
-  
-  
 
 (* Tests [move] after the player has moved [x] spots, using [current_location]*)
-let move_test (name : string) (person : Player.t) (x:int) 
-    (expected_output:int) : test =
+let move_test (name : string) (person : Player.t) (x : int)
+    (expected_output : int) : test =
   name >:: fun _ ->
-  assert_equal expected_output ((move x board person) |> current_location |> get_index) ~printer:string_of_int
+  assert_equal expected_output
+    (move x board person |> current_location |> get_index)
+    ~printer:string_of_int
 
-let move_test_debug (name : string) (person : Player.t) (x:int) 
-    (expected_output:Position.square) : test =
+(*let move_test_debug (name : string) (person : Player.t) (x : int)
+    (expected_output : Position.square) : test =
   name >:: fun _ ->
-  assert_equal expected_output ((move x board person) |> current_location) ~printer:print_position
-(*
+  assert_equal expected_output
+    (move x board person |> current_location)
+    ~printer:print_position*)
+
 (* Give the players properties *)
-let brookeboard = buy_property "Boardwalk" brooke21
+let brookeboard = buy_property boardwalk brooke21
 
 let jujired =
-  buy_property "Kentucky Avenue" juji35
-  |> buy_property "Indiana\n   Avenue"
-  |> buy_property "Illinois Avenue"
+  buy_property kentucky juji35 |> buy_property indiana |> buy_property illinois
 
 let sophierich =
-  buy_property "Baltic Avenue" sophie37
-  |> buy_property "Oriental Avenue"
-  |> buy_property "St. James Place"
-  |> buy_property "Marvin\n   Gardens"
+  buy_property baltic sophie37
+  |> buy_property oriental
+  |> buy_property james
+  |> buy_property marvin
 
 (* Tests [get_owned_properites] *)
 let get_owned_properties_test (name : string) (person : Player.t)
-    (expected_output : string list) : test =
+    (expected_output : Position.square list) : test =
   name >:: fun _ ->
   assert_equal expected_output
     (get_owned_properties person)
-    ~printer:(pp_list pp_string)
+    ~printer:(pp_list print_position)
 
 (* Tests [buy_property] using [get_owned_properties] *)
-let buy_property_test (name : string) (person : Player.t) (property : string)
-    (expected_output : string list) : test =
+let buy_property_test (name : string) (person : Player.t)
+    (property : Position.square) (expected_output : Position.square list) : test
+    =
   name >:: fun _ ->
   assert_equal expected_output
     (buy_property property person |> get_owned_properties)
-    ~printer:(pp_list pp_string)
+    ~printer:(pp_list print_position)
+
 (* and bank at the same time *)
 
 (* Tests [tile_owned] *)
-let tile_owned_test (name : string) (player : Player.t) (tile : string)
+let tile_owned_test (name : string) (player : Player.t) (tile : Position.square)
     (expected_output : bool) : test =
   name >:: fun _ ->
   assert_equal expected_output (tile_owned player tile) ~printer:string_of_bool
@@ -148,7 +117,7 @@ let tile_owned_test (name : string) (player : Player.t) (tile : string)
 (* test abstract: new_player, move, buy_property. Concrete = get_board?
    get_owned_properties, current_location, tile_owned, *)
 
-(* test abstract: . Concrete = get_board?, tile_owned *)*)
+(* test abstract: . Concrete = get_board?, tile_owned *)
 
 let move_tests =
   [
@@ -160,15 +129,6 @@ let move_tests =
     move_test "move 3" alexandra0 3 3;
     move_test "move 37" alexandra0 37 37;
     move_test "move 15 from 21" brooke21 15 36;
-    (*move_test_debug "debug: move 0 from start" alexandra0 0 (Position.square_index board 0);
-    move_test_debug "debug: move 0 from 35" juji35 0 (Position.square_index board 35);
-    (*move fowards randomly*)
-    move_test_debug "debug: move 3" alexandra0 3 (Position.square_index board 3);
-    move_test_debug "debug: move 37" alexandra0 37 (Position.square_index board 37);
-    move_test_debug "debug: move 15 from 21" brooke21 15 (Position.square_index board 36)]*)
-    (*move fowards, pass one round*)
-    (*move_test "move 50 from start" alexandra0 50 10;
-    move_test "move 81 from start" alexandra0 81 1;*)
     move_test "move 4 from 37" sophie37 4 1;
     move_test "move 33 from 21" brooke21 33 14;
     (*move fowards, end on start*)
@@ -189,93 +149,52 @@ let move_tests =
     move_test "move back 37 from 37" sophie37 (-37) 0;
   ]
 
-(*let property_tests =
+let property_tests =
   [
     get_owned_properties_test "No properties" alexandra0 [];
-    get_owned_properties_test "One property" brookeboard [ "Boardwalk" ];
+    get_owned_properties_test "One property" brookeboard [ boardwalk ];
     get_owned_properties_test "A (red) set of properties" jujired
-      [ "Illinois\n   Avenue"; "Indiana Avenue"; "Kentucky Avenue" ];
-    get_owned_properties_test "A\n   lot of random properties" sophierich
-      [
-        "Marvin Gardens"; "St. James Place"; "Oriental Avenue"; "Baltic Avenue";
-      ];
-    buy_property_test "Buy property when\n   having none" alexandra0
-      "Ventor Avenue" [ "Ventor Avenue" ];
+      [ illinois; indiana; kentucky ];
+    get_owned_properties_test "Alot of random properties" sophierich
+      [ marvin; james; oriental; baltic ];
+    buy_property_test "Buy property when having none" alexandra0 ventnor
+      [ ventnor ];
     buy_property_test "Buy property when having one different property"
-      brookeboard "Ventor Avenue"
-      [ "Ventor Avenue"; "Boardwalk" ];
+      brookeboard ventnor [ ventnor; boardwalk ];
     buy_property_test "Buy property when already having the same property"
-      brookeboard "Boardwalk" [ "Boardwalk" ];
-    buy_property_test "Buy property when\n   having many different properties"
-      sophierich "Ventor Avenue"
-      [
-        "Ventor\n   Avenue";
-        "Marvin Gardens";
-        "St. James Place";
-        "Oriental Avenue";
-        "Baltic\n   Avenue";
-      ];
-    buy_property_test "Buy property when already owning it" sophierich
-      "Marvin Gardens"
-      [
-        "Marvin Gardens";
-        "St. James Place";
-        "Oriental\n   Avenue";
-        "Baltic Avenue";
-      ];
-    buy_property_test "Buy property when already\n   owning it" sophierich
-      "Baltic Avenue"
-      [
-        "Marvin Gardens"; "St. James Place"; "Oriental Avenue"; "Baltic Avenue";
-      ];
-    (* The following should return an error or a nop, please clarify the
-       spec... *)
-    buy_property_test
-      "Buy property\n\
-      \   that someone else already own (IM ASSUMING THIS IS ILLEGAL)" jujired
-      "Boardwalk"
-      [ "Illinois Avenue"; "Indiana Avenue"; "Kentucky Avenue" ];
-    buy_property_test "Buy invalid property: non existent" jujired ""
-      [ "Illinois\n   Avenue"; "Indiana Avenue"; "Kentucky Avenue" ];
-    buy_property_test "Buy\n   invalid property: misspelled" jujired
-      "Not a property"
-      [ "Illinois Avenue"; "Indiana Avenue"; "Kentucky Avenue" ];
-    buy_property_test "Buy invalid\n   property: Caps" jujired "ventor avenue"
-      [ "Illinois Avenue"; "Indiana\n   Avenue"; "Kentucky Avenue" ];
-    buy_property_test "Buy invalid property: white\n   spaces" jujired
-      " Ventor Avenue "
-      [ "Illinois Avenue"; "Indiana Avenue"; "Kentucky Avenue" ];
+      brookeboard boardwalk [ boardwalk ];
+    buy_property_test "Buy property when having many different properties"
+      sophierich ventnor
+      [ ventnor; marvin; james; oriental; baltic ];
+    buy_property_test "Buy property when already owning it" sophierich marvin
+      [ marvin; james; oriental; baltic ];
+    buy_property_test "Buy property when already owning it" sophierich baltic
+      [ marvin; james; oriental; baltic ];
     (* The following should test true*)
-    tile_owned_test "True: One correct property owned" brookeboard "Boardwalk"
+    tile_owned_test "True: One correct\n   property owned" brookeboard boardwalk
       true;
     tile_owned_test "True: Property owned among many" sophierich
-      "Marvin Gardens" true;
+      marvin true;
     tile_owned_test "True: Property owned among many" sophierich
-      "Baltic\n   Avenue" true;
+      baltic true;
     (* The following should test false*)
-    tile_owned_test "False: No\n   properties owned" alexandra0 "Ventor Avenue"
+    tile_owned_test "False: No properties owned" alexandra0 ventnor
       false;
-    tile_owned_test "False:\n   Property not owned while owning one property"
-      brookeboard "Ventor Avenue" false;
+    tile_owned_test "False: Property not owned while owning one property"
+      brookeboard ventnor false;
     tile_owned_test "False: Property owned by someone else" sophierich
-      "Boardwalk" false;
+      boardwalk false;
     tile_owned_test
-      "False: Property owned by no one (among\n   many properties owned)"
-      sophierich "Ventor Avenue" false;
+      "False: Property owned by no one (among many properties owned)"
+      sophierich ventnor false;
     tile_owned_test
       "False: Player has different property in the same set (orange)" sophierich
-      "Tennessee Avenue" false;
-    (* The following should give an error or false*)
-    tile_owned_test "Invalid property: non existent" jujired "" false;
-    tile_owned_test "Invalid property: misspelled" jujired "Not a property"
-      false;
-    tile_owned_test "Invalid property: Caps" jujired "illinois avenue" false;
-    tile_owned_test "Invalid property: white spaces" jujired
-      " Kentucky\n   Avenue " false;
-  ]*)
+      tennessee false;
+  ]
 
-(*let player_tests = move_tests @ property_tests*)
+let player_tests = move_tests @ property_tests
 
 let suite =
-  "test suite for Monopoly" >::: List.flatten [ move_tests(*player_tests; board_tests*) ]
+  "test suite for Monopoly" >::: List.flatten [ player_tests (* board_tests*) ]
+
 let _ = run_test_tt_main suite
