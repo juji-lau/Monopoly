@@ -1,6 +1,7 @@
 type command =
   | Roll
   | Purchase
+  | EndTurn
   | Quit
 
 exception Empty
@@ -23,4 +24,5 @@ let parse str =
         if h = "quit" then Quit
         else if h = "roll" then Roll
         else if h = "purchase" then Purchase
+        else if h = "end" then EndTurn
         else raise Malformed

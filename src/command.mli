@@ -11,6 +11,7 @@
 type command =
   | Roll
   | Purchase
+  | EndTurn
   | Quit
 
 exception Empty

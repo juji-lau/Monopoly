@@ -83,5 +83,8 @@ exception UnknownBoard of string
 val square_index : t -> int -> square
 (**[square_index b i] is the square on the board [b] at position [i]*)
 
+val square_name : t -> string -> square
+(** [square_name b s] gives the square with name s *)
+
 val new_board : t
 (** The representation of a new Monopoly board with unplayed squares*)
