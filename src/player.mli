@@ -38,6 +38,10 @@ val buy_property : Position.square -> t -> t
 (** [buy_property pr pl] adds the property square representation [pr] to the
     purchased properties of player [pl]*)
 
+val rails_owned : Position.t -> t -> int
+(*[rails_owned b pl] is the number of railroad squares owned by player [pl] in
+  board [b] *)
+
 exception Broke
 
 val deposit : int -> t -> t

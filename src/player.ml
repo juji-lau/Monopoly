@@ -27,14 +27,16 @@ let account (p : t) : int = p.account
 let move (x : int) (b : Position.t) (p : t) : t =
   let new_position = Position.get_index p.current + x in
   if new_position >= 0 then
-    {(* move fowards *)
+    {
+      (* move fowards *)
       name = p.name;
       account = p.account;
-      current = Position.square_index b ((new_position) mod 40);
+      current = Position.square_index b (new_position mod 40);
       properties = p.properties;
     }
   else
-    {(* move backwards *)
+    {
+      (* move backwards *)
       name = p.name;
       account = p.account;
       current = Position.square_index b (40 + new_position);
@@ -54,6 +56,18 @@ let buy_property (pr : Position.square) (pl : t) : t =
     current = pl.current;
     properties = n_prop;
   }
+
+let rails_owned (b : Position.t) (pl : t) : int =
+  let p_lst = pl.properties in
+  let rec helper (lst : square list) : int =
+    match lst with
+    | [] -> 0
+    | h :: r -> (
+        match h with
+        | Railroad data -> 1 + helper r
+        | _ -> helper r)
+  in
+  helper p_lst
 
 let deposit (i : int) (pl : t) : t =
   {

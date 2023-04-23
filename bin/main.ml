@@ -53,10 +53,39 @@ let rec turn_actions (flow : flow) (player1 : Player.t) (player2 : Player.t)
                   player1
               | Command.Quit -> raise EndGame))
     | Position.Railroad data ->
-        raise
-          (Failure
-             "Unimplemented actions when a player lands on Railroads, line 46 \
-              in bin.main/ml")
+        let owned =
+          Player.tile_owned player1 location
+          || Player.tile_owned player2 location
+        in
+        if Player.tile_owned player2 location then (
+          (*player 1 pays 2 * the number of rails owned*)
+          print_endline (Player.get_name player2 ^ "owns this property.");
+          (withdraw (2 * Player.rails_owned board player2)) player1)
+        else if Player.tile_owned player1 location then (
+          print_endline (Player.get_name player1 ^ "owns this property.");
+          player1)
+        else (
+          print_endline "This property is not owned and can be purchased.";
+          match read_line () with
+          | str -> (
+              let command = Command.parse str in
+              match command with
+              | Command.Purchase ->
+                  if owned = false then (
+                    print_endline "You have purchased the current property.";
+                    Player.buy_property location player1)
+                  else (
+                    print_endline
+                      "This property is already owned and cannot be purchased.";
+                    player1)
+              | Command.Roll ->
+                  print_endline
+                    "You have already rolled this turn and cannot roll again";
+                  turn_actions flow player1 player2 board
+              | Command.EndTurn ->
+                  print_endline "The property was not purchased";
+                  player1
+              | Command.Quit -> raise EndGame))
     | Position.Utility data ->
         raise
           (Failure
