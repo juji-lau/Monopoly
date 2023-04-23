@@ -50,9 +50,21 @@ let rec turn_actions (flow : flow) (player1 : Player.t) (player2 : Player.t)
           (Failure
              "Unimplemented actions when a player lands on Railroads, line 46 \
               in bin.main/ml")
-    | Position.Utility data -> player1
-    | Position.Rent data -> player1
-    | Position.Jail data -> player1
+    | Position.Utility data ->
+        raise
+          (Failure
+             "Unimplemented actions when a player lands on a Utility, line ~55 \
+              in bin.main/ml")
+    | Position.Rent data ->
+        raise
+          (Failure
+             "Unimplemented actions when a player lands on a Rent, line ~58 in \
+              bin.main/ml")
+    | Position.Jail data ->
+        raise
+          (Failure
+             "Unimplemented actions when a player lands on a Jail, line ~63 in \
+              bin.main/ml")
     | Position.Go_To_Jail data -> player1
     | Position.Chance data -> player1
     | Position.Community_Chest data -> player1

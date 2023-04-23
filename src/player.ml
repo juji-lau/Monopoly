@@ -29,7 +29,7 @@ let move (x : int) (b : Position.t) (p : t) : t =
     {
       name = p.name;
       account = p.account;
-      current = Position.square_index b (Position.get_index p.current + x - 36);
+      current = Position.square_index b (Position.get_index p.current + x - 40);
       properties = p.properties;
     }
   else
