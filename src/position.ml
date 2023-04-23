@@ -241,6 +241,15 @@ let rec square_index (b : t) (i : int) : square =
     | h :: r -> if get_index h = i then h else helper r i
   in
   helper lst i
+
+let rec square_name (b : t) (s : string) : square =
+  let lst = b.board in
+  let rec helper (lst2 : square list) (s : string) : square =
+    match lst2 with
+    | [] -> raise NoSquareOfIndex
+    | h :: r -> if get_name h = s then h else helper r s
+  in
+  helper lst s
 (******************************************************************************)
 (*End functions that process a Position.square*)
 (******************************************************************************)

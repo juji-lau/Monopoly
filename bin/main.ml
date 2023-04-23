@@ -21,30 +21,37 @@ let rec turn_actions (flow : flow) (player1 : Player.t) (player2 : Player.t)
     | Position.Start data ->
         print_endline "";
         Player.deposit 200 player1
-    | Position.Property data -> (
+    | Position.Property data ->
         let owned =
           Player.tile_owned player1 location
           || Player.tile_owned player2 location
         in
-        if owned then print_endline "This property is already owned."
-        else print_endline "This property is not owned and can be purchased.";
-        match read_line () with
-        | str -> (
-            let command = Command.parse str in
-            match command with
-            | Command.Purchase ->
-                if owned = false then (
-                  print_endline "You have purchased the current property.";
-                  Player.buy_property location player1)
-                else (
+        if owned then (
+          print_endline "This property is already owned";
+          if Player.tile_owned player2 location then withdraw data.rent player1
+          else player1)
+        else (
+          print_endline "This property is not owned and can be purchased.";
+          match read_line () with
+          | str -> (
+              let command = Command.parse str in
+              match command with
+              | Command.Purchase ->
+                  if owned = false then (
+                    print_endline "You have purchased the current property.";
+                    Player.buy_property location player1)
+                  else (
+                    print_endline
+                      "This property is already owned and cannot be purchased.";
+                    player1)
+              | Command.Roll ->
                   print_endline
-                    "This property is already owned and cannot be purchased.";
-                  player1)
-            | Command.Roll ->
-                print_endline
-                  "You have already rolled this turn and cannot roll again";
-                turn_actions flow player1 player2 board
-            | Command.Quit -> raise EndGame))
+                    "You have already rolled this turn and cannot roll again";
+                  turn_actions flow player1 player2 board
+              | Command.EndTurn ->
+                  print_endline "The property was not purchased";
+                  player1
+              | Command.Quit -> raise EndGame))
     | Position.Railroad data ->
         raise
           (Failure
@@ -98,7 +105,10 @@ let rec player (flow : flow) (player1 : Player.t) (player2 : Player.t)
               player Play player2 fplay board
           | Command.Purchase ->
               print_endline " You cannot make a property purchase at this time";
-              player Play player1 player2 board)
+              player Play player1 player2 board
+          | Command.EndTurn ->
+              print_endline "Forfeitting turn to next player";
+              player Play player2 player1 board)
     else print_endline "The game has ended. Thanks for playing!"
   with
   | Command.Empty ->
@@ -113,6 +123,14 @@ let rec player (flow : flow) (player1 : Player.t) (player2 : Player.t)
 let main () =
   (* Gui.setup () |> Gui.loop; *)
   ANSITerminal.print_string [ ANSITerminal.red ] "\n\nWelcome to MONOPOLY! \n";
+  print_endline
+    "General Rules : \n\n\
+    \  At the beginning of your turn you can roll the dice and move using \
+     \"roll\" \n\
+    \  or quit the game using \"quit\" \n\n\
+    \  Once you land on a purchasable property, you can purchase it using \
+     \"purchase\" \n\
+    \  or end your turn using \"end\" \n";
   print_endline "Player1, please enter your name: \n";
   print_string "> ";
   let name1 =
