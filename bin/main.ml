@@ -6,14 +6,19 @@ open Player
 
 exception EndGame
 
+let board : Position.t = Position.new_board
+
 type flow =
   | Play
   | End
 
-(** [turn_actions flow player1 player2 board] takes into account turn actions
-    such as purchasing properties or paying taxes*)
+(** [turn_actions flow player1 player2 proll] takes into account turn actions
+    such as purchasing properties or paying taxes, [flow] determines whether or
+    not the game has ended, [player1] is the player taking their turn, [player2]
+    is the opposing player, and [proll] is the number rolled on the previous
+    dice.*)
 let rec turn_actions (flow : flow) (player1 : Player.t) (player2 : Player.t)
-    (board : Position.t) : Player.t =
+    (proll : int) : Player.t =
   if flow = End then player1
   else
     let location = Player.current_location player1 in
@@ -47,7 +52,7 @@ let rec turn_actions (flow : flow) (player1 : Player.t) (player2 : Player.t)
               | Command.Roll ->
                   print_endline
                     "You have already rolled this turn and cannot roll again";
-                  turn_actions flow player1 player2 board
+                  turn_actions flow player1 player2 proll
               | Command.EndTurn ->
                   print_endline "The property was not purchased";
                   player1
@@ -81,16 +86,46 @@ let rec turn_actions (flow : flow) (player1 : Player.t) (player2 : Player.t)
               | Command.Roll ->
                   print_endline
                     "You have already rolled this turn and cannot roll again";
-                  turn_actions flow player1 player2 board
+                  turn_actions flow player1 player2 proll
               | Command.EndTurn ->
                   print_endline "The property was not purchased";
                   player1
               | Command.Quit -> raise EndGame))
     | Position.Utility data ->
-        raise
-          (Failure
-             "Unimplemented actions when a player lands on a Utility, line ~55 \
-              in bin.main/ml")
+        let owned =
+          Player.tile_owned player2 location
+          || Player.tile_owned player1 location
+        in
+        if Player.tile_owned player2 location then (
+          (*player 1 pays 2 * the number of rails owned* the number of utilities
+            owned by the opposing player*)
+          print_endline (Player.get_name player2 ^ "owns this property.");
+          Player.withdraw (4 * proll * Player.util_owned board player2) player1)
+        else if Player.tile_owned player1 location then (
+          print_endline (Player.get_name player1 ^ "owns this property.");
+          player1)
+        else (
+          print_endline "This property is not owned and can be purchased.";
+          match read_line () with
+          | str -> (
+              let command = Command.parse str in
+              match command with
+              | Command.Purchase ->
+                  if owned = false then (
+                    print_endline "You have purchased the current property.";
+                    Player.buy_property location player1)
+                  else (
+                    print_endline
+                      "This property is already owned and cannot be purchased.";
+                    player1)
+              | Command.Roll ->
+                  print_endline
+                    "You have already rolled this turn and cannot roll again";
+                  turn_actions flow player1 player2 proll
+              | Command.EndTurn ->
+                  print_endline "The property was not purchased";
+                  player1
+              | Command.Quit -> raise EndGame))
     | Position.Rent data ->
         raise
           (Failure
@@ -109,8 +144,7 @@ let rec turn_actions (flow : flow) (player1 : Player.t) (player2 : Player.t)
 
 (** [player state adv flow] parses the commands of the user into an action of
     the player. *)
-let rec player (flow : flow) (player1 : Player.t) (player2 : Player.t)
-    (board : Position.t) : unit =
+let rec player (flow : flow) (player1 : Player.t) (player2 : Player.t) : unit =
   try
     print_endline
       ("It is your turn, " ^ Player.get_name player1
@@ -122,7 +156,7 @@ let rec player (flow : flow) (player1 : Player.t) (player2 : Player.t)
           match command with
           | Command.Quit ->
               print_endline "The game has ended. Thanks for playing!";
-              player End player1 player2 board
+              player End player1 player2
           | Command.Roll ->
               let x = Random.int 10 + 2 in
               (* [nplay] is Player1 with new position *)
@@ -130,22 +164,22 @@ let rec player (flow : flow) (player1 : Player.t) (player2 : Player.t)
               print_endline
                 ("You rolled a " ^ string_of_int x ^ " and have landed on "
                 ^ Position.get_name (Player.current_location nplay));
-              let fplay = turn_actions flow nplay player2 board in
-              player Play player2 fplay board
+              let fplay = turn_actions flow nplay player2 x in
+              player Play player2 fplay
           | Command.Purchase ->
               print_endline " You cannot make a property purchase at this time";
-              player Play player1 player2 board
+              player Play player1 player2
           | Command.EndTurn ->
               print_endline "Forfeitting turn to next player";
-              player Play player2 player1 board)
+              player Play player2 player1)
     else print_endline "The game has ended. Thanks for playing!"
   with
   | Command.Empty ->
       print_endline "Please enter a nonempty command.";
-      player Play player1 player2 board
+      player Play player1 player2
   | Command.Malformed ->
       print_endline "Please enter a valid command.";
-      player Play player1 player2 board
+      player Play player1 player2
   | EndGame -> print_endline "The game has ended. Thank you for playing!"
 
 (** [main ()] prompts for the game to play, then starts it. *)
@@ -173,7 +207,6 @@ let main () =
     | x -> x
   in
   player Play (Player.new_player name1) (Player.new_player name2)
-    Position.new_board
 
 (* Execute the game engine. *)
 let () = main ()

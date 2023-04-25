@@ -69,6 +69,18 @@ let rails_owned (b : Position.t) (pl : t) : int =
   in
   helper p_lst
 
+let util_owned (b : Position.t) (pl : t) : int =
+  let p_lst = pl.properties in
+  let rec helper (lst : square list) : int =
+    match lst with
+    | [] -> 0
+    | h :: r -> (
+        match h with
+        | Railroad data -> 1 + helper r
+        | _ -> helper r)
+  in
+  helper p_lst
+
 let deposit (i : int) (pl : t) : t =
   {
     name = pl.name;
