@@ -12,20 +12,25 @@ type flow =
   | Play
   | End
 
+type pset = {
+  p1 : Player.t;
+  p2 : Player.t;
+}
+
 (** [turn_actions flow player1 player2 proll] takes into account turn actions
     such as purchasing properties or paying taxes, [flow] determines whether or
     not the game has ended, [player1] is the player taking their turn, [player2]
     is the opposing player, and [proll] is the number rolled on the previous
     dice.*)
 let rec turn_actions (flow : flow) (player1 : Player.t) (player2 : Player.t)
-    (proll : int) : Player.t =
-  if flow = End then player1
+    (proll : int) : pset =
+  if flow = End then { p1 = player1; p2 = player2 }
   else
     let location = Player.current_location player1 in
     match location with
     | Position.Start data ->
         print_endline "";
-        Player.deposit 200 player1
+        { p1 = Player.deposit 200 player1; p2 = player2 }
     | Position.Property data ->
         let owned =
           Player.tile_owned player1 location
@@ -33,8 +38,9 @@ let rec turn_actions (flow : flow) (player1 : Player.t) (player2 : Player.t)
         in
         if owned then (
           print_endline "This property is already owned";
-          if Player.tile_owned player2 location then withdraw data.rent player1
-          else player1)
+          if Player.tile_owned player2 location then
+            { p1 = withdraw data.rent player1; p2 = deposit data.rent player2 }
+          else { p1 = player1; p2 = player2 })
         else (
           print_endline "This property is not owned and can be purchased.";
           match read_line () with
@@ -44,18 +50,18 @@ let rec turn_actions (flow : flow) (player1 : Player.t) (player2 : Player.t)
               | Command.Purchase ->
                   if owned = false then (
                     print_endline "You have purchased the current property.";
-                    Player.buy_property location player1)
+                    { p1 = Player.buy_property location player1; p2 = player2 })
                   else (
                     print_endline
                       "This property is already owned and cannot be purchased.";
-                    player1)
+                    { p1 = player1; p2 = player2 })
               | Command.Roll ->
                   print_endline
                     "You have already rolled this turn and cannot roll again";
                   turn_actions flow player1 player2 proll
               | Command.EndTurn ->
                   print_endline "The property was not purchased";
-                  player1
+                  { p1 = player1; p2 = player2 }
               | Command.Quit -> raise EndGame))
     | Position.Railroad data ->
         let owned =
@@ -65,10 +71,11 @@ let rec turn_actions (flow : flow) (player1 : Player.t) (player2 : Player.t)
         if Player.tile_owned player2 location then (
           (*player 1 pays 2 * the number of rails owned*)
           print_endline (Player.get_name player2 ^ "owns this property.");
-          (withdraw (2 * Player.rails_owned board player2)) player1)
+          let exch = 2 * Player.rails_owned board player2 in
+          { p1 = withdraw exch player1; p2 = deposit exch player2 })
         else if Player.tile_owned player1 location then (
           print_endline (Player.get_name player1 ^ "owns this property.");
-          player1)
+          { p1 = player1; p2 = player2 })
         else (
           print_endline "This property is not owned and can be purchased.";
           match read_line () with
@@ -78,18 +85,18 @@ let rec turn_actions (flow : flow) (player1 : Player.t) (player2 : Player.t)
               | Command.Purchase ->
                   if owned = false then (
                     print_endline "You have purchased the current property.";
-                    Player.buy_property location player1)
+                    { p1 = Player.buy_property location player1; p2 = player2 })
                   else (
                     print_endline
                       "This property is already owned and cannot be purchased.";
-                    player1)
+                    { p1 = player1; p2 = player2 })
               | Command.Roll ->
                   print_endline
                     "You have already rolled this turn and cannot roll again";
                   turn_actions flow player1 player2 proll
               | Command.EndTurn ->
                   print_endline "The property was not purchased";
-                  player1
+                  { p1 = player1; p2 = player2 }
               | Command.Quit -> raise EndGame))
     | Position.Utility data ->
         let owned =
@@ -100,10 +107,14 @@ let rec turn_actions (flow : flow) (player1 : Player.t) (player2 : Player.t)
           (*player 1 pays 2 * the number of rails owned* the number of utilities
             owned by the opposing player*)
           print_endline (Player.get_name player2 ^ "owns this property.");
-          Player.withdraw (4 * proll * Player.util_owned board player2) player1)
+          let exch = 4 * proll * Player.util_owned board player2 in
+          {
+            p1 = Player.withdraw exch player1;
+            p2 = Player.deposit exch player2;
+          })
         else if Player.tile_owned player1 location then (
           print_endline (Player.get_name player1 ^ "owns this property.");
-          player1)
+          { p1 = player1; p2 = player2 })
         else (
           print_endline "This property is not owned and can be purchased.";
           match read_line () with
@@ -113,34 +124,40 @@ let rec turn_actions (flow : flow) (player1 : Player.t) (player2 : Player.t)
               | Command.Purchase ->
                   if owned = false then (
                     print_endline "You have purchased the current property.";
-                    Player.buy_property location player1)
+                    { p1 = Player.buy_property location player1; p2 = player2 })
                   else (
                     print_endline
                       "This property is already owned and cannot be purchased.";
-                    player1)
+                    { p1 = player1; p2 = player2 })
               | Command.Roll ->
                   print_endline
                     "You have already rolled this turn and cannot roll again";
                   turn_actions flow player1 player2 proll
               | Command.EndTurn ->
                   print_endline "The property was not purchased";
-                  player1
+                  { p1 = player1; p2 = player2 }
               | Command.Quit -> raise EndGame))
     | Position.Rent data ->
         raise
           (Failure
-             "Unimplemented actions when a player lands on a Rent, line ~58 in \
-              bin.main/ml")
+             "Unimplemented actions when a player lands on a Rent, line ~129 \
+              in bin.main/ml")
     | Position.Jail data ->
         raise
           (Failure
-             "Unimplemented actions when a player lands on a Jail, line ~63 in \
-              bin.main/ml")
-    | Position.Go_To_Jail data -> player1
-    | Position.Chance data -> player1
-    | Position.Community_Chest data -> player1
-    | Position.Free_Parking data -> player1
-    | Position.Tax data -> player1
+             "Unimplemented actions when a player lands on a Jail, line ~134 \
+              in bin.main/ml")
+    | Position.Go_To_Jail data ->
+        raise
+          (Failure "Unimplemented Go to Jail Square, line ~139 in bin/main.ml")
+    | Position.Chance data ->
+        raise (Failure "Unimplemented Chance Square, line ~139 in bin/main.ml")
+    | Position.Community_Chest data ->
+        raise
+          (Failure
+             "Unimplemented Community Chest Square, line ~139 in bin/main.ml")
+    | Position.Free_Parking data -> { p1 = player1; p2 = player2 }
+    | Position.Tax data -> { p1 = withdraw data.cost player1; p2 = player2 }
 
 (** [player state adv flow] parses the commands of the user into an action of
     the player. *)
@@ -165,7 +182,7 @@ let rec player (flow : flow) (player1 : Player.t) (player2 : Player.t) : unit =
                 ("You rolled a " ^ string_of_int x ^ " and have landed on "
                 ^ Position.get_name (Player.current_location nplay));
               let fplay = turn_actions flow nplay player2 x in
-              player Play player2 fplay
+              player Play fplay.p2 fplay.p1
           | Command.Purchase ->
               print_endline " You cannot make a property purchase at this time";
               player Play player1 player2
