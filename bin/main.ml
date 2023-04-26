@@ -145,7 +145,7 @@ let rec turn_actions (flow : flow) (player1 : Player.t) (player2 : Player.t)
     | Position.Jail data ->
         raise
           (Failure
-             "Unimplemented actions when a player lands on a Jail, line ~134 \
+             "Unimplemented actions when a player lands on a Jail, line ~129 \
               in bin.main/ml")
     | Position.Go_To_Jail data ->
         raise
