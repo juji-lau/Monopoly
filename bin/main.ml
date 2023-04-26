@@ -16,7 +16,16 @@ type pset = {
   p1 : Player.t;
   p2 : Player.t;
 }
-
+let rec card lst n m p =
+  if n >= 0 then
+    match lst with
+    | [] ->
+        print_endline m;
+        p
+    | (mes, pos) :: t -> card t (n - 1) mes pos
+  else (
+    print_endline m;
+    p)
 (** [turn_actions flow player1 player2 proll] takes into account turn actions
     such as purchasing properties or paying taxes, [flow] determines whether or
     not the game has ended, [player1] is the player taking their turn, [player2]
@@ -143,28 +152,18 @@ let rec turn_actions (flow : flow) (player1 : Player.t) (player2 : Player.t)
              "Unimplemented actions when a player lands on a Rent, line ~129 \
               in bin.main/ml")
     | Position.Jail data ->
-        raise
+      print_endline "";
+        (* raise
           (Failure
              "Unimplemented actions when a player lands on a Jail, line ~134 \
-              in bin.main/ml")
+              in bin.main/ml") *)
     | Position.Go_To_Jail data ->
         raise
           (Failure "Unimplemented Go to Jail Square, line ~139 in bin/main.ml")
     | Position.Chance data ->
         Random.self_init ();
-        let r = Random.int 5 in
-        let rec card lst n m p =
-          if n >= 0 then
-            match lst with
-            | [] ->
-                print_endline m;
-                p
-            | (mes, pos) :: t -> card t (n - 1) mes pos
-          else (
-            print_endline m;
-            p)
-        in
-        let npos = card Position.chance_list r "" 0 in
+        let r = Random.int 5 in 
+         let npos = card Position.chance_list r "" 0 in
         {
           p1 =
             Player.move
@@ -173,9 +172,25 @@ let rec turn_actions (flow : flow) (player1 : Player.t) (player2 : Player.t)
           p2 = player2;
         }
     | Position.Community_Chest data ->
-        raise
-          (Failure
-             "Unimplemented Community Chest Square, line ~139 in bin/main.ml")
+      Random.self_init ();
+      let r = Random.int 5 in 
+      let nval = card Position.community_list r "" 0 in
+      if nval >=0 then
+        let uplay1 = Player.deposit nval player1 in 
+        print_endline ( "Your new balance is " ^  (string_of_int (Player.account uplay1)));
+      {
+        p1 = 
+        uplay1;
+        p2 = player2
+      }
+      else 
+        let uplay2 = Player.deposit (-nval) player1 in 
+        print_endline( "Your new balance is " ^ (string_of_int (Player.account uplay2)));
+        {
+          p1 = 
+          uplay2;
+          p2 = player2
+        }; 
     | Position.Free_Parking data -> { p1 = player1; p2 = player2 }
     | Position.Tax data -> { p1 = withdraw data.cost player1; p2 = player2 }
 
