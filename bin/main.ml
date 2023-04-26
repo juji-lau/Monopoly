@@ -177,6 +177,7 @@ let rec turn_actions (flow : flow) (player1 : Player.t) (player2 : Player.t)
           (Failure
              "Unimplemented Community Chest Square, line ~139 in bin/main.ml")
     | Position.Free_Parking data -> { p1 = player1; p2 = player2 }
+    
     | Position.Tax data -> { p1 = withdraw data.cost player1; p2 = player2 }
 
 (** [player state adv flow] parses the commands of the user into an action of
