@@ -78,6 +78,14 @@ val get_index : square -> int
 val get_initial : t -> square
 (**[get_initial b] gives the initial square on board b*)
 
+val chance_list : (string * int) list
+(**[chance_list] is a list of possible dialogues displayed due to landing on
+   Chance*)
+
+val community_list : (string * int) list
+(**[community_list] is a list of possible dialogues displayed due to landing on
+   a Community Chest*)
+
 exception UnknownBoard of string
 
 val square_index : t -> int -> square
