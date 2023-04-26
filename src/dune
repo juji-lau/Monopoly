@@ -1,4 +1,4 @@
 (library
  (name monopoly)
  (public_name Monopoly)
- (libraries yojson ANSITerminal))
+ (libraries yojson ANSITerminal raylib))
