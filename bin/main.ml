@@ -33,167 +33,173 @@ let rec card lst n m p =
     dice.*)
 let rec turn_actions (flow : flow) (player1 : Player.t) (player2 : Player.t)
     (proll : int) : pset =
-  if flow = End then { p1 = player1; p2 = player2 }
-  else
-    let location = Player.current_location player1 in
-    match location with
-    | Position.Start data ->
-        print_endline "";
-        { p1 = Player.deposit 200 player1; p2 = player2 }
-    | Position.Property data ->
-        let owned =
-          Player.tile_owned player1 location
-          || Player.tile_owned player2 location
-        in
-        if owned then (
-          print_endline "This property is already owned";
-          if Player.tile_owned player2 location then
-            { p1 = withdraw data.rent player1; p2 = deposit data.rent player2 }
-          else { p1 = player1; p2 = player2 })
-        else (
-          print_endline "This property is not owned and can be purchased.";
-          match read_line () with
-          | str -> (
-              let command = Command.parse str in
-              match command with
-              | Command.Purchase ->
-                  if owned = false then (
-                    print_endline "You have purchased the current property.";
-                    { p1 = Player.buy_property location player1; p2 = player2 })
-                  else (
-                    print_endline
-                      "This property is already owned and cannot be purchased.";
-                    { p1 = player1; p2 = player2 })
-              | Command.Roll ->
-                  print_endline
-                    "You have already rolled this turn and cannot roll again";
-                  turn_actions flow player1 player2 proll
-              | Command.EndTurn ->
-                  print_endline "The property was not purchased";
-                  { p1 = player1; p2 = player2 }
-              | Command.Quit -> raise EndGame))
-    | Position.Railroad data ->
-        let owned =
-          Player.tile_owned player1 location
-          || Player.tile_owned player2 location
-        in
-        if Player.tile_owned player2 location then (
-          (*player 1 pays 2 * the number of rails owned*)
-          print_endline (Player.get_name player2 ^ "owns this property.");
-          let exch = 2 * Player.rails_owned board player2 in
-          { p1 = withdraw exch player1; p2 = deposit exch player2 })
-        else if Player.tile_owned player1 location then (
-          print_endline (Player.get_name player1 ^ "owns this property.");
-          { p1 = player1; p2 = player2 })
-        else (
-          print_endline "This property is not owned and can be purchased.";
-          match read_line () with
-          | str -> (
-              let command = Command.parse str in
-              match command with
-              | Command.Purchase ->
-                  if owned = false then (
-                    print_endline "You have purchased the current property.";
-                    { p1 = Player.buy_property location player1; p2 = player2 })
-                  else (
-                    print_endline
-                      "This property is already owned and cannot be purchased.";
-                    { p1 = player1; p2 = player2 })
-              | Command.Roll ->
-                  print_endline
-                    "You have already rolled this turn and cannot roll again";
-                  turn_actions flow player1 player2 proll
-              | Command.EndTurn ->
-                  print_endline "The property was not purchased";
-                  { p1 = player1; p2 = player2 }
-              | Command.Quit -> raise EndGame))
-    | Position.Utility data ->
-        let owned =
-          Player.tile_owned player2 location
-          || Player.tile_owned player1 location
-        in
-        if Player.tile_owned player2 location then (
-          (*player 1 pays 2 * the number of rails owned* the number of utilities
-            owned by the opposing player*)
-          print_endline (Player.get_name player2 ^ "owns this property.");
-          let exch = 4 * proll * Player.util_owned board player2 in
+    try(
+      if flow = End then { p1 = player1; p2 = player2 }
+      else
+        let location = Player.current_location player1 in
+        match location with
+        | Position.Start data ->
+            print_endline "";
+            { p1 = Player.deposit 200 player1; p2 = player2 }
+        | Position.Property data ->
+            let owned =
+              Player.tile_owned player1 location
+              || Player.tile_owned player2 location
+            in
+            if owned then (
+              print_endline "This property is already owned";
+              if Player.tile_owned player2 location then
+                { p1 = withdraw data.rent player1; p2 = deposit data.rent player2 }
+              else { p1 = player1; p2 = player2 })
+            else (
+              print_endline "This property is not owned and can be purchased.";
+              match read_line () with
+              | str -> (
+                  let command = Command.parse str in
+                  match command with
+                  | Command.Purchase ->
+                      if owned = false then (
+                        print_endline "You have purchased the current property.";
+                        { p1 = Player.buy_property location player1; p2 = player2 })
+                      else (
+                        print_endline
+                          "This property is already owned and cannot be purchased.";
+                        { p1 = player1; p2 = player2 })
+                  | Command.Roll ->
+                      print_endline
+                        "You have already rolled this turn and cannot roll again";
+                      turn_actions flow player1 player2 proll
+                  | Command.EndTurn ->
+                      print_endline "The property was not purchased";
+                      { p1 = player1; p2 = player2 }
+                  | Command.Quit -> raise EndGame))
+        | Position.Railroad data ->
+            let owned =
+              Player.tile_owned player1 location
+              || Player.tile_owned player2 location
+            in
+            if Player.tile_owned player2 location then (
+              (*player 1 pays 2 * the number of rails owned*)
+              print_endline (Player.get_name player2 ^ "owns this property.");
+              let exch = 2 * Player.rails_owned board player2 in
+              { p1 = withdraw exch player1; p2 = deposit exch player2 })
+            else if Player.tile_owned player1 location then (
+              print_endline (Player.get_name player1 ^ "owns this property.");
+              { p1 = player1; p2 = player2 })
+            else (
+              print_endline "This property is not owned and can be purchased.";
+              match read_line () with
+              | str -> (
+                  let command = Command.parse str in
+                  match command with
+                  | Command.Purchase ->
+                      if owned = false then (
+                        print_endline "You have purchased the current property.";
+                        { p1 = Player.buy_property location player1; p2 = player2 })
+                      else (
+                        print_endline
+                          "This property is already owned and cannot be purchased.";
+                        { p1 = player1; p2 = player2 })
+                  | Command.Roll ->
+                      print_endline
+                        "You have already rolled this turn and cannot roll again";
+                      turn_actions flow player1 player2 proll
+                  | Command.EndTurn ->
+                      print_endline "The property was not purchased";
+                      { p1 = player1; p2 = player2 }
+                  | Command.Quit -> raise EndGame))
+        | Position.Utility data ->
+            let owned =
+              Player.tile_owned player2 location
+              || Player.tile_owned player1 location
+            in
+            if Player.tile_owned player2 location then (
+              (*player 1 pays 2 * the number of rails owned* the number of utilities
+                owned by the opposing player*)
+              print_endline (Player.get_name player2 ^ "owns this property.");
+              let exch = 4 * proll * Player.util_owned board player2 in
+              {
+                p1 = Player.withdraw exch player1;
+                p2 = Player.deposit exch player2;
+              })
+            else if Player.tile_owned player1 location then (
+              print_endline (Player.get_name player1 ^ "owns this property.");
+              { p1 = player1; p2 = player2 })
+            else (
+              print_endline "This property is not owned and can be purchased.";
+              match read_line () with
+              | str -> (
+                  let command = Command.parse str in
+                  match command with
+                  | Command.Purchase ->
+                      if owned = false then (
+                        print_endline "You have purchased the current property.";
+                        { p1 = Player.buy_property location player1; p2 = player2 })
+                      else (
+                        print_endline
+                          "This property is already owned and cannot be purchased.";
+                        { p1 = player1; p2 = player2 })
+                  | Command.Roll ->
+                      print_endline
+                        "You have already rolled this turn and cannot roll again";
+                      turn_actions flow player1 player2 proll
+                  | Command.EndTurn ->
+                      print_endline "The property was not purchased";
+                      { p1 = player1; p2 = player2 }
+                  | Command.Quit -> raise EndGame))
+        | Position.Rent data ->
+            raise
+              (Failure
+                "Unimplemented actions when a player lands on a Rent, line ~129 \
+                  in bin.main/ml")
+        | Position.Jail data ->
+            raise
+              (Failure
+                "Unimplemented actions when a player lands on a Jail, line ~134 \
+                  in bin.main/ml")
+        | Position.Go_To_Jail data ->
+            raise
+              (Failure "Unimplemented Go to Jail Square, line ~139 in bin/main.ml")
+        | Position.Chance data ->
+            Random.self_init ();
+            let r = Random.int 5 in 
+            let npos = card Position.chance_list r "" 0 in
+            {
+              p1 =
+                Player.move
+                  (npos - Position.get_index (current_location player1))
+                  board player1;
+              p2 = player2;
+            }
+        | Position.Community_Chest data ->
+          Random.self_init ();
+          let r = Random.int 5 in 
+          let nval = card Position.community_list r "" 0 in
+          if nval >=0 then
+            let uplay1 = Player.deposit nval player1 in 
+            print_endline ( "Your new balance is " ^  (string_of_int (Player.account uplay1)));
           {
-            p1 = Player.withdraw exch player1;
-            p2 = Player.deposit exch player2;
-          })
-        else if Player.tile_owned player1 location then (
-          print_endline (Player.get_name player1 ^ "owns this property.");
-          { p1 = player1; p2 = player2 })
-        else (
-          print_endline "This property is not owned and can be purchased.";
-          match read_line () with
-          | str -> (
-              let command = Command.parse str in
-              match command with
-              | Command.Purchase ->
-                  if owned = false then (
-                    print_endline "You have purchased the current property.";
-                    { p1 = Player.buy_property location player1; p2 = player2 })
-                  else (
-                    print_endline
-                      "This property is already owned and cannot be purchased.";
-                    { p1 = player1; p2 = player2 })
-              | Command.Roll ->
-                  print_endline
-                    "You have already rolled this turn and cannot roll again";
-                  turn_actions flow player1 player2 proll
-              | Command.EndTurn ->
-                  print_endline "The property was not purchased";
-                  { p1 = player1; p2 = player2 }
-              | Command.Quit -> raise EndGame))
-    | Position.Rent data ->
-        raise
-          (Failure
-             "Unimplemented actions when a player lands on a Rent, line ~129 \
-              in bin.main/ml")
-    | Position.Jail data ->
-      print_endline "";
-        (* raise
-          (Failure
-             "Unimplemented actions when a player lands on a Jail, line ~134 \
-              in bin.main/ml") *)
-    | Position.Go_To_Jail data ->
-        raise
-          (Failure "Unimplemented Go to Jail Square, line ~139 in bin/main.ml")
-    | Position.Chance data ->
-        Random.self_init ();
-        let r = Random.int 5 in 
-         let npos = card Position.chance_list r "" 0 in
-        {
-          p1 =
-            Player.move
-              (npos - Position.get_index (current_location player1))
-              board player1;
-          p2 = player2;
-        }
-    | Position.Community_Chest data ->
-      Random.self_init ();
-      let r = Random.int 5 in 
-      let nval = card Position.community_list r "" 0 in
-      if nval >=0 then
-        let uplay1 = Player.deposit nval player1 in 
-        print_endline ( "Your new balance is " ^  (string_of_int (Player.account uplay1)));
-      {
-        p1 = 
-        uplay1;
-        p2 = player2
-      }
-      else 
-        let uplay2 = Player.deposit (-nval) player1 in 
-        print_endline( "Your new balance is " ^ (string_of_int (Player.account uplay2)));
-        {
-          p1 = 
-          uplay2;
-          p2 = player2
-        }; 
-    | Position.Free_Parking data -> { p1 = player1; p2 = player2 }
-    | Position.Tax data -> { p1 = withdraw data.cost player1; p2 = player2 }
-
+            p1 = 
+            uplay1;
+            p2 = player2
+          }
+          else 
+            let uplay2 = Player.deposit (-nval) player1 in 
+            print_endline( "Your new balance is " ^ (string_of_int (Player.account uplay2)));
+            {
+              p1 = 
+              uplay2;
+              p2 = player2
+            }; 
+        | Position.Free_Parking data -> { p1 = player1; p2 = player2 }
+        | Position.Tax data -> { p1 = withdraw data.cost player1; p2 = player2 })
+      with
+      | Command.Empty ->(
+          print_endline "Please enter a nonempty command.";
+          turn_actions Play player1 player2 proll)
+      | Command.Malformed ->(
+          print_endline "Please enter a valid command.";
+          turn_actions Play player1 player2 proll)
 (** [player state adv flow] parses the commands of the user into an action of
     the player. *)
 let rec player (flow : flow) (player1 : Player.t) (player2 : Player.t) : unit =
