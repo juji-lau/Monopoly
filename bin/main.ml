@@ -151,7 +151,27 @@ let rec turn_actions (flow : flow) (player1 : Player.t) (player2 : Player.t)
         raise
           (Failure "Unimplemented Go to Jail Square, line ~139 in bin/main.ml")
     | Position.Chance data ->
-        raise (Failure "Unimplemented Chance Square, line ~139 in bin/main.ml")
+        Random.self_init ();
+        let r = Random.int 5 in
+        let rec card lst n m p =
+          if n >= 0 then
+            match lst with
+            | [] ->
+                print_endline m;
+                p
+            | (mes, pos) :: t -> card t (n - 1) mes pos
+          else (
+            print_endline m;
+            p)
+        in
+        let npos = card Position.chance_list r "" 0 in
+        {
+          p1 =
+            Player.move
+              (npos - Position.get_index (current_location player1))
+              board player1;
+          p2 = player2;
+        }
     | Position.Community_Chest data ->
         raise
           (Failure

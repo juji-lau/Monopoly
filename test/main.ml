@@ -71,11 +71,9 @@ let move_test (name : string) (person : Player.t) (x : int)
     ~printer:string_of_int
 
 (*let move_test_debug (name : string) (person : Player.t) (x : int)
-    (expected_output : Position.square) : test =
-  name >:: fun _ ->
-  assert_equal expected_output
-    (move x board person |> current_location)
-    ~printer:print_position*)
+  (expected_output : Position.square) : test = name >:: fun _ -> assert_equal
+  expected_output (move x board person |> current_location)
+  ~printer:print_position*)
 
 (* Give the players properties *)
 let brookeboard = buy_property boardwalk brooke21
@@ -85,9 +83,7 @@ let jujired =
 
 let sophierich =
   buy_property baltic sophie37
-  |> buy_property oriental
-  |> buy_property james
-  |> buy_property marvin
+  |> buy_property oriental |> buy_property james |> buy_property marvin
 
 (* Tests [get_owned_properites] *)
 let get_owned_properties_test (name : string) (person : Player.t)
@@ -173,28 +169,22 @@ let property_tests =
     (* The following should test true*)
     tile_owned_test "True: One correct\n   property owned" brookeboard boardwalk
       true;
-    tile_owned_test "True: Property owned among many" sophierich
-      marvin true;
-    tile_owned_test "True: Property owned among many" sophierich
-      baltic true;
+    tile_owned_test "True: Property owned among many" sophierich marvin true;
+    tile_owned_test "True: Property owned among many" sophierich baltic true;
     (* The following should test false*)
-    tile_owned_test "False: No properties owned" alexandra0 ventnor
-      false;
+    tile_owned_test "False: No properties owned" alexandra0 ventnor false;
     tile_owned_test "False: Property not owned while owning one property"
       brookeboard ventnor false;
-    tile_owned_test "False: Property owned by someone else" sophierich
-      boardwalk false;
+    tile_owned_test "False: Property owned by someone else" sophierich boardwalk
+      false;
     tile_owned_test
-      "False: Property owned by no one (among many properties owned)"
-      sophierich ventnor false;
+      "False: Property owned by no one (among many properties owned)" sophierich
+      ventnor false;
     tile_owned_test
       "False: Player has different property in the same set (orange)" sophierich
       tennessee false;
   ]
 
 let player_tests = move_tests @ property_tests
-
-let suite =
-  "test suite for Monopoly" >::: List.flatten [ player_tests (* board_tests*) ]
-
+let suite = "test suite for Monopoly" >::: List.flatten [ player_tests ]
 let _ = run_test_tt_main suite
