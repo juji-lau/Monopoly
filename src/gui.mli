@@ -1,5 +1,20 @@
 val width : int
 val height : int
+
 val setup : unit -> unit
+(** [setup] sets up the initial window *)
+
 val draw_board : unit -> unit
+
+val print_player_stats : Player.t -> unit
+(** [print_stats player] prints the name, balance, position, and properties
+    owned of the current player *)
+
+val player_position : Player.t -> Raylib.Color.t -> unit
+(** [player_posiiton player color] draws a circle representing the player, [player]
+    on the board with the color [color]. *)
+
+val draw_player_window : Player.t -> Raylib.Color.t -> unit
+(** [draw_player_window player color] draws the window showing the state of the [player] *)
+
 val loop : unit -> unit

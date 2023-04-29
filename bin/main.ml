@@ -5,6 +5,7 @@ open Player
 (** [play_game f] starts the adventure in file [f]. *)
 
 exception EndGame
+let gui_flag = true
 
 let board : Position.t = Position.new_board
 
@@ -16,6 +17,10 @@ type pset = {
   p1 : Player.t;
   p2 : Player.t;
 }
+
+let p1_col = Raylib.Color.blue
+let p2_col = Raylib.Color.red
+
 let rec card lst n m p =
   if n >= 0 then
     match lst with
@@ -40,7 +45,9 @@ let rec turn_actions (flow : flow) (player1 : Player.t) (player2 : Player.t)
         match location with
         | Position.Start data ->
             print_endline "";
-            { p1 = Player.deposit 200 player1; p2 = player2 }
+            let p1 = Player.deposit 200 player1 in
+            if gui_flag then Gui.draw_player_window p1 p1_col;
+            { p1; p2 = player2 }
         | Position.Property data ->
             let owned =
               Player.tile_owned player1 location
@@ -242,7 +249,7 @@ let rec player (flow : flow) (player1 : Player.t) (player2 : Player.t) : unit =
 
 (** [main ()] prompts for the game to play, then starts it. *)
 let main () =
-  Gui.setup () |> Gui.loop;
+  (*if gui_flag then Gui.setup () |> Gui.loop;*)
   ANSITerminal.print_string [ ANSITerminal.red ] "\n\nWelcome to MONOPOLY! \n";
   print_endline
     "General Rules : \n\n\
@@ -264,6 +271,7 @@ let main () =
     match read_line () with
     | x -> x
   in
+  if gui_flag then Gui.draw_player_window (Player.new_player name1) p1_col;
   player Play (Player.new_player name1) (Player.new_player name2)
 
 (* Execute the game engine. *)

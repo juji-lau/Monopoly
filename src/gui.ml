@@ -48,6 +48,10 @@ let p2col = Color.blue
 let p_size = 0.2
 let (p : Player.t) = new_player "Juji"
 
+let setup () =
+  Raylib.init_window width height "MONOPOLY!!!";
+  Raylib.set_target_fps 60
+
 (* [center_text string] prints [string] in the middle of the page*)
 let center_text string =
   let font_size =
@@ -60,93 +64,14 @@ let center_text string =
     ((height - font_size) / 2)
     font_size text_color
 
-(* [print_stats player] prints the name, balance, position, and properties owned
-   of the current player *)
-let print_player_stats (player : Player.t) =
-  let font_size = 5 in
-  let spacing = 3 in
-  let xindent = width * 5 / 6 in
-  let yindent = font_size + spacing in
-  draw_text
-    ("Player Name: " ^ Player.get_name player)
-    xindent yindent font_size text_color;
-  draw_text "Current Balance: " xindent (yindent * 2) font_size text_color;
-  draw_text
-    ("Current Location: " ^ string_of_int (Position.get_index (Player.current_location player)))
-    xindent (yindent * 3) font_size text_color;
-  let properties = Player.get_owned_properties player in
-  draw_text "Properties Owned:" xindent (yindent * 4) font_size text_color;
-  for x = 0 to List.length properties - 1 do
-    draw_text (Position.get_name (List.nth properties x)) xindent
-      ((yindent * 5) + x)
-      font_size text_color
-  done
-
-let setup () =
-  Raylib.init_window width height "MONOPOLY!!!";
-  Raylib.set_target_fps 60
-
-(* [draw_player position color] draws a circle representing a player in the
-   correct [position] with the color [color]. Requires [position] is between 0
-   and 39, inclusive *)
-let draw_player position color =
-  let p_radius = float_of_int grid_width *. p_size in
-  let p_leftx = fst board_tl + (start_prop / 2) in
-  let p_rightx =
-    (fst board_tl + start_prop + (grid_width * 9) + fst board_tr) / 2
-  in
-  let p_topy = snd board_tl + (start_prop / 2) in
-  let p_bottomy =
-    (snd board_tl + start_prop + (9 * grid_width) + snd board_bl) / 2
-  in
-  if position > 30 then
-    (* positions 39 - 31: *)
-    draw_circle p_rightx
-      (snd board_tr + start_prop
-      + (grid_width * (position - 30))
-      - (grid_width / 2))
-      p_radius color
-  else if position > 20 then
-    (* player at top edge, positions 30 - 21 *)
-    let p_y = snd board_tl + (start_prop / 2) in
-    if position == 30 then
-      (* position 30: top right corner *)
-      draw_circle p_rightx p_y p_radius color
-    else
-      (* positions 29 - 21: *)
-      draw_circle
-        (fst board_bl + start_prop
-        + (grid_width * (position - 20))
-        - (grid_width / 2))
-        p_y p_radius color
-  else if position > 10 then
-    (* player at left edge; positions 20 - 11 *)
-    if position == 20 then
-      (* position 20: top left corner *)
-      draw_circle p_leftx p_topy p_radius color
-    else
-      (* positions 19 - 11: *)
-      draw_circle p_leftx
-        (snd board_tr + start_prop
-        + (grid_width * (20 - position))
-        - (grid_width / 2))
-        p_radius color
-  else if position == 10 then
-    (* position 10: bottom left corner *)
-    draw_circle p_leftx p_bottomy p_radius color
-  else if position > 0 then
-    (* positions 9 - 1: *)
-    draw_circle
-      (fst board_bl + start_prop
-      + (grid_width * (10 - position))
-      - (grid_width / 2))
-      p_bottomy p_radius color
-  else
-    (* position 0: bottom right corner (start) *)
-    draw_circle p_rightx p_bottomy p_radius color
-
-(** [draw_board_base] draws the basic outline of the game board *)
+(** [draw_board_base] draws the basic outline of the game board, and the back
+    button *)
 let draw_board_base () =
+  let font_size = 15 in
+  let spacing = 10 in
+  let xindent = width * 6 / 7 in
+  let yindent = height - font_size - spacing in
+  draw_text "Press B for back" xindent yindent font_size Color.red;
   draw_rectangle (fst board_tl) (snd board_tl) b_height b_height
     board_background_color;
   (* Draw board outline: *)
@@ -223,6 +148,102 @@ let draw_board_base () =
     (fst board_tl + start_prop + (grid_width * 9))
     (snd board_br) board_line_color
 
+let print_player_stats (player : Player.t) =
+  let font_size = 5 in
+  let spacing = 3 in
+  let xindent = width * 5 / 6 in
+  let yindent = font_size + spacing in
+  draw_text
+    ("Player Name: " ^ Player.get_name player)
+    xindent yindent font_size text_color;
+  draw_text
+    ("Current Balance: " ^ string_of_int (Player.account player))
+    xindent (yindent * 2) font_size text_color;
+  draw_text
+    ("Current Location: "
+    ^ string_of_int (Position.get_index (Player.current_location player)))
+    xindent (yindent * 3) font_size text_color;
+  let properties = Player.get_owned_properties player in
+  draw_text "Properties Owned:" xindent (yindent * 4) font_size text_color;
+  for x = 0 to List.length properties - 1 do
+    draw_text
+      (Position.get_name (List.nth properties x))
+      xindent
+      ((yindent * 5) + x)
+      font_size text_color
+  done
+
+let player_position player color =
+  (*setup(); begin_drawing (); draw_board_base (); print_player_stats player;*)
+  let position = Position.get_index (Player.current_location player) in
+  let p_radius = float_of_int grid_width *. p_size in
+  let p_leftx = fst board_tl + (start_prop / 2) in
+  let p_rightx =
+    (fst board_tl + start_prop + (grid_width * 9) + fst board_tr) / 2
+  in
+  let p_topy = snd board_tl + (start_prop / 2) in
+  let p_bottomy =
+    (snd board_tl + start_prop + (9 * grid_width) + snd board_bl) / 2
+  in
+  if position > 30 then
+    (* positions 39 - 31: *)
+    draw_circle p_rightx
+      (snd board_tr + start_prop
+      + (grid_width * (position - 30))
+      - (grid_width / 2))
+      p_radius color
+  else if position > 20 then
+    (* player at top edge, positions 30 - 21 *)
+    let p_y = snd board_tl + (start_prop / 2) in
+    if position == 30 then
+      (* position 30: top right corner *)
+      draw_circle p_rightx p_y p_radius color
+    else
+      (* positions 29 - 21: *)
+      draw_circle
+        (fst board_bl + start_prop
+        + (grid_width * (position - 20))
+        - (grid_width / 2))
+        p_y p_radius color
+  else if position > 10 then
+    (* player at left edge; positions 20 - 11 *)
+    if position == 20 then
+      (* position 20: top left corner *)
+      draw_circle p_leftx p_topy p_radius color
+    else
+      (* positions 19 - 11: *)
+      draw_circle p_leftx
+        (snd board_tr + start_prop
+        + (grid_width * (20 - position))
+        - (grid_width / 2))
+        p_radius color
+  else if position == 10 then
+    (* position 10: bottom left corner *)
+    draw_circle p_leftx p_bottomy p_radius color
+  else if position > 0 then
+    (* positions 9 - 1: *)
+    draw_circle
+      (fst board_bl + start_prop
+      + (grid_width * (10 - position))
+      - (grid_width / 2))
+      p_bottomy p_radius color
+  else
+    (* position 0: bottom right corner (start) *)
+    draw_circle p_rightx p_bottomy p_radius color
+
+let rec draw_player_window player color =
+  setup ();
+  (* if Raylib.window_should_close () then Raylib.close_window () else*)
+  begin_drawing ();
+  clear_background Color.white;
+  draw_board_base ();
+  player_position player color;
+  print_player_stats player;
+  end_drawing ();
+  if is_key_down Key.B = false then draw_player_window player color;
+  Raylib.close_window ()
+
+
 let rec draw_board () =
   begin_drawing ();
   clear_background Color.white;
@@ -232,9 +253,10 @@ let rec draw_board () =
   center_text "Let's Play!";
   draw_text "Press B for back"
     (width - (width / 7))
-    (height * 24 / 25) (height / 30) Color.red;
+    (height * 24 / 25)
+    (height / 30) Color.red;
   (* Add the player: *)
-  draw_player (Position.get_index (Player.current_location p)) p1col;
+  player_position p p1col;
   print_player_stats p;
   end_drawing ();
   if is_key_down Key.B == false then draw_board ()
