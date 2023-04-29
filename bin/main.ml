@@ -46,7 +46,6 @@ let rec turn_actions (flow : flow) (player1 : Player.t) (player2 : Player.t)
         | Position.Start data ->
             print_endline "";
             let p1 = Player.deposit 200 player1 in
-            if gui_flag then Gui.draw_player_window p1 p1_col;
             { p1; p2 = player2 }
         | Position.Property data ->
             let owned =
@@ -230,6 +229,7 @@ let rec player (flow : flow) (player1 : Player.t) (player2 : Player.t) : unit =
                 ("You rolled a " ^ string_of_int x ^ " and have landed on "
                 ^ Position.get_name (Player.current_location nplay));
               let fplay = turn_actions flow nplay player2 x in
+              if gui_flag then Gui.setup(); Gui.draw_player_window player1 p1_col;
               player Play fplay.p2 fplay.p1
           | Command.Purchase ->
               print_endline " You cannot make a property purchase at this time";
@@ -249,7 +249,7 @@ let rec player (flow : flow) (player1 : Player.t) (player2 : Player.t) : unit =
 
 (** [main ()] prompts for the game to play, then starts it. *)
 let main () =
-  (*if gui_flag then Gui.setup () |> Gui.loop;*)
+  (*if gui_flag then Gui.setup (); Gui.loop();*)
   ANSITerminal.print_string [ ANSITerminal.red ] "\n\nWelcome to MONOPOLY! \n";
   print_endline
     "General Rules : \n\n\
@@ -271,7 +271,7 @@ let main () =
     match read_line () with
     | x -> x
   in
-  if gui_flag then Gui.draw_player_window (Player.new_player name1) p1_col;
+  (*if gui_flag then Gui.draw_player_window (Player.new_player name1) p1_col;*)
   player Play (Player.new_player name1) (Player.new_player name2)
 
 (* Execute the game engine. *)

@@ -232,7 +232,6 @@ let player_position player color =
     draw_circle p_rightx p_bottomy p_radius color
 
 let rec draw_player_window player color =
-  setup ();
   (* if Raylib.window_should_close () then Raylib.close_window () else*)
   begin_drawing ();
   clear_background Color.white;
@@ -241,7 +240,7 @@ let rec draw_player_window player color =
   print_player_stats player;
   end_drawing ();
   if is_key_down Key.B = false then draw_player_window player color;
-  Raylib.close_window ()
+  if Raylib.window_should_close () then close_window ()
 
 
 let rec draw_board () =
