@@ -45,8 +45,9 @@ let rec turn_actions (flow : flow) (player1 : Player.t) (player2 : Player.t)
         match location with
         | Position.Start data ->
             print_endline "";
-            let p1 = Player.deposit 200 player1 in
-            { p1; p2 = player2 }
+            let play1 = Player.deposit 200 player1 in
+            if gui_flag then Gui.draw_player_window play1 p1_col;
+            { p1 = play1; p2 = player2 }
         | Position.Property data ->
             let owned =
               Player.tile_owned player1 location
@@ -55,8 +56,12 @@ let rec turn_actions (flow : flow) (player1 : Player.t) (player2 : Player.t)
             if owned then (
               print_endline "This property is already owned";
               if Player.tile_owned player2 location then
-                { p1 = withdraw data.rent player1; p2 = deposit data.rent player2 }
-              else { p1 = player1; p2 = player2 })
+                let play1 = withdraw data.rent player1 in
+                let play2 = deposit data.rent player2 in
+                if gui_flag then Gui.draw_player_window play1 p1_col;
+                { p1 = play1; p2 = play2 }
+              else 
+                { p1 = player1; p2 = player2 })
             else (
               print_endline "This property is not owned and can be purchased.";
               match read_line () with
@@ -66,10 +71,13 @@ let rec turn_actions (flow : flow) (player1 : Player.t) (player2 : Player.t)
                   | Command.Purchase ->
                       if owned = false then (
                         print_endline "You have purchased the current property.";
+                       let play1 = Player.buy_property location player1 in
+                        if gui_flag then Gui.draw_player_window  play1 p1_col;
                         { p1 = Player.buy_property location player1; p2 = player2 })
                       else (
                         print_endline
                           "This property is already owned and cannot be purchased.";
+                        if gui_flag then Gui.draw_player_window player1 p1_col;
                         { p1 = player1; p2 = player2 })
                   | Command.Roll ->
                       print_endline
@@ -77,6 +85,7 @@ let rec turn_actions (flow : flow) (player1 : Player.t) (player2 : Player.t)
                       turn_actions flow player1 player2 proll
                   | Command.EndTurn ->
                       print_endline "The property was not purchased";
+                      if gui_flag then Gui.draw_player_window player1 p1_col;
                       { p1 = player1; p2 = player2 }
                   | Command.Quit -> raise EndGame))
         | Position.Railroad data ->
@@ -228,8 +237,10 @@ let rec player (flow : flow) (player1 : Player.t) (player2 : Player.t) : unit =
               print_endline
                 ("You rolled a " ^ string_of_int x ^ " and have landed on "
                 ^ Position.get_name (Player.current_location nplay));
+              (* draw the new position *)
+              Gui.draw_player_window nplay p1_col;
               let fplay = turn_actions flow nplay player2 x in
-              if gui_flag then Gui.setup(); Gui.draw_player_window player1 p1_col;
+             (* if gui_flag then Gui.draw_player_window player1 p1_col;*)
               player Play fplay.p2 fplay.p1
           | Command.Purchase ->
               print_endline " You cannot make a property purchase at this time";
@@ -250,6 +261,8 @@ let rec player (flow : flow) (player1 : Player.t) (player2 : Player.t) : unit =
 (** [main ()] prompts for the game to play, then starts it. *)
 let main () =
   (*if gui_flag then Gui.setup (); Gui.loop();*)
+  Gui.setup ();
+  Gui.draw_intro ();
   ANSITerminal.print_string [ ANSITerminal.red ] "\n\nWelcome to MONOPOLY! \n";
   print_endline
     "General Rules : \n\n\
@@ -272,7 +285,7 @@ let main () =
     | x -> x
   in
   (*if gui_flag then Gui.draw_player_window (Player.new_player name1) p1_col;*)
-  player Play (Player.new_player name1) (Player.new_player name2)
+  player Play (Player.new_player name1 p1_col) (Player.new_player name2 p2_col)
 
 (* Execute the game engine. *)
 let () = main ()

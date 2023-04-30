@@ -7,7 +7,7 @@
 type t
 (** The abstract type of values representing players. *)
 
-val new_player : string -> t
+val new_player : string -> Raylib.Color.t -> t
 (** [new_player s] is the player that [s] represents. *)
 
 (*_______Functions that give data about the player_______*)
@@ -18,6 +18,9 @@ val get_name : t -> string
 val account : t -> int
 (** [account p] is the amount of money in the bank account for the player that
     [p] represents. *)
+
+val get_color : t -> Raylib.Color.t
+(** [get_color player] is the color of the dot representing [player] on the gui*)
 
 val get_owned_properties : t -> Position.square list
 (** [get_owned_properties p] is the list of owned properties of player [p]

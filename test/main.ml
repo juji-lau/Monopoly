@@ -46,21 +46,22 @@ let marvin = get_square_name "Marvin Gardens"
 let boardwalk = get_square_name "Boardwalk"
 
 (* make a few players at various locations, with various properties: *)
-let alexandra0 = new_player "Alexandra"
-let brooke21 = move 21 Position.new_board (new_player "Brooke")
-let juji35 = move 35 Position.new_board (new_player "Juji")
-let sophie37 = move 37 Position.new_board (new_player "Sophie")
+let alexandra0 = new_player "Alexandra" Raylib.Color.blue
+let brooke21 = move 21 Position.new_board (new_player "Brooke" Raylib.Color.green)
+let juji35 = move 35 Position.new_board (new_player "Juji" Raylib.Color.red)
+let sophie37 = move 37 Position.new_board (new_player "Sophie" Raylib.Color.yellow)
 
 (* Tests that [new_player] is initialized to the correct values using
-   [current_location], [get_owned_properties], and [get_board]*)
-let new_player_test (name : string) (player_name : string) (player : Player.t) :
+   [get_name] [account] [current_location], [get_owned_properties], and [get_color]*)
+let new_player_test (name : string) (player_name : string) (player : Player.t) (color : Raylib.Color.t):
     test =
   name >:: fun _ ->
   assert_equal player_name (Player.get_name player);
   assert_equal
     (Position.get_initial Position.new_board)
     (current_location player);
-  assert_equal [] (get_owned_properties player)
+  assert_equal [] (get_owned_properties player);
+  assert_equal color (Player.get_color player)
 
 (* Tests [move] after the player has moved [x] spots, using [current_location]*)
 let move_test (name : string) (person : Player.t) (x : int)
@@ -117,7 +118,7 @@ let tile_owned_test (name : string) (player : Player.t) (tile : Position.square)
 
 let move_tests =
   [
-    new_player_test "starting state" "Alexandra" alexandra0;
+    new_player_test "starting state" "Alexandra" alexandra0 Raylib.Color.blue;
     (* Don't move *)
     move_test "move 0 from start" alexandra0 0 0;
     move_test "move 0 from 35" juji35 0 35;
