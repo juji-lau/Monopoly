@@ -176,7 +176,7 @@ let print_player_stats (player : Player.t) =
   let xindent = width * 1 / 32 in
   let yindent = font_size + spacing in
   draw_text
-    ("Player Name: " ^ Player.get_name player)
+    ("Current Player: " ^ Player.get_name player)
     xindent yindent font_size text_color;
   draw_text
     ("Current Balance: " ^ string_of_int (Player.account player))
@@ -195,73 +195,132 @@ let print_player_stats (player : Player.t) =
       font_size fine_text_color
   done
 
-let player_position player =
-  let color = Player.get_color player in
-  let position = Position.get_index (Player.current_location player) in
+let player_position player1 player2 =
+  (* draw player 1: *)
+  let color1 = Player.get_color player1 in
+  let position1 = Position.get_index (Player.current_location player1) in
   let p_radius = float_of_int grid_width *. p_size in
-  let p_leftx = fst board_tl + (start_prop / 2) in
-  let p_rightx =
-    (fst board_tl + start_prop + (grid_width * 9) + fst board_tr) / 2
+  let p1_leftx = fst board_tl + (start_prop / 4) in
+  let p1_rightx =
+    fst board_tl + start_prop + (grid_width * 9) + (start_prop / 4)
   in
-  let p_topy = snd board_tl + (start_prop / 2) in
-  let p_bottomy =
-    (snd board_tl + start_prop + (9 * grid_width) + snd board_bl) / 2
+  let p1_topy = snd board_tl + (start_prop / 4) in
+  let p1_bottomy =
+    snd board_tl + start_prop + (9 * grid_width) + (start_prop / 4)
   in
-  if position > 30 then
+  if position1 > 30 then
     (* positions 39 - 31: *)
-    draw_circle p_rightx
+    draw_circle p1_rightx
       (snd board_tr + start_prop
-      + (grid_width * (position - 30))
+      + (grid_width * (position1 - 30))
       - (grid_width / 2))
-      p_radius color
-  else if position > 20 then
+      p_radius color1
+  else if position1 > 20 then
     (* player at top edge, positions 30 - 21 *)
-    let p_y = snd board_tl + (start_prop / 2) in
-    if position == 30 then
+    let p1_y = snd board_tl + (start_prop / 4) in
+    if position1 == 30 then
       (* position 30: top right corner *)
-      draw_circle p_rightx p_y p_radius color
+      draw_circle p1_rightx p1_y p_radius color1
     else
       (* positions 29 - 21: *)
       draw_circle
         (fst board_bl + start_prop
-        + (grid_width * (position - 20))
+        + (grid_width * (position1 - 20))
         - (grid_width / 2))
-        p_y p_radius color
-  else if position > 10 then
+        p1_y p_radius color1
+  else if position1 > 10 then
     (* player at left edge; positions 20 - 11 *)
-    if position == 20 then
+    if position1 == 20 then
       (* position 20: top left corner *)
-      draw_circle p_leftx p_topy p_radius color
+      draw_circle p1_leftx p1_topy p_radius color1
     else
       (* positions 19 - 11: *)
-      draw_circle p_leftx
+      draw_circle p1_leftx
         (snd board_tr + start_prop
-        + (grid_width * (20 - position))
+        + (grid_width * (20 - position1))
         - (grid_width / 2))
-        p_radius color
-  else if position == 10 then
+        p_radius color1
+  else if position1 == 10 then
     (* position 10: bottom left corner *)
-    draw_circle p_leftx p_bottomy p_radius color
-  else if position > 0 then
+    draw_circle p1_leftx p1_bottomy p_radius color1
+  else if position1 > 0 then
     (* positions 9 - 1: *)
     draw_circle
       (fst board_bl + start_prop
-      + (grid_width * (10 - position))
+      + (grid_width * (10 - position1))
       - (grid_width / 2))
-      p_bottomy p_radius color
+      p1_bottomy p_radius color1
   else
     (* position 0: bottom right corner (start) *)
-    draw_circle p_rightx p_bottomy p_radius color
+    draw_circle p1_rightx p1_bottomy p_radius color1;
+  (* draw player 2: *)
+  let color2 = Player.get_color player2 in
+  let position2 = Position.get_index (Player.current_location player2) in
+  (*let p_radius = float_of_int grid_width *. p_size in*)
+  let p2_leftx = fst board_tl + (start_prop * 3 / 4) in
+  let p2_rightx =
+    fst board_tl + start_prop + (grid_width * 9) + (start_prop * 3 / 4)
+  in
+  let p2_topy = snd board_tl + (start_prop * 3 / 4) in
+  let p2_bottomy =
+    snd board_tl + start_prop + (9 * grid_width) + (start_prop * 3 / 4)
+  in
+  if position2 > 30 then
+    (* positions 39 - 31: *)
+    draw_circle p2_rightx
+      (snd board_tr + start_prop
+      + (grid_width * (position2 - 30))
+      - (grid_width / 2))
+      p_radius color2
+  else if position2 > 20 then
+    (* player at top edge, positions 30 - 21 *)
+    let p2_y = snd board_tl + (start_prop * 3 / 4) in
+    if position2 == 30 then
+      (* position 30: top right corner *)
+      draw_circle p2_rightx p2_y p_radius color1
+    else
+      (* positions 29 - 21: *)
+      draw_circle
+        (fst board_bl + start_prop
+        + (grid_width * (position2 - 20))
+        - (grid_width / 2))
+        p2_y p_radius color2
+  else if position2 > 10 then
+    (* player at left edge; positions 20 - 11 *)
+    if position2 == 20 then
+      (* position 20: top left corner *)
+      draw_circle p2_leftx p2_topy p_radius color2
+    else
+      (* positions 19 - 11: *)
+      draw_circle p2_leftx
+        (snd board_tr + start_prop
+        + (grid_width * (20 - position2))
+        - (grid_width / 2))
+        p_radius color2
+  else if position2 == 10 then
+    (* position 10: bottom left corner *)
+    draw_circle p2_leftx p2_bottomy p_radius color2
+  else if position2 > 0 then
+    (* positions 9 - 1: *)
+    draw_circle
+      (fst board_bl + start_prop
+      + (grid_width * (10 - position2))
+      - (grid_width / 2))
+      p2_bottomy p_radius color2
+  else
+    (* position 0: bottom right corner (start) *)
+    draw_circle p2_rightx p2_bottomy p_radius color2
 
-let rec draw_player_window player color =
+let rec draw_player_window player1 player2 =
   (* if Raylib.window_should_close () then Raylib.close_window () else*)
   begin_drawing ();
   clear_background Color.white;
   draw_board_base ();
-  player_position player;
-  print_player_stats player;
+  player_position player1 player2;
+  print_player_stats player1;
+  print_insns "Press B to return to the terminal" fine_text_color;
   end_drawing ();
-  if is_key_down Key.B = false then draw_player_window player color
+  if is_key_down Key.B = false then draw_player_window player1 player2
 
 let rec draw_intro () =
   begin_drawing ();
@@ -270,8 +329,6 @@ let rec draw_intro () =
   draw_board_base ();
   (* Add text: *)
   print_insns "Press the space bar to continue" fine_text_color;
-  (* Add the player: *)
-  player_position p;
   end_drawing ();
   if is_key_down Key.Space == false then draw_intro ()
 

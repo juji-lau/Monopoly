@@ -31,6 +31,7 @@ let rec card lst n m p =
   else (
     print_endline m;
     p)
+
 (** [turn_actions flow player1 player2 proll] takes into account turn actions
     such as purchasing properties or paying taxes, [flow] determines whether or
     not the game has ended, [player1] is the player taking their turn, [player2]
@@ -46,7 +47,7 @@ let rec turn_actions (flow : flow) (player1 : Player.t) (player2 : Player.t)
         | Position.Start data ->
             print_endline "";
             let play1 = Player.deposit 200 player1 in
-            if gui_flag then Gui.draw_player_window play1 p1_col;
+            if gui_flag then Gui.draw_player_window play1 player2;
             { p1 = play1; p2 = player2 }
         | Position.Property data ->
             let owned =
@@ -58,10 +59,15 @@ let rec turn_actions (flow : flow) (player1 : Player.t) (player2 : Player.t)
               if Player.tile_owned player2 location then
                 let play1 = withdraw data.rent player1 in
                 let play2 = deposit data.rent player2 in
-                if gui_flag then Gui.draw_player_window play1 p1_col;
+                (* Pay rent *)
+                print_endline (Player.get_name player2 ^ " owns this property.  Pay up.");
+                if gui_flag then Gui.draw_player_window play1 play2;
                 { p1 = play1; p2 = play2 }
               else 
-                { p1 = player1; p2 = player2 })
+                (* Player1 owns it.  *)
+                ( print_endline "You own this property.";
+                if gui_flag then Gui.draw_player_window player1 player2;
+                { p1 = player1; p2 = player2 }))
             else (
               print_endline "This property is not owned and can be purchased.";
               match read_line () with
@@ -72,12 +78,12 @@ let rec turn_actions (flow : flow) (player1 : Player.t) (player2 : Player.t)
                       if owned = false then (
                         print_endline "You have purchased the current property.";
                        let play1 = Player.buy_property location player1 in
-                        if gui_flag then Gui.draw_player_window  play1 p1_col;
+                        if gui_flag then Gui.draw_player_window  play1 player2;
                         { p1 = Player.buy_property location player1; p2 = player2 })
                       else (
                         print_endline
                           "This property is already owned and cannot be purchased.";
-                        if gui_flag then Gui.draw_player_window player1 p1_col;
+                        if gui_flag then Gui.draw_player_window player1 player2;
                         { p1 = player1; p2 = player2 })
                   | Command.Roll ->
                       print_endline
@@ -85,7 +91,6 @@ let rec turn_actions (flow : flow) (player1 : Player.t) (player2 : Player.t)
                       turn_actions flow player1 player2 proll
                   | Command.EndTurn ->
                       print_endline "The property was not purchased";
-                      if gui_flag then Gui.draw_player_window player1 p1_col;
                       { p1 = player1; p2 = player2 }
                   | Command.Quit -> 
                     if gui_flag then Gui.draw_exit (); 
@@ -97,11 +102,15 @@ let rec turn_actions (flow : flow) (player1 : Player.t) (player2 : Player.t)
             in
             if Player.tile_owned player2 location then (
               (*player 1 pays 2 * the number of rails owned*)
-              print_endline (Player.get_name player2 ^ "owns this property.");
+              print_endline (Player.get_name player2 ^ " owns this property.");
               let exch = 2 * Player.rails_owned board player2 in
-              { p1 = withdraw exch player1; p2 = deposit exch player2 })
+              let play1 = withdraw exch player1 in
+              let play2 = deposit exch player2 in
+              if gui_flag then Gui.draw_player_window play1 play2;
+              { p1 = play1; p2 = play2 })
             else if Player.tile_owned player1 location then (
-              print_endline (Player.get_name player1 ^ "owns this property.");
+              print_endline (Player.get_name player1 ^ " owns this property.");
+              if gui_flag then Gui.draw_player_window player1 player2;
               { p1 = player1; p2 = player2 })
             else (
               print_endline "This property is not owned and can be purchased.";
@@ -112,14 +121,18 @@ let rec turn_actions (flow : flow) (player1 : Player.t) (player2 : Player.t)
                   | Command.Purchase ->
                       if owned = false then (
                         print_endline "You have purchased the current property.";
+                        let play1 = Player.buy_property location player1 in
+                        if gui_flag then Gui.draw_player_window play1 player2;
                         { p1 = Player.buy_property location player1; p2 = player2 })
                       else (
                         print_endline
                           "This property is already owned and cannot be purchased.";
+                          if gui_flag then Gui.draw_player_window player1 player2;
                         { p1 = player1; p2 = player2 })
                   | Command.Roll ->
                       print_endline
                         "You have already rolled this turn and cannot roll again";
+                        if gui_flag then Gui.draw_player_window player1 player2;
                       turn_actions flow player1 player2 proll
                   | Command.EndTurn ->
                       print_endline "The property was not purchased";
@@ -135,14 +148,15 @@ let rec turn_actions (flow : flow) (player1 : Player.t) (player2 : Player.t)
             if Player.tile_owned player2 location then (
               (*player 1 pays 2 * the number of rails owned* the number of utilities
                 owned by the opposing player*)
-              print_endline (Player.get_name player2 ^ "owns this property.");
+              print_endline (Player.get_name player2 ^ " owns this property.");
               let exch = 4 * proll * Player.util_owned board player2 in
               {
                 p1 = Player.withdraw exch player1;
                 p2 = Player.deposit exch player2;
               })
             else if Player.tile_owned player1 location then (
-              print_endline (Player.get_name player1 ^ "owns this property.");
+              print_endline (Player.get_name player1 ^ " owns this property.");
+              if gui_flag then Gui.draw_player_window player1 player2;
               { p1 = player1; p2 = player2 })
             else (
               print_endline "This property is not owned and can be purchased.";
@@ -153,14 +167,18 @@ let rec turn_actions (flow : flow) (player1 : Player.t) (player2 : Player.t)
                   | Command.Purchase ->
                       if owned = false then (
                         print_endline "You have purchased the current property.";
-                        { p1 = Player.buy_property location player1; p2 = player2 })
+                        let play1 = Player.buy_property location player1 in
+                        if gui_flag then Gui.draw_player_window play1 player2;
+                        { p1 = play1; p2 = player2 })
                       else (
                         print_endline
                           "This property is already owned and cannot be purchased.";
+                          if gui_flag then Gui.draw_player_window player1 player2;
                         { p1 = player1; p2 = player2 })
                   | Command.Roll ->
                       print_endline
                         "You have already rolled this turn and cannot roll again";
+                        if gui_flag then Gui.draw_player_window player1 player2;
                       turn_actions flow player1 player2 proll
                   | Command.EndTurn ->
                       print_endline "The property was not purchased";
@@ -169,27 +187,31 @@ let rec turn_actions (flow : flow) (player1 : Player.t) (player2 : Player.t)
                     if gui_flag then Gui.draw_exit (); 
                     raise EndGame))
         | Position.Rent data ->
+          (*if gui_flag then Gui.draw_player_window player1 player2;*)
             raise
               (Failure
                 "Unimplemented actions when a player lands on a Rent, line ~129 \
                   in bin.main/ml")
         | Position.Jail data ->
+          (*if gui_flag then Gui.draw_player_window player1 player2;*)
             raise
               (Failure
                 "Unimplemented actions when a player lands on a Jail, line ~134 \
                   in bin.main/ml")
         | Position.Go_To_Jail data ->
+          (*if gui_flag then Gui.draw_player_window play1 player2;*)
             raise
               (Failure "Unimplemented Go to Jail Square, line ~139 in bin/main.ml")
         | Position.Chance data ->
             Random.self_init ();
             let r = Random.int 5 in 
             let npos = card Position.chance_list r "" 0 in
+            let play1 = Player.move
+            (npos - Position.get_index (current_location player1))
+            board player1 in
+            if gui_flag then Gui.draw_player_window play1 player2;
             {
-              p1 =
-                Player.move
-                  (npos - Position.get_index (current_location player1))
-                  board player1;
+              p1 = play1;
               p2 = player2;
             }
         | Position.Community_Chest data ->
@@ -199,6 +221,7 @@ let rec turn_actions (flow : flow) (player1 : Player.t) (player2 : Player.t)
           if nval >=0 then
             let uplay1 = Player.deposit nval player1 in 
             print_endline ( "Your new balance is " ^  (string_of_int (Player.account uplay1)));
+            if gui_flag then Gui.draw_player_window uplay1 player2;
           {
             p1 = 
             uplay1;
@@ -207,13 +230,16 @@ let rec turn_actions (flow : flow) (player1 : Player.t) (player2 : Player.t)
           else 
             let uplay2 = Player.deposit (-nval) player1 in 
             print_endline( "Your new balance is " ^ (string_of_int (Player.account uplay2)));
+            if gui_flag then Gui.draw_player_window uplay2 player2;
             {
               p1 = 
               uplay2;
               p2 = player2
             }; 
         | Position.Free_Parking data -> { p1 = player1; p2 = player2 }
-        | Position.Tax data -> { p1 = withdraw data.cost player1; p2 = player2 })
+        | Position.Tax data -> let play1= withdraw data.cost player1 in 
+          if gui_flag then Gui.draw_player_window play1 player2;
+          { p1 = play1; p2 = player2 })
       with
       | Command.Empty ->(
           print_endline "Please enter a nonempty command.";
@@ -228,6 +254,7 @@ let rec player (flow : flow) (player1 : Player.t) (player2 : Player.t) : unit =
     print_endline
       ("It is your turn, " ^ Player.get_name player1
      ^ "!\nPlease enter a command (roll or quit).");
+    if gui_flag then Gui.draw_player_window player1 player2;
     if flow = Play then
       match read_line () with
       | str -> (
@@ -245,9 +272,9 @@ let rec player (flow : flow) (player1 : Player.t) (player2 : Player.t) : unit =
                 ("You rolled a " ^ string_of_int x ^ " and have landed on "
                 ^ Position.get_name (Player.current_location nplay));
               (* draw the new position *)
-              Gui.draw_player_window nplay p1_col;
+              Gui.draw_player_window nplay player2;
               let fplay = turn_actions flow nplay player2 x in
-             (* if gui_flag then Gui.draw_player_window player1 p1_col;*)
+             (* if gui_flag then Gui.draw_player_window player1 player 2 p1_col;*)
               player Play fplay.p2 fplay.p1
           | Command.Purchase ->
               print_endline " You cannot make a property purchase at this time";
@@ -291,7 +318,7 @@ let main () =
     match read_line () with
     | x -> x
   in
-  (*if gui_flag then Gui.draw_player_window (Player.new_player name1) p1_col;*)
+  (*if gui_flag then Gui.draw_player_window (Player.new_player name1);*)
   player Play (Player.new_player name1 p1_col) (Player.new_player name2 p2_col)
 
 (* Execute the game engine. *)
