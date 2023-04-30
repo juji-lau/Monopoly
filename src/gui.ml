@@ -275,6 +275,15 @@ let rec draw_intro () =
   end_drawing ();
   if is_key_down Key.Space == false then draw_intro ()
 
+let rec draw_exit () =
+  if Raylib.window_should_close () then Raylib.close_window ()
+  else begin_drawing ();
+  clear_background Color.white;
+  center_text 1 1 "Thanks For Playing!" text_color;
+  print_insns "Press escape to leave" text_color;
+  end_drawing ();
+  draw_exit ()
+
 (* initial window, all windows must be recursive*)
 let rec loop () =
   if Raylib.window_should_close () then Raylib.close_window ()

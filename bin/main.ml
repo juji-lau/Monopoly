@@ -87,7 +87,9 @@ let rec turn_actions (flow : flow) (player1 : Player.t) (player2 : Player.t)
                       print_endline "The property was not purchased";
                       if gui_flag then Gui.draw_player_window player1 p1_col;
                       { p1 = player1; p2 = player2 }
-                  | Command.Quit -> raise EndGame))
+                  | Command.Quit -> 
+                    if gui_flag then Gui.draw_exit (); 
+                    raise EndGame))
         | Position.Railroad data ->
             let owned =
               Player.tile_owned player1 location
@@ -122,7 +124,9 @@ let rec turn_actions (flow : flow) (player1 : Player.t) (player2 : Player.t)
                   | Command.EndTurn ->
                       print_endline "The property was not purchased";
                       { p1 = player1; p2 = player2 }
-                  | Command.Quit -> raise EndGame))
+                  | Command.Quit ->
+                    if gui_flag then Gui.draw_exit (); 
+                    raise EndGame))
         | Position.Utility data ->
             let owned =
               Player.tile_owned player2 location
@@ -161,7 +165,9 @@ let rec turn_actions (flow : flow) (player1 : Player.t) (player2 : Player.t)
                   | Command.EndTurn ->
                       print_endline "The property was not purchased";
                       { p1 = player1; p2 = player2 }
-                  | Command.Quit -> raise EndGame))
+                  | Command.Quit -> 
+                    if gui_flag then Gui.draw_exit (); 
+                    raise EndGame))
         | Position.Rent data ->
             raise
               (Failure
@@ -228,6 +234,7 @@ let rec player (flow : flow) (player1 : Player.t) (player2 : Player.t) : unit =
           let command = Command.parse str in
           match command with
           | Command.Quit ->
+              if gui_flag then Gui.draw_exit ();
               print_endline "The game has ended. Thanks for playing!";
               player End player1 player2
           | Command.Roll ->
