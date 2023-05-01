@@ -92,10 +92,12 @@ let draw_board_base () =
   let spacing = 10 in
   let xindent = width * 6 / 7 in
   let yindent = height - font_size - spacing in
-  draw_text "Press B for back" xindent yindent font_size Color.red;
-  center_text 1 2 "Monopoly!!!" Color.red;
-  center_text 2 2 "2 Player Edition" Color.red;
+  draw_text "Press B for back" xindent yindent font_size Raylib.Color.red;
+  let num_font_size = 5 in
+  let num_indent = start_prop * 5 / 6 in
   draw_rectangle (fst board_tl) (snd board_tl) b_height b_height board_color;
+  center_text 1 2 "Monopoly!!!" Raylib.Color.red;
+  center_text 2 2 "2 Player Edition" Raylib.Color.red;
   (* Draw board outline: *)
   (*top line*)
   draw_line (fst board_tl) (snd board_tl) (fst board_tr) (snd board_tr)
@@ -112,38 +114,107 @@ let draw_board_base () =
   (* Draw board gridlines: *)
   (* draw bottom gridlines *)
   for x = 0 to 9 do
-    draw_line
-      (fst board_bl + start_prop + (grid_width * x))
-      (snd board_bl)
-      (fst board_bl + start_prop + (grid_width * x))
-      (snd board_tr + start_prop + (grid_width * 9))
-      board_line_color
+    let start_line =
+      (fst board_bl + start_prop + (grid_width * x), snd board_bl)
+    in
+    let end_line =
+      ( fst board_bl + start_prop + (grid_width * x),
+        snd board_tr + start_prop + (grid_width * 9) )
+    in
+    draw_line (fst start_line) (snd start_line) (fst end_line) (snd end_line)
+      board_line_color;
+    (* Add bottom numbers 9 - 1 inclusive *)
+    if x != 9 then
+      draw_text
+        (string_of_int (9 - x))
+        (fst start_line + (grid_width / 2))
+        (snd start_line - start_prop + num_indent)
+        num_font_size text_color
   done;
   (* draw top gridlines *)
   for x = 0 to 9 do
-    draw_line
-      (fst board_bl + start_prop + (grid_width * x))
-      (snd board_tl)
-      (fst board_bl + start_prop + (grid_width * x))
-      (snd board_tl + grid_height)
-      board_line_color
+    let start_line =
+      (fst board_bl + start_prop + (grid_width * x), snd board_tl)
+    in
+    let end_line =
+      (fst board_bl + start_prop + (grid_width * x), snd board_tl + grid_height)
+    in
+    draw_line (fst start_line) (snd start_line) (fst end_line) (snd end_line)
+      board_line_color;
+    (* Add top numbers 21 - 29 inclusive *)
+    if x != 9 then
+      draw_text
+        (string_of_int (21 + x))
+        (fst start_line + (grid_width / 2))
+        (snd start_line + start_prop - num_indent)
+        num_font_size text_color
   done;
   (* draw left gridlines *)
   for x = 0 to 9 do
-    draw_line (fst board_tl)
-      (snd board_tl + start_prop + (grid_width * x))
-      (fst board_tl + start_prop)
-      (snd board_tl + start_prop + (grid_width * x))
-      board_line_color
+    let start_line =
+      (fst board_tl, snd board_tl + start_prop + (grid_width * x))
+    in
+    let end_line =
+      (fst board_tl + start_prop, snd board_tl + start_prop + (grid_width * x))
+    in
+    draw_line (fst start_line) (snd start_line) (fst end_line) (snd end_line)
+      board_line_color;
+    (* Add left numbers 11 - 19 inclusive *)
+    if x != 9 then
+      draw_text
+        (string_of_int (19 - x))
+        (fst start_line + start_prop - num_indent)
+        (snd start_line + (grid_width / 2))
+        num_font_size text_color
   done;
   (* draw right gridlines *)
   for x = 0 to 9 do
-    draw_line (fst board_tr)
-      (snd board_tr + start_prop + (grid_width * x))
-      (fst board_tl + start_prop + (grid_width * 9))
-      (snd board_tr + start_prop + (grid_width * x))
-      board_line_color
+    let start_line =
+      (fst board_tr, snd board_tr + start_prop + (grid_width * x))
+    in
+    let end_line =
+      ( fst board_tl + start_prop + (grid_width * 9),
+        snd board_tr + start_prop + (grid_width * x) )
+    in
+    draw_line (fst start_line) (snd start_line) (fst end_line) (snd end_line)
+      board_line_color;
+    (* Add right numbers 31 - 39 inclusive *)
+    if x != 9 then
+      draw_text
+        (string_of_int (31 + x))
+        (fst end_line + num_indent)
+        (snd end_line + (grid_width / 2))
+        num_font_size text_color
   done;
+  (* Number the corner squares 0, 10, 20 , 30 *)
+  draw_text "0"
+    (fst board_br - start_prop + num_indent)
+    (snd board_br - start_prop + num_indent)
+    num_font_size text_color;
+  draw_text "10"
+    (fst board_bl + start_prop - num_indent)
+    (snd board_bl - start_prop + num_indent)
+    num_font_size text_color;
+  draw_text "20"
+    (fst board_tl + start_prop - num_indent)
+    (snd board_tl + start_prop - num_indent)
+    num_font_size text_color;
+  draw_text "30"
+    (fst board_tr - start_prop + num_indent)
+    (snd board_tr + start_prop - num_indent)
+    num_font_size text_color;
+  draw_text "START"
+    (fst board_br
+    - ((start_prop / 2)
+      + int_of_float
+          (float_of_int font_size *. 0.4 *. float_of_int (String.length "start"))
+      ))
+    (snd board_br
+    - ((start_prop / 2)
+      + int_of_float
+          (float_of_int font_size *. 0.1 *. float_of_int (String.length "start"))
+      ))
+    font_size Raylib.Color.red;
   (* draw inner square *)
   (* inner top *)
   draw_line (fst board_tl)
