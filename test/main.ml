@@ -5,6 +5,13 @@ open Position
 open Account
 open Command
 
+let cmp_set_like_lists lst1 lst2 =
+  let uniq1 = List.sort_uniq compare lst1 in
+  let uniq2 = List.sort_uniq compare lst2 in
+  List.length lst1 = List.length uniq1
+  && List.length lst2 = List.length uniq2
+  && uniq1 = uniq2
+
 (** [pp_string s] pretty-prints string [s]. *)
 let pp_string s = "\"" ^ s ^ "\""
 
@@ -32,19 +39,21 @@ let print_position position =
   ^ string_of_int (get_index position)
 
 (* helper function to get the square from the name *)
-let get_square_name pos = Position.square_name board pos
+let get_square_from_name pos = Position.square_name board pos
 
 (* grab a few squares: *)
-let baltic = get_square_name "Baltic Avenue"
-let oriental = get_square_name "Oriental Avenue"
-let james = get_square_name "St. James Place"
-let tennessee = get_square_name "Tennessee Avenue"
-let ventnor = get_square_name "Ventnor Avenue"
-let kentucky = get_square_name "Kentucky Avenue"
-let indiana = get_square_name "Indiana Avenue"
-let illinois = get_square_name "Illinois Avenue"
-let marvin = get_square_name "Marvin Gardens"
-let boardwalk = get_square_name "Boardwalk"
+let baltic = get_square_from_name "Baltic Avenue"
+let oriental = get_square_from_name "Oriental Avenue"
+let james = get_square_from_name "St. James Place"
+let tennessee = get_square_from_name "Tennessee Avenue"
+let ventnor = get_square_from_name "Ventnor Avenue"
+let kentucky = get_square_from_name "Kentucky Avenue"
+let indiana = get_square_from_name "Indiana Avenue"
+let illinois = get_square_from_name "Illinois Avenue"
+let marvin = get_square_from_name "Marvin Gardens"
+let boardwalk = get_square_from_name "Boardwalk"
+let reading_railroad = get_square_from_name "Reading Railroad"
+let water_works = get_square_from_name "Water Works"
 
 (* make a few players at various locations, with various properties: *)
 let alexandra0 = new_player "Alexandra" Raylib.Color.blue
@@ -236,10 +245,82 @@ let command_tests =
     parse_malformed_test "gibberish raises Malformed" parse "ewojuriegybthvfj";
     parse_test "purchase is Purchase" parse "purchase" Purchase;
     parse_test "\"purchase \" is Purchase" parse "purchase " Purchase;
+    parse_test "roll quit is Roll" parse "roll quit" Roll;
+    parse_test "quit ewjiohgu is Roll" parse "quit ewjiohgu" Quit;
+    parse_malformed_test "rollquit is Malformed" parse "rollquit";
+  ]
+
+let get_name_test (name : string) f (player : Player.t)
+    (expected_output : string) : test =
+  name >:: fun _ -> assert_equal expected_output (f player)
+
+let account_test (name : string) f (player : Player.t) (expected_output : int) :
+    test =
+  name >:: fun _ -> assert_equal expected_output (f player)
+
+let get_color_test (name : string) f (player : Player.t)
+    (expected_output : Raylib.Color.t) : test =
+  name >:: fun _ -> assert_equal expected_output (f player)
+
+let get_owned_properties_test (name : string) f (player : Player.t)
+    (expected_output : Position.square list) : test =
+  name >:: fun _ ->
+  assert_equal expected_output (f player) ~cmp:cmp_set_like_lists
+
+let current_location_test (name : string) f (player : Player.t)
+    (expected_output : int) : test =
+  name >:: fun _ -> assert_equal expected_output (get_index (f player))
+
+let rails_owned_test (name : string) f (board : Position.t) (player : Player.t)
+    (expected_output : int) : test =
+  name >:: fun _ -> assert_equal expected_output (f board player)
+
+let utilities_owned_test (name : string) f (board : Position.t)
+    (player : Player.t) (expected_output : int) : test =
+  name >:: fun _ -> assert_equal expected_output (f board player)
+
+let deposit_test (name : string) f (i : int) (player : Player.t)
+    (expected_output : int) : test =
+  name >:: fun _ -> assert_equal expected_output (account (f i player))
+
+let player1 = new_player "player1" Raylib.Color.red
+
+let player2 =
+  player1 |> buy_property baltic |> buy_property oriental
+  |> buy_property boardwalk |> move 2 board
+  |> buy_property reading_railroad
+
+let player3 = player1 |> move 41 board |> buy_property water_works
+
+let player_tests =
+  [
+    get_name_test "name of player1 is player1" Player.get_name player1 "player1";
+    account_test "account of player1 is 1500" account player1 1500;
+    get_color_test "color of player1 is red" get_color player1 Raylib.Color.red;
+    get_owned_properties_test "player1 has no properties" get_owned_properties
+      player1 [];
+    get_owned_properties_test
+      "player2 owns baltic, oriental, boardwalk and reading railroad"
+      get_owned_properties player2
+      [ baltic; oriental; boardwalk; reading_railroad ];
+    current_location_test "player2 location is 2" current_location player2 2;
+    current_location_test "player3 location is 1" current_location player3 1;
+    rails_owned_test "player1 owns no rails" rails_owned board player1 0;
+    rails_owned_test "player2 owns 1 rail" rails_owned board player2 1;
+    utilities_owned_test "player1 owns no utilities" util_owned board player1 0;
+    utilities_owned_test "player3 owns 1 utility" util_owned board player3 1;
+    deposit_test "deposit 100 into player1 is 1500" deposit 100 player1 1600;
   ]
 
 let suite =
   "test suite for Monopoly"
-  >::: List.flatten [ move_tests; property_tests; account_tests; command_tests ]
+  >::: List.flatten
+         [
+           move_tests;
+           property_tests;
+           account_tests;
+           command_tests;
+           player_tests;
+         ]
 
 let _ = run_test_tt_main suite

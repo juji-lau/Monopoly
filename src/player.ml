@@ -82,7 +82,7 @@ let util_owned (b : Position.t) (pl : t) : int =
     | [] -> 0
     | h :: r -> (
         match h with
-        | Railroad data -> 1 + helper r
+        | Utility data -> 1 + helper r
         | _ -> helper r)
   in
   helper p_lst
