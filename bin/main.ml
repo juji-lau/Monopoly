@@ -200,8 +200,15 @@ let rec turn_actions (flow : flow) (player1 : Player.t) (player2 : Player.t)
                   in bin.main/ml")
         | Position.Go_To_Jail data ->
           (*if gui_flag then Gui.draw_player_window play1 player2;*)
-            raise
-              (Failure "Unimplemented Go to Jail Square, line ~139 in bin/main.ml")
+            let npos = 10 in 
+            let play1 = Player.move
+              (npos - Position.get_index (current_location player1))
+              board player1 in
+              if gui_flag then Gui.draw_player_window play1 player2;
+              {
+                p1 = play1;
+                p2 = player2;
+              }
         | Position.Chance data ->
             Random.self_init ();
             let r = Random.int 5 in 
