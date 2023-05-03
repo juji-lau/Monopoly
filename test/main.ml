@@ -3,6 +3,7 @@ open Monopoly
 open Player
 open Position
 open Account
+open Command
 
 (** [pp_string s] pretty-prints string [s]. *)
 let pp_string s = "\"" ^ s ^ "\""
@@ -47,14 +48,19 @@ let boardwalk = get_square_name "Boardwalk"
 
 (* make a few players at various locations, with various properties: *)
 let alexandra0 = new_player "Alexandra" Raylib.Color.blue
-let brooke21 = move 21 Position.new_board (new_player "Brooke" Raylib.Color.green)
-let juji35 = move 35 Position.new_board (new_player "Juji" Raylib.Color.red)
-let sophie37 = move 37 Position.new_board (new_player "Sophie" Raylib.Color.yellow)
 
-(* Tests that [new_player] is initialized to the correct values using
-   [get_name] [account] [current_location], [get_owned_properties], and [get_color]*)
-let new_player_test (name : string) (player_name : string) (player : Player.t) (color : Raylib.Color.t):
-    test =
+let brooke21 =
+  move 21 Position.new_board (new_player "Brooke" Raylib.Color.green)
+
+let juji35 = move 35 Position.new_board (new_player "Juji" Raylib.Color.red)
+
+let sophie37 =
+  move 37 Position.new_board (new_player "Sophie" Raylib.Color.yellow)
+
+(* Tests that [new_player] is initialized to the correct values using [get_name]
+   [account] [current_location], [get_owned_properties], and [get_color]*)
+let new_player_test (name : string) (player_name : string) (player : Player.t)
+    (color : Raylib.Color.t) : test =
   name >:: fun _ ->
   assert_equal player_name (Player.get_name player);
   assert_equal
@@ -186,6 +192,54 @@ let property_tests =
       tennessee false;
   ]
 
-let player_tests = move_tests @ property_tests
-let suite = "test suite for Monopoly" >::: List.flatten [ player_tests ]
+let init_test (name : string) f (expected_output : int) : test =
+  name >:: fun _ ->
+  assert_equal expected_output (current f) ~printer:string_of_int
+
+let pay_receive_test (name : string) f (expected_output : int) : test =
+  name >:: fun _ ->
+  assert_equal expected_output (current f) ~printer:string_of_int
+
+let broke_test (name : string) (int : int) : test =
+  name >:: fun _ -> assert_raises Broke (fun _ -> pay int init)
+
+let account_tests =
+  [
+    init_test "new account has 1500 dollars" init 1500;
+    pay_receive_test "new account pay 500 is 1000" (pay 500 init) 1000;
+    pay_receive_test "new account pay 1500 is 0" (pay 1500 init) 0;
+    broke_test "new account pay 1501 raises Broke" 1501;
+    pay_receive_test "new account receive 100 is 1600" (receive 100 init) 1600;
+    pay_receive_test "new account receive 0 is 1500" (receive 0 init) 1500;
+  ]
+
+let parse_test (name : string) f (str : string) (expected_output : command) :
+    test =
+  name >:: fun _ -> assert_equal expected_output (parse str)
+
+let parse_empty_test (name : string) f (str : string) =
+  name >:: fun _ -> assert_raises Empty (fun _ -> parse str)
+
+let parse_malformed_test (name : string) f (str : string) =
+  name >:: fun _ -> assert_raises Malformed (fun _ -> parse str)
+
+let command_tests =
+  [
+    parse_test "roll is Roll" parse "roll" Roll;
+    parse_test "quit is Quit" parse "quit" Quit;
+    parse_test "\"  roll    \" is Roll" parse "  roll    " Roll;
+    parse_test "\"     quit\" is Quit" parse "     quit" Quit;
+    parse_empty_test "empty string raises Empty" parse "";
+    parse_empty_test "spaces string raises Empty" parse "     ";
+    parse_malformed_test "Roll raises Malformed" parse "Roll";
+    parse_malformed_test "Quit raises Malformed" parse "Quit";
+    parse_malformed_test "gibberish raises Malformed" parse "ewojuriegybthvfj";
+    parse_test "purchase is Purchase" parse "purchase" Purchase;
+    parse_test "\"purchase \" is Purchase" parse "purchase " Purchase;
+  ]
+
+let suite =
+  "test suite for Monopoly"
+  >::: List.flatten [ move_tests; property_tests; account_tests; command_tests ]
+
 let _ = run_test_tt_main suite

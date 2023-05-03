@@ -9,13 +9,13 @@ type t = {
   color : Raylib.Color.t;
 }
 
-let new_player (name : string) (color:Raylib.Color.t) : t =
+let new_player (name : string) (color : Raylib.Color.t) : t =
   {
     name;
     account = 1500;
     current = Position.get_initial Position.new_board;
     properties = [];
-    color = color
+    color;
   }
 
 let current_location p = p.current
@@ -36,7 +36,7 @@ let move (x : int) (b : Position.t) (p : t) : t =
       account = p.account;
       current = Position.square_index b (new_position mod 40);
       properties = p.properties;
-      color = p.color
+      color = p.color;
     }
   else
     {
@@ -45,7 +45,7 @@ let move (x : int) (b : Position.t) (p : t) : t =
       account = p.account;
       current = Position.square_index b (40 + new_position);
       properties = p.properties;
-      color = p.color
+      color = p.color;
     }
 
 let tile_owned (pl : t) (pr : Position.square) : bool =
@@ -60,7 +60,7 @@ let buy_property (pr : Position.square) (pl : t) : t =
     account = pl.account;
     current = pl.current;
     properties = n_prop;
-    color = pl.color
+    color = pl.color;
   }
 
 let rails_owned (b : Position.t) (pl : t) : int =
@@ -93,7 +93,7 @@ let deposit (i : int) (pl : t) : t =
     account = pl.account + i;
     current = pl.current;
     properties = pl.properties;
-    color = pl.color
+    color = pl.color;
   }
 
 exception Broke
@@ -105,6 +105,6 @@ let withdraw (i : int) (pl : t) : t =
       account = pl.account - i;
       current = pl.current;
       properties = pl.properties;
-      color = pl.color
+      color = pl.color;
     }
   else raise Broke
