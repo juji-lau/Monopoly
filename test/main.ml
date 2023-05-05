@@ -250,7 +250,7 @@ let command_tests =
     parse_malformed_test "rollquit is Malformed" parse "rollquit";
   ]
 
-let get_name_test (name : string) f (player : Player.t)
+let player_get_name_test (name : string) f (player : Player.t)
     (expected_output : string) : test =
   name >:: fun _ -> assert_equal expected_output (f player)
 
@@ -283,6 +283,10 @@ let deposit_test (name : string) f (i : int) (player : Player.t)
     (expected_output : int) : test =
   name >:: fun _ -> assert_equal expected_output (account (f i player))
 
+let withdraw_test (name : string) f (i : int) (player : Player.t)
+    (expected_output : int) : test =
+  name >:: fun _ -> assert_equal expected_output (account (f i player))
+
 let player1 = new_player "player1" Raylib.Color.red
 
 let player2 =
@@ -294,7 +298,8 @@ let player3 = player1 |> move 41 board |> buy_property water_works
 
 let player_tests =
   [
-    get_name_test "name of player1 is player1" Player.get_name player1 "player1";
+    player_get_name_test "name of player1 is player1" Player.get_name player1
+      "player1";
     account_test "account of player1 is 1500" account player1 1500;
     get_color_test "color of player1 is red" get_color player1 Raylib.Color.red;
     get_owned_properties_test "player1 has no properties" get_owned_properties
@@ -309,7 +314,54 @@ let player_tests =
     rails_owned_test "player2 owns 1 rail" rails_owned board player2 1;
     utilities_owned_test "player1 owns no utilities" util_owned board player1 0;
     utilities_owned_test "player3 owns 1 utility" util_owned board player3 1;
-    deposit_test "deposit 100 into player1 is 1500" deposit 100 player1 1600;
+    deposit_test "deposit 100 into player1 is 1600" deposit 100 player1 1600;
+    withdraw_test "withdraw 100 from player1 is 1400" withdraw 100 player1 1400;
+  ]
+
+let position_get_name_test (name : string) f (t : square)
+    (expected_output : string) =
+  name >:: fun _ -> assert_equal expected_output (f t)
+
+let get_index_test (name : string) f (t : square) (expected_output : int) =
+  name >:: fun _ -> assert_equal expected_output (f t)
+
+let get_initial_test (name : string) f (b : Position.t)
+    (expected_output : square) =
+  name >:: fun _ -> assert_equal expected_output (f b)
+
+let start = get_square_from_name "Go"
+
+let square_index_test (name : string) f (b : Position.t) (i : int)
+    (expected_output : square) =
+  name >:: fun _ -> assert_equal expected_output (f b i)
+
+let square_name_test (name : string) f (b : Position.t) (s : string)
+    (expected_output : square) =
+  name >:: fun _ -> assert_equal expected_output (f b s)
+
+let position_tests =
+  [
+    position_get_name_test "name of baltic is Baltic Avenue" Position.get_name
+      baltic "Baltic Avenue";
+    position_get_name_test "name of reading_railroad is Reading Railroad"
+      Position.get_name reading_railroad "Reading Railroad";
+    position_get_name_test "name of water_works is Water Works"
+      Position.get_name water_works "Water Works";
+    get_index_test "index of baltic is 3" get_index baltic 3;
+    get_index_test "index of reading_railroad is 5" get_index reading_railroad 5;
+    get_index_test "index of water_works is 28" get_index water_works 28;
+    get_initial_test "initial square is Go" get_initial board start;
+    square_index_test "square at index 3 is baltic" square_index board 3 baltic;
+    square_index_test "square at index 5 is reading_railroad" square_index board
+      5 reading_railroad;
+    square_index_test "square at index 28 is water_works" square_index board 28
+      water_works;
+    square_name_test "square with name Baltic Avenue is baltic" square_name
+      board "Baltic Avenue" baltic;
+    square_name_test "square with name Reading Railraod is reading_railroad"
+      square_name board "Reading Railroad" reading_railroad;
+    square_name_test "square with name Water Works is water_works" square_name
+      board "Water Works" water_works;
   ]
 
 let suite =
@@ -321,6 +373,7 @@ let suite =
            account_tests;
            command_tests;
            player_tests;
+           position_tests;
          ]
 
 let _ = run_test_tt_main suite
