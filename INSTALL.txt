@@ -1,13 +1,18 @@
+Prerequisite: This game must be played on a mac computer.
+
 Instructions:
 Enter the following commands into your terminal.  Do not enter the '$'.
 
 Clone the Code: 
-  $ git clone https://github.coecis.cornell.edu/sz266/CS-3110-Final-Project
+  $ git clone https://github.coecis.cornell.edu/sz266/CS-3110-Final-Project/tree/working_json/src
   $ cd CS-3110-Final-Project
 
 Install ANSITerminal
   $ opam install ANSITerminal
   $ opam install Yojson
+
+Install Raylib
+  $ opam install Raylib
 
 Build Instructions:
   $ make clean
