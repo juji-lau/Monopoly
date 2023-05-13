@@ -7,7 +7,7 @@
 type t
 (** The abstract type of values representing players. *)
 
-val new_player : string -> t
+val new_player : string -> Raylib.Color.t -> t
 (** [new_player s] is the player that [s] represents. *)
 
 (*_______Functions that give data about the player_______*)
@@ -19,9 +19,13 @@ val account : t -> int
 (** [account p] is the amount of money in the bank account for the player that
     [p] represents. *)
 
+val get_color : t -> Raylib.Color.t
+(** [get_color player] is the color of the dot representing [player] on the gui*)
+
 val get_owned_properties : t -> Position.square list
-(** [get_owned_properties p] is the list of owned properties of player [p]
-    categorized by the string titles of the tiles*)
+(** [get_owned_properties p] is the list of owned properties (including
+    railroads and utilities) of player [p] categorized by the string titles of
+    the tiles. *)
 
 val current_location : t -> Position.square
 (** [current_location p] is the current board position of the player [p]. *)
@@ -43,7 +47,7 @@ val rails_owned : Position.t -> t -> int
   board [b] *)
 
 val util_owned : Position.t -> t -> int
-(*[rails_owned b pl] is the number of utility squares owned by player [pl] in
+(*[util_owned b pl] is the number of utility squares owned by player [pl] in
   board [b] *)
 
 exception Broke

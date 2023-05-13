@@ -258,21 +258,22 @@ let get_initial (b : t) : square = b.initial
 
 let chance_list =
   [
-    ("Advance to GO. Collevt $200.", 0);
-    ("Advance to Illinois Ave.", 24);
-    ("Advance to St. Charles Place.", 11);
+    ("Advance to GO. Collect $200.", 0);
+    ("Advance to Illinois Ave. If it is unowned, you may purchase it.", 24);
+    ("Advance to St. Charles Place. If it is unowned, you may purchase it.", 11);
     ("Go to Jail. Do not pass GO. Do not collect $200.", 10);
-    ("Take a trip to Reading Railroad.", 5);
-    ("Thake a walk on the Boardalk.", 39);
+    ( "Take a trip to Reading Railroad. If it is unowned, you may purchase it.",
+      5 );
+    ("Take a walk on the Boardwalk. If it is unowned, you may purchase it.", 39);
   ]
 
 let community_list =
   [
-    ("Bank error in your favcor. Collect $200", 200);
+    ("Bank error in your favor. Collect $200", 200);
     ("Doctor's fees. Pay $50.", -50);
     ("From sale of stock you get $50", 50);
     ("Income tax refund. Collect $20.", 20);
     ("School fees. Pay $50.", -50);
     ("Recieve a $25 consultancy fee.", 25);
-    ("You inherit $100", 100);
+    ("You inherit $100.", 100);
   ]

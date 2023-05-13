@@ -3,6 +3,14 @@ open Monopoly
 open Player
 open Position
 open Account
+open Command
+
+let cmp_set_like_lists lst1 lst2 =
+  let uniq1 = List.sort_uniq compare lst1 in
+  let uniq2 = List.sort_uniq compare lst2 in
+  List.length lst1 = List.length uniq1
+  && List.length lst2 = List.length uniq2
+  && uniq1 = uniq2
 
 (** [pp_string s] pretty-prints string [s]. *)
 let pp_string s = "\"" ^ s ^ "\""
@@ -31,36 +39,44 @@ let print_position position =
   ^ string_of_int (get_index position)
 
 (* helper function to get the square from the name *)
-let get_square_name pos = Position.square_name board pos
+let get_square_from_name pos = Position.square_name board pos
 
 (* grab a few squares: *)
-let baltic = get_square_name "Baltic Avenue"
-let oriental = get_square_name "Oriental Avenue"
-let james = get_square_name "St. James Place"
-let tennessee = get_square_name "Tennessee Avenue"
-let ventnor = get_square_name "Ventnor Avenue"
-let kentucky = get_square_name "Kentucky Avenue"
-let indiana = get_square_name "Indiana Avenue"
-let illinois = get_square_name "Illinois Avenue"
-let marvin = get_square_name "Marvin Gardens"
-let boardwalk = get_square_name "Boardwalk"
+let baltic = get_square_from_name "Baltic Avenue"
+let oriental = get_square_from_name "Oriental Avenue"
+let james = get_square_from_name "St. James Place"
+let tennessee = get_square_from_name "Tennessee Avenue"
+let ventnor = get_square_from_name "Ventnor Avenue"
+let kentucky = get_square_from_name "Kentucky Avenue"
+let indiana = get_square_from_name "Indiana Avenue"
+let illinois = get_square_from_name "Illinois Avenue"
+let marvin = get_square_from_name "Marvin Gardens"
+let boardwalk = get_square_from_name "Boardwalk"
+let reading_railroad = get_square_from_name "Reading Railroad"
+let water_works = get_square_from_name "Water Works"
 
 (* make a few players at various locations, with various properties: *)
-let alexandra0 = new_player "Alexandra"
-let brooke21 = move 21 Position.new_board (new_player "Brooke")
-let juji35 = move 35 Position.new_board (new_player "Juji")
-let sophie37 = move 37 Position.new_board (new_player "Sophie")
+let alexandra0 = new_player "Alexandra" Raylib.Color.blue
 
-(* Tests that [new_player] is initialized to the correct values using
-   [current_location], [get_owned_properties], and [get_board]*)
-let new_player_test (name : string) (player_name : string) (player : Player.t) :
-    test =
+let brooke21 =
+  move 21 Position.new_board (new_player "Brooke" Raylib.Color.green)
+
+let juji35 = move 35 Position.new_board (new_player "Juji" Raylib.Color.red)
+
+let sophie37 =
+  move 37 Position.new_board (new_player "Sophie" Raylib.Color.yellow)
+
+(* Tests that [new_player] is initialized to the correct values using [get_name]
+   [account] [current_location], [get_owned_properties], and [get_color]*)
+let new_player_test (name : string) (player_name : string) (player : Player.t)
+    (color : Raylib.Color.t) : test =
   name >:: fun _ ->
   assert_equal player_name (Player.get_name player);
   assert_equal
     (Position.get_initial Position.new_board)
     (current_location player);
-  assert_equal [] (get_owned_properties player)
+  assert_equal [] (get_owned_properties player);
+  assert_equal color (Player.get_color player)
 
 (* Tests [move] after the player has moved [x] spots, using [current_location]*)
 let move_test (name : string) (person : Player.t) (x : int)
@@ -117,7 +133,7 @@ let tile_owned_test (name : string) (player : Player.t) (tile : Position.square)
 
 let move_tests =
   [
-    new_player_test "starting state" "Alexandra" alexandra0;
+    new_player_test "starting state" "Alexandra" alexandra0 Raylib.Color.blue;
     (* Don't move *)
     move_test "move 0 from start" alexandra0 0 0;
     move_test "move 0 from 35" juji35 0 35;
@@ -185,6 +201,179 @@ let property_tests =
       tennessee false;
   ]
 
-let player_tests = move_tests @ property_tests
-let suite = "test suite for Monopoly" >::: List.flatten [ player_tests ]
+let init_test (name : string) f (expected_output : int) : test =
+  name >:: fun _ ->
+  assert_equal expected_output (current f) ~printer:string_of_int
+
+let pay_receive_test (name : string) f (expected_output : int) : test =
+  name >:: fun _ ->
+  assert_equal expected_output (current f) ~printer:string_of_int
+
+let broke_test (name : string) (int : int) : test =
+  name >:: fun _ -> assert_raises Broke (fun _ -> pay int init)
+
+let account_tests =
+  [
+    init_test "new account has 1500 dollars" init 1500;
+    pay_receive_test "new account pay 500 is 1000" (pay 500 init) 1000;
+    pay_receive_test "new account pay 1500 is 0" (pay 1500 init) 0;
+    broke_test "new account pay 1501 raises Broke" 1501;
+    pay_receive_test "new account receive 100 is 1600" (receive 100 init) 1600;
+    pay_receive_test "new account receive 0 is 1500" (receive 0 init) 1500;
+  ]
+
+let parse_test (name : string) f (str : string) (expected_output : command) :
+    test =
+  name >:: fun _ -> assert_equal expected_output (parse str)
+
+let parse_empty_test (name : string) f (str : string) =
+  name >:: fun _ -> assert_raises Empty (fun _ -> parse str)
+
+let parse_malformed_test (name : string) f (str : string) =
+  name >:: fun _ -> assert_raises Malformed (fun _ -> parse str)
+
+let command_tests =
+  [
+    parse_test "roll is Roll" parse "roll" Roll;
+    parse_test "quit is Quit" parse "quit" Quit;
+    parse_test "\"  roll    \" is Roll" parse "  roll    " Roll;
+    parse_test "\"     quit\" is Quit" parse "     quit" Quit;
+    parse_empty_test "empty string raises Empty" parse "";
+    parse_empty_test "spaces string raises Empty" parse "     ";
+    parse_malformed_test "Roll raises Malformed" parse "Roll";
+    parse_malformed_test "Quit raises Malformed" parse "Quit";
+    parse_malformed_test "gibberish raises Malformed" parse "ewojuriegybthvfj";
+    parse_test "purchase is Purchase" parse "purchase" Purchase;
+    parse_test "\"purchase \" is Purchase" parse "purchase " Purchase;
+    parse_test "roll quit is Roll" parse "roll quit" Roll;
+    parse_test "quit ewjiohgu is Roll" parse "quit ewjiohgu" Quit;
+    parse_malformed_test "rollquit is Malformed" parse "rollquit";
+  ]
+
+let player_get_name_test (name : string) f (player : Player.t)
+    (expected_output : string) : test =
+  name >:: fun _ -> assert_equal expected_output (f player)
+
+let account_test (name : string) f (player : Player.t) (expected_output : int) :
+    test =
+  name >:: fun _ -> assert_equal expected_output (f player)
+
+let get_color_test (name : string) f (player : Player.t)
+    (expected_output : Raylib.Color.t) : test =
+  name >:: fun _ -> assert_equal expected_output (f player)
+
+let get_owned_properties_test (name : string) f (player : Player.t)
+    (expected_output : Position.square list) : test =
+  name >:: fun _ ->
+  assert_equal expected_output (f player) ~cmp:cmp_set_like_lists
+
+let current_location_test (name : string) f (player : Player.t)
+    (expected_output : int) : test =
+  name >:: fun _ -> assert_equal expected_output (get_index (f player))
+
+let rails_owned_test (name : string) f (board : Position.t) (player : Player.t)
+    (expected_output : int) : test =
+  name >:: fun _ -> assert_equal expected_output (f board player)
+
+let utilities_owned_test (name : string) f (board : Position.t)
+    (player : Player.t) (expected_output : int) : test =
+  name >:: fun _ -> assert_equal expected_output (f board player)
+
+let deposit_test (name : string) f (i : int) (player : Player.t)
+    (expected_output : int) : test =
+  name >:: fun _ -> assert_equal expected_output (account (f i player))
+
+let withdraw_test (name : string) f (i : int) (player : Player.t)
+    (expected_output : int) : test =
+  name >:: fun _ -> assert_equal expected_output (account (f i player))
+
+let player1 = new_player "player1" Raylib.Color.red
+
+let player2 =
+  player1 |> buy_property baltic |> buy_property oriental
+  |> buy_property boardwalk |> move 2 board
+  |> buy_property reading_railroad
+
+let player3 = player1 |> move 41 board |> buy_property water_works
+
+let player_tests =
+  [
+    player_get_name_test "name of player1 is player1" Player.get_name player1
+      "player1";
+    account_test "account of player1 is 1500" account player1 1500;
+    get_color_test "color of player1 is red" get_color player1 Raylib.Color.red;
+    get_owned_properties_test "player1 has no properties" get_owned_properties
+      player1 [];
+    get_owned_properties_test
+      "player2 owns baltic, oriental, boardwalk and reading railroad"
+      get_owned_properties player2
+      [ baltic; oriental; boardwalk; reading_railroad ];
+    current_location_test "player2 location is 2" current_location player2 2;
+    current_location_test "player3 location is 1" current_location player3 1;
+    rails_owned_test "player1 owns no rails" rails_owned board player1 0;
+    rails_owned_test "player2 owns 1 rail" rails_owned board player2 1;
+    utilities_owned_test "player1 owns no utilities" util_owned board player1 0;
+    utilities_owned_test "player3 owns 1 utility" util_owned board player3 1;
+    deposit_test "deposit 100 into player1 is 1600" deposit 100 player1 1600;
+    withdraw_test "withdraw 100 from player1 is 1400" withdraw 100 player1 1400;
+  ]
+
+let position_get_name_test (name : string) f (t : square)
+    (expected_output : string) =
+  name >:: fun _ -> assert_equal expected_output (f t)
+
+let get_index_test (name : string) f (t : square) (expected_output : int) =
+  name >:: fun _ -> assert_equal expected_output (f t)
+
+let get_initial_test (name : string) f (b : Position.t)
+    (expected_output : square) =
+  name >:: fun _ -> assert_equal expected_output (f b)
+
+let start = get_square_from_name "Go"
+
+let square_index_test (name : string) f (b : Position.t) (i : int)
+    (expected_output : square) =
+  name >:: fun _ -> assert_equal expected_output (f b i)
+
+let square_name_test (name : string) f (b : Position.t) (s : string)
+    (expected_output : square) =
+  name >:: fun _ -> assert_equal expected_output (f b s)
+
+let position_tests =
+  [
+    position_get_name_test "name of baltic is Baltic Avenue" Position.get_name
+      baltic "Baltic Avenue";
+    position_get_name_test "name of reading_railroad is Reading Railroad"
+      Position.get_name reading_railroad "Reading Railroad";
+    position_get_name_test "name of water_works is Water Works"
+      Position.get_name water_works "Water Works";
+    get_index_test "index of baltic is 3" get_index baltic 3;
+    get_index_test "index of reading_railroad is 5" get_index reading_railroad 5;
+    get_index_test "index of water_works is 28" get_index water_works 28;
+    get_initial_test "initial square is Go" get_initial board start;
+    square_index_test "square at index 3 is baltic" square_index board 3 baltic;
+    square_index_test "square at index 5 is reading_railroad" square_index board
+      5 reading_railroad;
+    square_index_test "square at index 28 is water_works" square_index board 28
+      water_works;
+    square_name_test "square with name Baltic Avenue is baltic" square_name
+      board "Baltic Avenue" baltic;
+    square_name_test "square with name Reading Railraod is reading_railroad"
+      square_name board "Reading Railroad" reading_railroad;
+    square_name_test "square with name Water Works is water_works" square_name
+      board "Water Works" water_works;
+  ]
+
+let suite =
+  "test suite for Monopoly"
+  >::: List.flatten
+         [
+           move_tests;
+           property_tests;
+           account_tests;
+           command_tests;
+           player_tests;
+           position_tests;
+         ]
+
 let _ = run_test_tt_main suite
