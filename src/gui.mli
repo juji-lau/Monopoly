@@ -17,12 +17,10 @@ val player_position : Player.t -> Player.t -> unit
     [player1] is the current player. *)
 
 val draw_player_window : Player.t -> Player.t -> unit
-(** [draw_player_window player1 player2 color] draws the window showing the
+(** [draw_player_window player1 player2] draws the window showing the
     state of the [player1] and the location of [player2]. [player1] is the
     current player. *)
 
 val draw_exit : unit -> unit
 (** [draw_exit] draws the exit window, when a player types "Quit" into the
     terminal. *)
-
-val loop : unit -> unit
