@@ -6,7 +6,7 @@ open Player
 
 exception EndGame
 
-let gui_flag = true
+let gui_flag = false
 let board : Position.t = Position.new_board
 
 type flow =
@@ -243,11 +243,9 @@ let rec turn_actions (flow : flow) (player1 : Player.t) (player2 : Player.t)
                "Unimplemented actions when a player lands on a Rent, line ~129 \
                 in bin.main/ml")
       | Position.Jail data ->
-          (*if gui_flag then Gui.draw_player_window player1 player2;*)
-          raise
-            (Failure
-               "Unimplemented actions when a player lands on a Jail, line ~134 \
-                in bin.main/ml")
+          let play1 = Player.go_to_jail player1 in
+          if gui_flag then Gui.draw_player_window play1 player2;
+          { p1 = play1; p2 = player2 }
       | Position.Go_To_Jail data ->
           (*if gui_flag then Gui.draw_player_window play1 player2;*)
           let npos = 10 in
@@ -268,7 +266,7 @@ let rec turn_actions (flow : flow) (player1 : Player.t) (player2 : Player.t)
               board player1
           in
           if gui_flag then Gui.draw_player_window play1 player2;
-          { p1 = play1; p2 = player2 }
+          turn_actions flow play1 player2 proll
       | Position.Community_Chest data ->
           Random.self_init ();
           let r = Random.int 5 in
@@ -304,6 +302,12 @@ let rec turn_actions (flow : flow) (player1 : Player.t) (player2 : Player.t)
         "This property is too expensive to purchase. Your turn has been ended \
          and the property remains unowned.";
       { p1 = player1; p2 = player2 }
+  | Player.Broke ->
+      if gui_flag then Gui.draw_exit ();
+      print_endline
+        (Player.get_name player1 ^ " has lost and " ^ Player.get_name player2
+       ^ " has won.");
+      raise EndGame
 
 (** [player state adv flow] parses the commands of the user into an action of
     the player. *)

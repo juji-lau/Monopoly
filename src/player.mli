@@ -30,13 +30,23 @@ val get_owned_properties : t -> Position.square list
 val current_location : t -> Position.square
 (** [current_location p] is the current board position of the player [p]. *)
 
+val tile_owned : t -> Position.square -> bool
+(** [tile_owned pl pr] returns true if the property [pr] is owned by player [pl]*)
+
+val get_jail : t -> bool
+(** [get_jail player] is the boolean value reprersenting whether [player] is in
+    jail *)
+
 (*_______Functions that return a changed player_______*)
 
 val move : int -> Position.t -> t -> t
 (** [move x b p] is the new position of the player [p] after rolling the die. *)
 
-val tile_owned : t -> Position.square -> bool
-(** [tile_owned pl pr] returns true if the property [pr] is owned by player [pl]*)
+val go_to_jail : t -> t
+(** [go_to_jail player] sets the [player] jail record field to true. *)
+
+val free_from_jail : t -> t
+(** [free_from_jail player] sets the [player] jail record field to false. *)
 
 exception ExpensiveProperty
 
