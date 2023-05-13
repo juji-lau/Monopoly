@@ -9,7 +9,7 @@ let height = 800
 
 (* custom colors: *)
 let text_color = Color.create 0 0 0 255
-let fine_text_color = Color.create 50 50 50 100
+let fine_text_color = Color.create 20 20 20 200
 let board_color = Color.create 2 200 70 100
 let board_line_color = Color.black
 
@@ -89,10 +89,6 @@ let center_text line_num total_lines string color =
     button *)
 let draw_board_base () =
   let font_size = 15 in
-  let spacing = 10 in
-  let xindent = width * 6 / 7 in
-  let yindent = height - font_size - spacing in
-  draw_text "Press B for back" xindent yindent font_size Raylib.Color.red;
   let num_font_size = 5 in
   let num_indent = start_prop * 5 / 6 in
   draw_rectangle (fst board_tl) (snd board_tl) b_height b_height board_color;
@@ -391,7 +387,7 @@ let rec draw_player_window player1 player2 =
   print_player_stats player1;
   print_insns "Press B to return to the terminal" fine_text_color;
   end_drawing ();
-  if is_key_down Key.B = false then draw_player_window player1 player2
+  if is_key_down Key.B = false then draw_player_window player1 player2 
 
 let rec draw_intro () =
   begin_drawing ();
@@ -411,19 +407,3 @@ let rec draw_exit () =
   print_insns "Press escape to leave" text_color;
   end_drawing ();
   draw_exit ()
-
-(* initial window, all windows must be recursive*)
-let rec loop () =
-  if Raylib.window_should_close () then Raylib.close_window ()
-  else
-    let open Raylib in
-    (* call begin and and drawing between each drawing *)
-    begin_drawing ();
-    clear_background Color.white;
-    (*if is_key_down Key.Space then check_start ();*)
-    if is_key_down Key.Space then draw_intro ();
-    (* call at the end of each drawing *)
-    end_drawing ();
-    loop ()
-
-(*let () = setup |> loop*)

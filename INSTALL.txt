@@ -1,4 +1,4 @@
-Prerequisite: This game must be played on a mac computer.
+Prerequisite: This game must be played on a mac computer for the GUI to work.
 
 Instructions:
 Enter the following commands into your terminal.  Do not enter the '$'.
