@@ -5,7 +5,7 @@ open Player
 (** [play_game f] starts the adventure in file [f]. *)
 
 exception EndGame
-let gui_flag = true
+let gui_flag = false
 
 let board : Position.t = Position.new_board
 
