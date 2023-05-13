@@ -51,17 +51,21 @@ let move (x : int) (b : Position.t) (p : t) : t =
 let tile_owned (pl : t) (pr : Position.square) : bool =
   List.mem pr pl.properties
 
+exception ExpensiveProperty
+
 let buy_property (pr : Position.square) (pl : t) : t =
-  let n_prop =
-    if tile_owned pl pr then pl.properties else pr :: pl.properties
-  in
-  {
-    name = pl.name;
-    account = pl.account;
-    current = pl.current;
-    properties = n_prop;
-    color = pl.color;
-  }
+  if pl.account - Position.get_cost pr >= 0 then
+    let n_prop =
+      if tile_owned pl pr then pl.properties else pr :: pl.properties
+    in
+    {
+      name = pl.name;
+      account = pl.account - Position.get_cost pr;
+      current = pl.current;
+      properties = n_prop;
+      color = pl.color;
+    }
+  else raise ExpensiveProperty
 
 let rails_owned (b : Position.t) (pl : t) : int =
   let p_lst = pl.properties in

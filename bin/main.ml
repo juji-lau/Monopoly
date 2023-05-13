@@ -6,7 +6,7 @@ open Player
 
 exception EndGame
 
-let gui_flag = false
+let gui_flag = true
 let board : Position.t = Position.new_board
 
 type flow =
@@ -299,6 +299,11 @@ let rec turn_actions (flow : flow) (player1 : Player.t) (player2 : Player.t)
   | Command.Malformed ->
       print_endline "Please enter a valid command.";
       turn_actions Play player1 player2 proll
+  | Player.ExpensiveProperty ->
+      print_endline
+        "This property is too expensive to purchase. Your turn has been ended \
+         and the property remains unowned.";
+      { p1 = player1; p2 = player2 }
 
 (** [player state adv flow] parses the commands of the user into an action of
     the player. *)

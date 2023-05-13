@@ -38,9 +38,12 @@ val move : int -> Position.t -> t -> t
 val tile_owned : t -> Position.square -> bool
 (** [tile_owned pl pr] returns true if the property [pr] is owned by player [pl]*)
 
+exception ExpensiveProperty
+
 val buy_property : Position.square -> t -> t
 (** [buy_property pr pl] adds the property square representation [pr] to the
-    purchased properties of player [pl]*)
+    purchased properties of player [pl], but will not allow the player to
+    purchase the property if they cannot afford it (raises ExpensiveProperty)*)
 
 val rails_owned : Position.t -> t -> int
 (*[rails_owned b pl] is the number of railroad squares owned by player [pl] in

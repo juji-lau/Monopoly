@@ -75,6 +75,9 @@ val get_index : square -> int
 (**[get_index t] returns the integer index position of the square represented by
    [t] on it's monopoly board. *)
 
+val get_cost : square -> int
+(** [get_cost s] is the cost of the square [s] if it has a valid cost*)
+
 val get_initial : t -> square
 (**[get_initial b] gives the initial square on board b*)
 

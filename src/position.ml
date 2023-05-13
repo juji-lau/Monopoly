@@ -231,6 +231,13 @@ let get_index (s : square) : int =
   | Tax t -> t.index
   | Start s -> s.index
 
+let get_cost (s : square) : int =
+  match s with
+  | Property d -> d.cost
+  | Railroad d -> 200
+  | Utility d -> 150
+  | _ -> 0
+
 exception NoSquareOfIndex
 
 let rec square_index (b : t) (i : int) : square =
