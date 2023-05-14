@@ -33,11 +33,6 @@ type square =
       index : int;
       name : string;
     }
-  | Rent of {
-      index : int;
-      name : string;
-      rent : int;
-    }
   | Jail of {
       index : int;
       name : string;

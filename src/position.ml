@@ -29,11 +29,6 @@ type square =
       index : int;
       name : string;
     }
-  | Rent of {
-      index : int;
-      name : string;
-      rent : int;
-    }
   | Jail of {
       index : int;
       name : string;
@@ -108,14 +103,6 @@ let utility_of_j j : square =
     {
       index = j |> member "index" |> to_int;
       name = j |> member "name" |> to_string;
-    }
-
-let rent_of_j j : square =
-  Rent
-    {
-      index = j |> member "index" |> to_int;
-      name = j |> member "name" |> to_string;
-      rent = j |> member "rent" |> to_int;
     }
 
 let jail_of_j j : square =
@@ -208,7 +195,6 @@ let get_name (s : square) : string =
   | Property p -> p.name
   | Railroad r -> r.name
   | Utility u -> u.name
-  | Rent r -> r.name
   | Jail j -> j.name
   | Go_To_Jail g -> g.name
   | Chance c -> c.name
@@ -222,7 +208,6 @@ let get_index (s : square) : int =
   | Property p -> p.index
   | Railroad r -> r.index
   | Utility u -> u.index
-  | Rent r -> r.index
   | Jail j -> j.index
   | Go_To_Jail g -> g.index
   | Chance c -> c.index
@@ -277,10 +262,10 @@ let chance_list =
 let community_list =
   [
     ("Bank error in your favor. Collect $200", 200);
-    ("Doctor's fees. Pay $50.", -50);
+    ("Doctor's fees. Pay $50.", ~-50);
     ("From sale of stock you get $50", 50);
     ("Income tax refund. Collect $20.", 20);
-    ("School fees. Pay $50.", -50);
+    ("School fees. Pay $50.", ~-50);
     ("Recieve a $25 consultancy fee.", 25);
     ("You inherit $100.", 100);
   ]

@@ -86,10 +86,10 @@ let rec turn_actions (flow : flow) (player1 : Player.t) (player2 : Player.t)
                 match command with
                 | Command.Purchase ->
                     if owned = false then (
+                      let play1 = Player.buy_property location player1 in
                       print_endline
                         ("You have purchased " ^ Position.get_name location
                        ^ "!");
-                      let play1 = Player.buy_property location player1 in
                       if gui_flag then Gui.draw_player_window play1 player2;
                       {
                         p1 = Player.buy_property location player1;
@@ -148,10 +148,10 @@ let rec turn_actions (flow : flow) (player1 : Player.t) (player2 : Player.t)
                 match command with
                 | Command.Purchase ->
                     if owned = false then (
+                      let play1 = Player.buy_property location player1 in
                       print_endline
                         ("You have purchased " ^ Position.get_name location
                        ^ "!");
-                      let play1 = Player.buy_property location player1 in
                       if gui_flag then Gui.draw_player_window play1 player2;
                       {
                         p1 = Player.buy_property location player1;
@@ -211,10 +211,10 @@ let rec turn_actions (flow : flow) (player1 : Player.t) (player2 : Player.t)
                 match command with
                 | Command.Purchase ->
                     if owned = false then (
+                      let play1 = Player.buy_property location player1 in
                       print_endline
                         ("You have purchased " ^ Position.get_name location
                        ^ "!");
-                      let play1 = Player.buy_property location player1 in
                       if gui_flag then Gui.draw_player_window play1 player2;
                       { p1 = play1; p2 = player2 })
                     else (
@@ -236,12 +236,6 @@ let rec turn_actions (flow : flow) (player1 : Player.t) (player2 : Player.t)
                 | Command.Quit ->
                     if gui_flag then Gui.draw_exit ();
                     raise EndGame))
-      | Position.Rent data ->
-          (*if gui_flag then Gui.draw_player_window player1 player2;*)
-          raise
-            (Failure
-               "Unimplemented actions when a player lands on a Rent, line ~129 \
-                in bin.main/ml")
       | Position.Jail data ->
           let play1 = Player.go_to_jail player1 in
           if gui_flag then Gui.draw_player_window play1 player2;
@@ -304,7 +298,7 @@ let rec turn_actions (flow : flow) (player1 : Player.t) (player2 : Player.t)
       { p1 = player1; p2 = player2 }
   | Player.Broke ->
       if gui_flag then Gui.draw_exit ();
-      print_endline
+      ANSITerminal.print_string [ ANSITerminal.red ]
         (Player.get_name player1 ^ " has lost and " ^ Player.get_name player2
        ^ " has won.");
       raise EndGame
@@ -335,7 +329,9 @@ let rec player (flow : flow) (player1 : Player.t) (player2 : Player.t) : unit =
           match command with
           | Command.Quit ->
               if gui_flag then Gui.draw_exit ();
-              print_endline "The game has ended. Thanks for playing!";
+              print_endline "\n==============================================";
+              print_endline "| The game has ended. Thank you for playing! |";
+              print_endline "==============================================\n";
               player End player1 player2
           | Command.Roll ->
               let x = Random.int 10 + 2 in
@@ -356,7 +352,10 @@ let rec player (flow : flow) (player1 : Player.t) (player2 : Player.t) : unit =
           | Command.EndTurn ->
               print_endline "Your turn has ended.";
               player Play player2 player1)
-    else print_endline "The game has ended. Thanks for playing!"
+    else (
+      print_endline "\n==============================================";
+      print_endline "| The game has ended. Thank you for playing! |";
+      print_endline "==============================================\n")
   with
   | Command.Empty ->
       print_endline "Please enter a nonempty command.";
@@ -364,7 +363,10 @@ let rec player (flow : flow) (player1 : Player.t) (player2 : Player.t) : unit =
   | Command.Malformed ->
       print_endline "Please enter a valid command.";
       player Play player1 player2
-  | EndGame -> print_endline "The game has ended. Thank you for playing!"
+  | EndGame ->
+      print_endline "\n==============================================";
+      print_endline "| The game has ended. Thank you for playing! |";
+      print_endline "==============================================\n"
 
 (** [main ()] prompts for the game to play, then starts it. *)
 let main () =

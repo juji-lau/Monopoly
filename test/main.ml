@@ -248,6 +248,7 @@ let command_tests =
     parse_test "roll quit is Roll" parse "roll quit" Roll;
     parse_test "quit ewjiohgu is Roll" parse "quit ewjiohgu" Quit;
     parse_malformed_test "rollquit is Malformed" parse "rollquit";
+    parse_test "end raises Endturn" parse "end" EndTurn;
   ]
 
 let player_get_name_test (name : string) f (player : Player.t)
@@ -287,6 +288,18 @@ let withdraw_test (name : string) f (i : int) (player : Player.t)
     (expected_output : int) : test =
   name >:: fun _ -> assert_equal expected_output (account (f i player))
 
+let get_jail_test (name : string) f (player : Player.t) (expected_output : bool)
+    : test =
+  name >:: fun _ -> assert_equal expected_output (f player)
+
+let go_to_jail_test (name : string) f (player : Player.t)
+    (expected_output : bool) : test =
+  name >:: fun _ -> assert_equal expected_output (get_jail (f player))
+
+let free_from_jail_test (name : string) f (player : Player.t)
+    (expected_output : bool) : test =
+  name >:: fun _ -> assert_equal expected_output (get_jail (f player))
+
 let player1 = new_player "player1" Raylib.Color.red
 
 let player2 =
@@ -316,6 +329,12 @@ let player_tests =
     utilities_owned_test "player3 owns 1 utility" util_owned board player3 1;
     deposit_test "deposit 100 into player1 is 1600" deposit 100 player1 1600;
     withdraw_test "withdraw 100 from player1 is 1400" withdraw 100 player1 1400;
+    get_jail_test "player1 is not in jail" get_jail player1 false;
+    go_to_jail_test "player1 is in jail if they go to jail" go_to_jail player1
+      true;
+    go_to_jail_test
+      "player1 is not in jail if they go to jail then are free from jail"
+      free_from_jail (go_to_jail player1) false;
   ]
 
 let position_get_name_test (name : string) f (t : square)

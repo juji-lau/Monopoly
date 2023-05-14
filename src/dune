@@ -1,4 +1,6 @@
 (library
  (name monopoly)
  (public_name Monopoly)
- (libraries yojson ANSITerminal raylib))
+ (libraries yojson ANSITerminal raylib)
+ (instrumentation
+  (backend bisect_ppx)))
