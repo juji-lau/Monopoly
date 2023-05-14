@@ -5,6 +5,22 @@ open Position
 open Account
 open Command
 
+(* Test Plan - Every function is included in an OUnit test case in this suite
+   excluding functions related to the GUI - Outputs in the GUI and terminal were
+   manually tested by extensively playing the game - Lines of code are 95%
+   covered (shown from bisect) and mostly excludes errors that should not
+   actually occur in the flow of the program - OUnit test cases were first
+   developed by black-box testing where someone who didn't implement the
+   function tested it based only on looking at the specifications of the
+   function. In this way, the tester was also able to make clarifications in the
+   mli files about the functionalities. - Glass Box testing was also used when
+   trying to improve the coverage of our test cases and we made extra test cases
+   to cover code that bisect showed us was untested - This system is thus quite
+   thoroughly tested through both OUnit tests covering the lines of code as well
+   as manually playing the game until every square has been landed on by the
+   user to check its functionality even including testing that error messages
+   are shown where needed*)
+
 let cmp_set_like_lists lst1 lst2 =
   let uniq1 = List.sort_uniq compare lst1 in
   let uniq2 = List.sort_uniq compare lst2 in
@@ -59,7 +75,7 @@ let water_works = get_square_from_name "Water Works"
 let start = get_square_from_name "Go"
 let bo_railroad = get_square_from_name "B&O Railroad"
 let electric_company = get_square_from_name "Electric Company"
-let tax = get_square_from_name "a Community Chest"
+let tax = get_square_from_name "pay Tax"
 
 (* make a few players at various locations, with various properties: *)
 let alexandra0 = new_player "Alexandra" Raylib.Color.blue
@@ -314,6 +330,25 @@ let free_from_jail_test (name : string) f (player : Player.t)
 let broke_player_test (name : string) f (i : int) (player : Player.t) : test =
   name >:: fun _ -> assert_raises Broke (fun _ -> f i player)
 
+let mediterranean = get_square_from_name "Mediterranean Avenue"
+let vermont = get_square_from_name "Vermont Avenue"
+let connecticut = get_square_from_name "Connecticut Avenue"
+let charles = get_square_from_name "St. Charles Place"
+let states = get_square_from_name "States Avenue"
+let virginia = get_square_from_name "Virginia Avenue"
+let tennessee = get_square_from_name "Tennessee Avenue"
+let ny = get_square_from_name "New York Avenue"
+let kentucky = get_square_from_name "Kentucky Avenue"
+let indiana = get_square_from_name "Indiana Avenue"
+let illinois = get_square_from_name "Illinois Avenue"
+let atlantic = get_square_from_name "Atlantic Avenue"
+let marvin = get_square_from_name "Marvin Gardens"
+let pacific = get_square_from_name "Pacific Avenue"
+let nc = get_square_from_name "North Carolina Avenue"
+let pennsylvania = get_square_from_name "Pennsylvania Avenue"
+let park_place = get_square_from_name "Park Place"
+let penn_rail = get_square_from_name "Pennsylvania Railroad"
+let short_line = get_square_from_name "Short Line Railroad"
 let player1 = new_player "player1" Raylib.Color.red
 
 let player2 =

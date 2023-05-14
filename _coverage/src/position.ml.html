@@ -771,55 +771,55 @@ exception UnknownBoard of string
 (*Functions that process a Position.square*)
 (******************************************************************************)
 let get_name (s : square) : string =
-  <span data-count="1103">m</span>atch s with
-  | <span data-count="907">P</span>roperty p -&gt; p.name
-  | <span data-count="31">R</span>ailroad r -&gt; r.name
-  | <span data-count="13">U</span>tility u -&gt; u.name
-  | <span data-count="6">J</span>ail j -&gt; j.name
+  <span data-count="1639">m</span>atch s with
+  | <span data-count="1281">P</span>roperty p -&gt; p.name
+  | <span data-count="74">R</span>ailroad r -&gt; r.name
+  | <span data-count="20">U</span>tility u -&gt; u.name
+  | <span data-count="12">J</span>ail j -&gt; j.name
   | <span data-count="0">G</span>o_To_Jail g -&gt; g.name
-  | <span data-count="18">C</span>hance c -&gt; c.name
-  | <span data-count="36">C</span>ommunity_Chest c -&gt; c.name
+  | <span data-count="36">C</span>hance c -&gt; c.name
+  | <span data-count="77">C</span>ommunity_Chest c -&gt; c.name
   | <span data-count="0">F</span>ree_Parking f -&gt; f.name
-  | <span data-count="24">T</span>ax t -&gt; t.name
-  | <span data-count="68">S</span>tart s -&gt; s.name
+  | <span data-count="48">T</span>ax t -&gt; t.name
+  | <span data-count="91">S</span>tart s -&gt; s.name
 
 let get_index (s : square) : int =
-  <span data-count="853">m</span>atch s with
-  | <span data-count="658">P</span>roperty p -&gt; p.index
-  | <span data-count="40">R</span>ailroad r -&gt; r.index
-  | <span data-count="6">U</span>tility u -&gt; u.index
-  | <span data-count="2">J</span>ail j -&gt; j.index
+  <span data-count="929">m</span>atch s with
+  | <span data-count="704">P</span>roperty p -&gt; p.index
+  | <span data-count="48">R</span>ailroad r -&gt; r.index
+  | <span data-count="8">U</span>tility u -&gt; u.index
+  | <span data-count="3">J</span>ail j -&gt; j.index
   | <span data-count="0">G</span>o_To_Jail g -&gt; g.index
-  | <span data-count="10">C</span>hance c -&gt; c.index
-  | <span data-count="36">C</span>ommunity_Chest c -&gt; c.index
+  | <span data-count="13">C</span>hance c -&gt; c.index
+  | <span data-count="43">C</span>ommunity_Chest c -&gt; c.index
   | <span data-count="0">F</span>ree_Parking f -&gt; f.index
-  | <span data-count="20">T</span>ax t -&gt; t.index
-  | <span data-count="81">S</span>tart s -&gt; s.index
+  | <span data-count="24">T</span>ax t -&gt; t.index
+  | <span data-count="86">S</span>tart s -&gt; s.index
 
 let get_cost (s : square) : int =
-  <span data-count="142">m</span>atch s with
+  <span data-count="162">m</span>atch s with
   | <span data-count="122">P</span>roperty d -&gt; d.cost
-  | <span data-count="10">R</span>ailroad d -&gt; 200
-  | <span data-count="10">U</span>tility d -&gt; 150
+  | <span data-count="20">R</span>ailroad d -&gt; 200
+  | <span data-count="20">U</span>tility d -&gt; 150
   | <span data-count="0">_</span> -&gt; 0
 
 exception NoSquareOfIndex
 
 let rec square_index (b : t) (i : int) : square =
-  <span data-count="44">l</span>et lst = b.board in
+  <span data-count="47">l</span>et lst = b.board in
   let rec helper (lst2 : square list) (i : int) : square =
-    <span data-count="741">m</span>atch lst2 with
+    <span data-count="810">m</span>atch lst2 with
     | <span data-count="0">[</span>] -&gt; raise NoSquareOfIndex
-    | <span data-count="741">h</span> :: r -&gt; if get_inde<span data-count="741">x</span> h = i then <span data-count="44">h</span> else <span data-count="697">h</span>elper r i
+    | <span data-count="810">h</span> :: r -&gt; if get_inde<span data-count="810">x</span> h = i then <span data-count="47">h</span> else <span data-count="763">h</span>elper r i
   in
   helper lst i
 
 let rec square_name (b : t) (s : string) : square =
-  <span data-count="68">l</span>et lst = b.board in
+  <span data-count="91">l</span>et lst = b.board in
   let rec helper (lst2 : square list) (s : string) : square =
-    <span data-count="1050">m</span>atch lst2 with
+    <span data-count="1584">m</span>atch lst2 with
     | <span data-count="0">[</span>] -&gt; raise NoSquareOfIndex
-    | <span data-count="1050">h</span> :: r -&gt; if get_nam<span data-count="1050">e</span> h = s then <span data-count="68">h</span> else <span data-count="982">h</span>elper r s
+    | <span data-count="1584">h</span> :: r -&gt; if get_nam<span data-count="1584">e</span> h = s then <span data-count="91">h</span> else <span data-count="1493">h</span>elper r s
   in
   helper lst s
 (******************************************************************************)

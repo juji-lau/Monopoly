@@ -94,24 +94,24 @@ exception Empty
 exception Malformed
 
 let parse str =
-  <span data-count="15">l</span>et slist = String.split_on_char (char_of_in<span data-count="15">t</span> 32) str in
-  <span data-count="15">i</span>f slist = [] then <span data-count="0">r</span>aise Empty
+  <span data-count="18">l</span>et slist = String.split_on_char (char_of_in<span data-count="18">t</span> 32) str in
+  <span data-count="18">i</span>f slist = [] then <span data-count="0">r</span>aise Empty
   else
-    <span data-count="15">l</span>et rec elem s acc =
-      <span data-count="49">m</span>atch s with
-      | <span data-count="15">[</span>] -&gt; acc
-      | <span data-count="34">h</span> :: t1 -&gt; if h = "" then <span data-count="19">e</span>lem t1 acc else <span data-count="15">e</span>lem t1 (h :: acc)
+    <span data-count="18">l</span>et rec elem s acc =
+      <span data-count="82">m</span>atch s with
+      | <span data-count="18">[</span>] -&gt; acc
+      | <span data-count="64">h</span> :: t1 -&gt; if h = "" then <span data-count="43">e</span>lem t1 acc else <span data-count="21">e</span>lem t1 (h :: acc)
     in
     let s = elem slist [] in
-    <span data-count="15">l</span>et p = List.rev s in
-    <span data-count="15">m</span>atch p with
+    <span data-count="18">l</span>et p = List.rev s in
+    <span data-count="18">m</span>atch p with
     | <span data-count="2">[</span>] -&gt; raise Empty
-    | <span data-count="13">h</span> :: t2 -&gt;
+    | <span data-count="16">h</span> :: t2 -&gt;
         if h = "quit" then <span data-count="3">Q</span>uit
-        else <span data-count="10">i</span>f h = "roll" then <span data-count="3">R</span>oll
-        else <span data-count="7">i</span>f h = "purchase" then <span data-count="2">P</span>urchase
-        else <span data-count="5">i</span>f h = "end" then <span data-count="1">E</span>ndTurn
-        else <span data-count="4">r</span>aise Malformed
+        else <span data-count="13">i</span>f h = "roll" then <span data-count="3">R</span>oll
+        else <span data-count="10">i</span>f h = "purchase" then <span data-count="2">P</span>urchase
+        else <span data-count="8">i</span>f h = "end" then <span data-count="3">E</span>ndTurn
+        else <span data-count="5">r</span>aise Malformed
 </code></pre>
       </div>
     </div>

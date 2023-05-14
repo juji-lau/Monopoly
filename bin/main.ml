@@ -299,8 +299,8 @@ let rec turn_actions (flow : flow) (player1 : Player.t) (player2 : Player.t)
   | Player.Broke ->
       if gui_flag then Gui.draw_exit ();
       ANSITerminal.print_string [ ANSITerminal.red ]
-        (Player.get_name player1 ^ " has lost and " ^ Player.get_name player2
-       ^ " has won.");
+        (Player.get_name player1 ^ " has gone bankrupt, and "
+       ^ Player.get_name player2 ^ " has won.");
       raise EndGame
 
 (** [player state adv flow] parses the commands of the user into an action of
