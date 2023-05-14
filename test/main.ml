@@ -15,6 +15,8 @@ let cmp_set_like_lists lst1 lst2 =
 (** [pp_string s] pretty-prints string [s]. *)
 let pp_string s = "\"" ^ s ^ "\""
 
+let pp_int s = string_of_int s
+
 (** [pp_list pp_elt lst] pretty-prints list [lst], using [pp_elt] to
     pretty-print each element of [lst]. *)
 let pp_list pp_elt lst =
@@ -54,6 +56,10 @@ let marvin = get_square_from_name "Marvin Gardens"
 let boardwalk = get_square_from_name "Boardwalk"
 let reading_railroad = get_square_from_name "Reading Railroad"
 let water_works = get_square_from_name "Water Works"
+let start = get_square_from_name "Go"
+let bo_railroad = get_square_from_name "B&O Railroad"
+let electric_company = get_square_from_name "Electric Company"
+let tax = get_square_from_name "a Community Chest"
 
 (* make a few players at various locations, with various properties: *)
 let alexandra0 = new_player "Alexandra" Raylib.Color.blue
@@ -248,7 +254,12 @@ let command_tests =
     parse_test "roll quit is Roll" parse "roll quit" Roll;
     parse_test "quit ewjiohgu is Roll" parse "quit ewjiohgu" Quit;
     parse_malformed_test "rollquit is Malformed" parse "rollquit";
-    parse_test "end raises Endturn" parse "end" EndTurn;
+    parse_test "end is Endturn" parse "end" EndTurn;
+    parse_test "end with spaces is Endturn" parse "    end     " EndTurn;
+    parse_test "end with extra symbols after is EndTurn" parse
+      "    end    dnfr " EndTurn;
+    parse_malformed_test "end with extra symbols before is Malformed" parse
+      "  njwr  end    dnfr ";
   ]
 
 let player_get_name_test (name : string) f (player : Player.t)
@@ -257,7 +268,7 @@ let player_get_name_test (name : string) f (player : Player.t)
 
 let account_test (name : string) f (player : Player.t) (expected_output : int) :
     test =
-  name >:: fun _ -> assert_equal expected_output (f player)
+  name >:: fun _ -> assert_equal expected_output (f player) ~printer:pp_int
 
 let get_color_test (name : string) f (player : Player.t)
     (expected_output : Raylib.Color.t) : test =
@@ -300,6 +311,9 @@ let free_from_jail_test (name : string) f (player : Player.t)
     (expected_output : bool) : test =
   name >:: fun _ -> assert_equal expected_output (get_jail (f player))
 
+let broke_player_test (name : string) f (i : int) (player : Player.t) : test =
+  name >:: fun _ -> assert_raises Broke (fun _ -> f i player)
+
 let player1 = new_player "player1" Raylib.Color.red
 
 let player2 =
@@ -307,34 +321,100 @@ let player2 =
   |> buy_property boardwalk |> move 2 board
   |> buy_property reading_railroad
 
-let player3 = player1 |> move 41 board |> buy_property water_works
+let player3 = player1 |> move 41 board |> buy_property water_works |> go_to_jail
+let player4 = player2 |> buy_property bo_railroad
+let player5 = player3 |> buy_property electric_company
 
 let player_tests =
   [
     player_get_name_test "name of player1 is player1" Player.get_name player1
       "player1";
+    player_get_name_test "name of player2 is player1" Player.get_name player1
+      "player1";
+    player_get_name_test "name of player3 is player1" Player.get_name player1
+      "player1";
+    player_get_name_test "name of player4 is player1" Player.get_name player1
+      "player1";
+    player_get_name_test "name of player5 is player1" Player.get_name player1
+      "player1";
     account_test "account of player1 is 1500" account player1 1500;
+    account_test "account of player2 is 740" account player2 740;
+    account_test "account of player3 is 1350" account player3 1350;
+    account_test "account of player4 is 540" account player4 540;
+    account_test "account of player5 is 1200" account player5 1200;
     get_color_test "color of player1 is red" get_color player1 Raylib.Color.red;
+    get_color_test "color of player2 is red" get_color player2 Raylib.Color.red;
+    get_color_test "color of player3 is red" get_color player3 Raylib.Color.red;
+    get_color_test "color of player4 is red" get_color player4 Raylib.Color.red;
+    get_color_test "color of player5 is red" get_color player5 Raylib.Color.red;
     get_owned_properties_test "player1 has no properties" get_owned_properties
       player1 [];
     get_owned_properties_test
       "player2 owns baltic, oriental, boardwalk and reading railroad"
       get_owned_properties player2
       [ baltic; oriental; boardwalk; reading_railroad ];
+    get_owned_properties_test "player3 owns water works" get_owned_properties
+      player3 [ water_works ];
+    get_owned_properties_test
+      "player4 owns baltic, oriental, boardwalk, reading railroad, and bo \
+       railroad"
+      get_owned_properties player4
+      [ baltic; oriental; boardwalk; reading_railroad; bo_railroad ];
+    get_owned_properties_test "player5 owns water works and electric company"
+      get_owned_properties player5
+      [ water_works; electric_company ];
+    current_location_test "player1 location is 0" current_location player1 0;
     current_location_test "player2 location is 2" current_location player2 2;
     current_location_test "player3 location is 1" current_location player3 1;
+    current_location_test "player4 location is 2" current_location player4 2;
+    current_location_test "player5 location is 1" current_location player5 1;
+    current_location_test "sophie37 location is 37" current_location sophie37 37;
     rails_owned_test "player1 owns no rails" rails_owned board player1 0;
     rails_owned_test "player2 owns 1 rail" rails_owned board player2 1;
+    rails_owned_test "player3 owns 0 rail" rails_owned board player3 0;
+    rails_owned_test "player4 owns 2 rail" rails_owned board player4 2;
+    rails_owned_test "player5 owns 0 rail" rails_owned board player5 0;
     utilities_owned_test "player1 owns no utilities" util_owned board player1 0;
+    utilities_owned_test "player2 owns 0 utility" util_owned board player2 0;
     utilities_owned_test "player3 owns 1 utility" util_owned board player3 1;
+    utilities_owned_test "player4 owns 0 utility" util_owned board player4 0;
+    utilities_owned_test "player5 owns 2 utility" util_owned board player5 2;
     deposit_test "deposit 100 into player1 is 1600" deposit 100 player1 1600;
+    deposit_test "deposit 240 into player2 is 980" deposit 240 player2 980;
+    deposit_test "deposit ~-100 into player3 is 1250" deposit ~-100 player3 1250;
     withdraw_test "withdraw 100 from player1 is 1400" withdraw 100 player1 1400;
+    withdraw_test "withdraw 1500 from player1 is 0" withdraw 1500 player1 0;
+    withdraw_test "400 from player2 is 340" withdraw 400 player2 340;
+    broke_player_test "withdraw 1501 from player1 raises Broke" withdraw 1501
+      player1;
+    broke_player_test "withdraw 1400 from player3 raises Broke" withdraw 1400
+      player3;
     get_jail_test "player1 is not in jail" get_jail player1 false;
+    get_jail_test "player3 is in jail" get_jail player3 true;
+    get_jail_test "player2 is not in jail" get_jail player2 false;
+    get_jail_test "player4 is not in jail" get_jail player4 false;
+    get_jail_test "player5 is in jail" get_jail player5 true;
     go_to_jail_test "player1 is in jail if they go to jail" go_to_jail player1
       true;
-    go_to_jail_test
+    go_to_jail_test "player2 is in jail if they go to jail" go_to_jail player2
+      true;
+    go_to_jail_test "player4 is in jail if they go to jail" go_to_jail player4
+      true;
+    free_from_jail_test
       "player1 is not in jail if they go to jail then are free from jail"
       free_from_jail (go_to_jail player1) false;
+    free_from_jail_test
+      "player2 is not in jail if they go to jail then are free from jail"
+      free_from_jail (go_to_jail player2) false;
+    free_from_jail_test
+      "player3 is not in jail if they go to jail then are free from jail"
+      free_from_jail (go_to_jail player3) false;
+    free_from_jail_test
+      "player4 is not in jail if they go to jail then are free from jail"
+      free_from_jail (go_to_jail player4) false;
+    free_from_jail_test
+      "player5 is not in jail if they go to jail then are free from jail"
+      free_from_jail (go_to_jail player5) false;
   ]
 
 let position_get_name_test (name : string) f (t : square)
@@ -366,21 +446,39 @@ let position_tests =
       Position.get_name reading_railroad "Reading Railroad";
     position_get_name_test "name of water_works is Water Works"
       Position.get_name water_works "Water Works";
+    position_get_name_test "name of bo_railroad is B&O Railroad"
+      Position.get_name bo_railroad "B&O Railroad";
+    position_get_name_test "name of electric_company is Electric Company"
+      Position.get_name electric_company "Electric Company";
     get_index_test "index of baltic is 3" get_index baltic 3;
     get_index_test "index of reading_railroad is 5" get_index reading_railroad 5;
     get_index_test "index of water_works is 28" get_index water_works 28;
+    get_index_test "index of bo_railroad is 25" get_index bo_railroad 25;
+    get_index_test "index of electric_company is 12" get_index electric_company
+      12;
+    get_index_test "index of start is 0" get_index start 0;
     get_initial_test "initial square is Go" get_initial board start;
     square_index_test "square at index 3 is baltic" square_index board 3 baltic;
     square_index_test "square at index 5 is reading_railroad" square_index board
       5 reading_railroad;
     square_index_test "square at index 28 is water_works" square_index board 28
       water_works;
+    square_index_test "square at index 25 is bo_railroad" square_index board 25
+      bo_railroad;
+    square_index_test "square at index 12 is electric_company" square_index
+      board 12 electric_company;
+    square_index_test "square at index 0 is start" square_index board 0 start;
     square_name_test "square with name Baltic Avenue is baltic" square_name
       board "Baltic Avenue" baltic;
     square_name_test "square with name Reading Railraod is reading_railroad"
       square_name board "Reading Railroad" reading_railroad;
     square_name_test "square with name Water Works is water_works" square_name
       board "Water Works" water_works;
+    square_name_test "square with name Go is start" square_name board "Go" start;
+    square_name_test "square with name B&O Railroad is bo_railroad" square_name
+      board "B&O Railroad" bo_railroad;
+    square_name_test "square with name Electric Company is electric_company"
+      square_name board "Electric Company" electric_company;
   ]
 
 let suite =
