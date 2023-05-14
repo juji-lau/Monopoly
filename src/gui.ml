@@ -372,7 +372,6 @@ let player_position player1 player2 =
     draw_circle p2_rightx p2_bottomy p_radius color2
 
 let rec draw_player_window player1 player2 =
-  (* if Raylib.window_should_close () then Raylib.close_window () else*)
   begin_drawing ();
   clear_background Color.white;
   draw_board_base ();
