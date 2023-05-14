@@ -7,6 +7,20 @@ val setup : unit -> unit
 val draw_intro : unit -> unit
 (** [draw_intro] draws the introduction window *)
 
+val draw_board_base : unit -> unit
+(** [draw_board_base] draws the background monopoly board. *)
+
+val center_text : int -> int -> string -> Raylib.Color.t -> unit
+(** [center_text line_num total_lines string color] prints [string] in the
+    middle of the page with the color [color]. To print longer messages, call
+    [center_text] should be called for each line. [line_num] is the line number
+    of the message and [total_lines] is the total number of lines in the
+    message. *)
+
+val print_insns : string -> Raylib.Color.t -> unit
+(** [print_insns insns color] prints the instructions [insns] at the bottom of
+    the page, under the board. *)
+
 val print_player_stats : Player.t -> unit
 (** [print_stats player] prints the name, balance, position, and properties
     owned of the current player *)
@@ -17,9 +31,9 @@ val player_position : Player.t -> Player.t -> unit
     [player1] is the current player. *)
 
 val draw_player_window : Player.t -> Player.t -> unit
-(** [draw_player_window player1 player2] draws the window showing the
-    state of the [player1] and the location of [player2]. [player1] is the
-    current player. *)
+(** [draw_player_window player1 player2] draws the window showing the state of
+    the [player1] and the location of [player2]. [player1] is the current
+    player. *)
 
 val draw_exit : unit -> unit
 (** [draw_exit] draws the exit window, when a player types "Quit" into the
