@@ -771,17 +771,17 @@ exception UnknownBoard of string
 (*Functions that process a Position.square*)
 (******************************************************************************)
 let get_name (s : square) : string =
-  <span data-count="1639">m</span>atch s with
-  | <span data-count="1281">P</span>roperty p -&gt; p.name
-  | <span data-count="74">R</span>ailroad r -&gt; r.name
+  <span data-count="3054">m</span>atch s with
+  | <span data-count="2506">P</span>roperty p -&gt; p.name
+  | <span data-count="104">R</span>ailroad r -&gt; r.name
   | <span data-count="20">U</span>tility u -&gt; u.name
   | <span data-count="12">J</span>ail j -&gt; j.name
   | <span data-count="0">G</span>o_To_Jail g -&gt; g.name
   | <span data-count="36">C</span>hance c -&gt; c.name
-  | <span data-count="77">C</span>ommunity_Chest c -&gt; c.name
+  | <span data-count="117">C</span>ommunity_Chest c -&gt; c.name
   | <span data-count="0">F</span>ree_Parking f -&gt; f.name
-  | <span data-count="48">T</span>ax t -&gt; t.name
-  | <span data-count="91">S</span>tart s -&gt; s.name
+  | <span data-count="73">T</span>ax t -&gt; t.name
+  | <span data-count="186">S</span>tart s -&gt; s.name
 
 let get_index (s : square) : int =
   <span data-count="929">m</span>atch s with
@@ -815,11 +815,11 @@ let rec square_index (b : t) (i : int) : square =
   helper lst i
 
 let rec square_name (b : t) (s : string) : square =
-  <span data-count="91">l</span>et lst = b.board in
+  <span data-count="186">l</span>et lst = b.board in
   let rec helper (lst2 : square list) (s : string) : square =
-    <span data-count="1584">m</span>atch lst2 with
+    <span data-count="2999">m</span>atch lst2 with
     | <span data-count="0">[</span>] -&gt; raise NoSquareOfIndex
-    | <span data-count="1584">h</span> :: r -&gt; if get_nam<span data-count="1584">e</span> h = s then <span data-count="91">h</span> else <span data-count="1493">h</span>elper r s
+    | <span data-count="2999">h</span> :: r -&gt; if get_nam<span data-count="2999">e</span> h = s then <span data-count="186">h</span> else <span data-count="2813">h</span>elper r s
   in
   helper lst s
 (******************************************************************************)

@@ -15,11 +15,13 @@ open Command
    function. In this way, the tester was also able to make clarifications in the
    mli files about the functionalities. - Glass Box testing was also used when
    trying to improve the coverage of our test cases and we made extra test cases
-   to cover code that bisect showed us was untested - This system is thus quite
-   thoroughly tested through both OUnit tests covering the lines of code as well
-   as manually playing the game until every square has been landed on by the
-   user to check its functionality even including testing that error messages
-   are shown where needed*)
+   to cover code that bisect showed us was untested - We also chose random
+   properties to test in unit testing while making sure each type of square on
+   the board is tested - This system is thus quite thoroughly tested through
+   both OUnit tests covering the lines of code as well as manually playing the
+   game until every square has been landed on by the user to check its
+   functionality even including testing that error messages are shown where
+   needed*)
 
 let cmp_set_like_lists lst1 lst2 =
   let uniq1 = List.sort_uniq compare lst1 in
