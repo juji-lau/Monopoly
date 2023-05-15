@@ -1,0 +1,449 @@
+{
+  "start": [
+    {
+      "index": 0,
+      "name": "Go"
+    }
+  ],
+  "property": [
+    {
+      "index": 1,
+      "name": "Mediterranean Avenue",
+      "set": "brown",
+      "cost": 60,
+      "rent": 2,
+      "rent_set": 4,
+      "r_1house": 10,
+      "r_2house": 30,
+      "r_3house": 90,
+      "r_4house": 160,
+      "r_hotel": 250,
+      "building_cost": 50,
+      "mortgage": 30,
+      "unmortgage": 33
+    },
+    {
+      "index": 3,
+      "name": "Baltic Avenue",
+      "set": "brown",
+      "cost": 60,
+      "rent": 4,
+      "rent_set": 8,
+      "r_1house": 20,
+      "r_2house": 60,
+      "r_3house": 180,
+      "r_4house": 320,
+      "r_hotel": 450,
+      "building_cost": 50,
+      "mortgage": 30,
+      "unmortgage": 33
+    },
+    {
+      "index": 6,
+      "name": "Oriental Avenue",
+      "set": "l_blue",
+      "cost": 100,
+      "rent": 6,
+      "rent_set": 12,
+      "r_1house": 30,
+      "r_2house": 90,
+      "r_3house": 270,
+      "r_4house": 400,
+      "r_hotel": 550,
+      "building_cost": 50,
+      "mortgage": 50,
+      "unmortgage": 55
+    },
+    {
+      "index": 8,
+      "name": "Vermont Avenue",
+      "set": "l_blue",
+      "cost": 100,
+      "rent": 6,
+      "rent_set": 12,
+      "r_1house": 30,
+      "r_2house": 90,
+      "r_3house": 270,
+      "r_4house": 400,
+      "r_hotel": 550,
+      "building_cost": 50,
+      "mortgage": 50,
+      "unmortgage": 55
+    },
+    {
+      "index": 9,
+      "name": "Connecticut Avenue",
+      "set": "l_blue",
+      "cost": 120,
+      "rent": 8,
+      "rent_set": 16,
+      "r_1house": 40,
+      "r_2house": 100,
+      "r_3house": 300,
+      "r_4house": 450,
+      "r_hotel": 600,
+      "building_cost": 50,
+      "mortgage": 60,
+      "unmortgage": 66
+    },
+    {
+      "index": 11,
+      "name": "St. Charles Place",
+      "set": "pink",
+      "cost": 140,
+      "rent": 10,
+      "rent_set": 20,
+      "r_1house": 50,
+      "r_2house": 150,
+      "r_3house": 450,
+      "r_4house": 625,
+      "r_hotel": 750,
+      "building_cost": 100,
+      "mortgage": 70,
+      "unmortgage": 77
+    },
+    {
+      "index": 13,
+      "name": "States Avenue",
+      "set": "pink",
+      "cost": 140,
+      "rent": 10,
+      "rent_set": 20,
+      "r_1house": 50,
+      "r_2house": 150,
+      "r_3house": 450,
+      "r_4house": 625,
+      "r_hotel": 750,
+      "building_cost": 100,
+      "mortgage": 70,
+      "unmortgage": 77
+    },
+    {
+      "index": 14,
+      "name": "Virginia Avenue",
+      "set": "pink",
+      "cost": 160,
+      "rent": 12,
+      "rent_set": 24,
+      "r_1house": 60,
+      "r_2house": 180,
+      "r_3house": 500,
+      "r_4house": 700,
+      "r_hotel": 900,
+      "building_cost": 100,
+      "mortgage": 80,
+      "unmortgage": 88
+    },
+    {
+      "index": 16,
+      "name": "St. James Place",
+      "set": "orange",
+      "cost": 180,
+      "rent": 14,
+      "rent_set": 28,
+      "r_1house": 70,
+      "r_2house": 200,
+      "r_3house": 550,
+      "r_4house": 750,
+      "r_hotel": 950,
+      "building_cost": 100,
+      "mortgage": 90,
+      "unmortgage": 99
+    },
+    {
+      "index": 18,
+      "name": "Tennessee Avenue",
+      "set": "orange",
+      "cost": 180,
+      "rent": 14,
+      "rent_set": 28,
+      "r_1house": 70,
+      "r_2house": 200,
+      "r_3house": 550,
+      "r_4house": 750,
+      "r_hotel": 950,
+      "building_cost": 100,
+      "mortgage": 90,
+      "unmortgage": 99
+    },
+    {
+      "index": 19,
+      "name": "New York Avenue",
+      "set": "orange",
+      "cost": 200,
+      "rent": 16,
+      "rent_set": 32,
+      "r_1house": 80,
+      "r_2house": 220,
+      "r_3house": 600,
+      "r_4house": 800,
+      "r_hotel": 1000,
+      "building_cost": 100,
+      "mortgage": 100,
+      "unmortgage": 110
+    },
+    {
+      "index": 21,
+      "name": "Kentucky Avenue",
+      "set": "red",
+      "cost": 220,
+      "rent": 18,
+      "rent_set": 36,
+      "r_1house": 90,
+      "r_2house": 250,
+      "r_3house": 700,
+      "r_4house": 875,
+      "r_hotel": 1050,
+      "building_cost": 150,
+      "mortgage": 110,
+      "unmortgage": 121
+    },
+    {
+      "index": 23,
+      "name": "Indiana Avenue",
+      "set": "red",
+      "cost": 220,
+      "rent": 18,
+      "rent_set": 36,
+      "r_1house": 90,
+      "r_2house": 250,
+      "r_3house": 700,
+      "r_4house": 875,
+      "r_hotel": 1050,
+      "building_cost": 150,
+      "mortgage": 110,
+      "unmortgage": 121
+    },
+    {
+      "index": 24,
+      "name": "Illinois Avenue",
+      "set": "red",
+      "cost": 240,
+      "rent": 20,
+      "rent_set": 40,
+      "r_1house": 100,
+      "r_2house": 300,
+      "r_3house": 750,
+      "r_4house": 925,
+      "r_hotel": 1100,
+      "building_cost": 150,
+      "mortgage": 120,
+      "unmortgage": 132
+    },
+    {
+      "index": 26,
+      "name": "Atlantic Avenue",
+      "set": "yellow",
+      "cost": 260,
+      "rent": 22,
+      "rent_set": 44,
+      "r_1house": 110,
+      "r_2house": 330,
+      "r_3house": 800,
+      "r_4house": 975,
+      "r_hotel": 1150,
+      "building_cost": 150,
+      "mortgage": 130,
+      "unmortgage": 143
+    },
+    {
+      "index": 27,
+      "name": "Ventnor Avenue",
+      "set": "yellow",
+      "cost": 240,
+      "rent": 22,
+      "rent_set": 44,
+      "r_1house": 110,
+      "r_2house": 330,
+      "r_3house": 800,
+      "r_4house": 975,
+      "r_hotel": 1150,
+      "building_cost": 150,
+      "mortgage": 130,
+      "unmortgage": 143
+    },
+    {
+      "index": 29,
+      "name": "Marvin Gardens",
+      "set": "yellow",
+      "cost": 280,
+      "rent": 24,
+      "rent_set": 48,
+      "r_1house": 120,
+      "r_2house": 360,
+      "r_3house": 850,
+      "r_4house": 1025,
+      "r_hotel": 1200,
+      "building_cost": 150,
+      "mortgage": 140,
+      "unmortgage": 154
+    },
+    {
+      "index": 31,
+      "name": "Pacific Avenue",
+      "set": "green",
+      "cost": 300,
+      "rent": 26,
+      "rent_set": 52,
+      "r_1house": 130,
+      "r_2house": 390,
+      "r_3house": 900,
+      "r_4house": 1100,
+      "r_hotel": 1275,
+      "building_cost": 200,
+      "mortgage": 150,
+      "unmortgage": 165
+    },
+    {
+      "index": 32,
+      "name": "North Carolina Avenue",
+      "set": "green",
+      "cost": 300,
+      "rent": 26,
+      "rent_set": 52,
+      "r_1house": 130,
+      "r_2house": 390,
+      "r_3house": 900,
+      "r_4house": 1100,
+      "r_hotel": 1275,
+      "building_cost": 200,
+      "mortgage": 150,
+      "unmortgage": 165
+    },
+    {
+      "index": 34,
+      "name": "Pennsylvania Avenue",
+      "set": "green",
+      "cost": 320,
+      "rent": 28,
+      "rent_set": 56,
+      "r_1house": 150,
+      "r_2house": 450,
+      "r_3house": 1000,
+      "r_4house": 1200,
+      "r_hotel": 1400,
+      "building_cost": 200,
+      "mortgage": 160,
+      "unmortgage": 176
+    },
+    {
+      "index": 37,
+      "name": "Park Place",
+      "set": "blue",
+      "cost": 350,
+      "rent": 35,
+      "rent_set": 70,
+      "r_1house": 175,
+      "r_2house": 500,
+      "r_3house": 1100,
+      "r_4house": 1300,
+      "r_hotel": 1500,
+      "building_cost": 200,
+      "mortgage": 175,
+      "unmortgage": 193
+    },
+    {
+      "index": 39,
+      "name": "Boardwalk",
+      "set": "blue",
+      "cost": 400,
+      "rent": 50,
+      "rent_set": 100,
+      "r_1house": 200,
+      "r_2house": 600,
+      "r_3house": 1400,
+      "r_4house": 1700,
+      "r_hotel": 2000,
+      "building_cost": 200,
+      "mortgage": 200,
+      "unmortgage": 220
+    }
+  ],
+  "community_chests": [
+    {
+      "index": 2,
+      "name": "a Community Chest"
+    },
+    {
+      "index": 17,
+      "name": "a Community Chest"
+    },
+    {
+      "index": 33,
+      "name": "a Community Chest"
+    }
+  ],
+  "tax": [
+    {
+      "index": 4,
+      "name": "pay Tax",
+      "cost": 100
+    },
+    {
+      "index": 38,
+      "name": "pay Tax",
+      "cost": 200
+    }
+  ],
+  "railroads": [
+    {
+      "index": 5,
+      "name": "Reading Railroad"
+    },
+    {
+      "index": 15,
+      "name": "Pennsylvania Railroad"
+    },
+    {
+      "index": 25,
+      "name": "B&O Railroad"
+    },
+    {
+      "index": 35,
+      "name": "Short Line Railroad"
+    }
+  ],
+  "chance": [
+    {
+      "index": 7,
+      "name": "Chance"
+    },
+    {
+      "index": 22,
+      "name": "Chance"
+    },
+    {
+      "index": 36,
+      "name": "Chance"
+    }
+  ],
+  "jail": [
+    {
+      "index": 10,
+      "name": "Jail",
+      "cost": 50
+    }
+  ],
+  "utility": [
+    {
+      "index": 12,
+      "name": "Electric Company"
+    },
+    {
+      "index": 28,
+      "name": "Water Works"
+    }
+  ],
+  "free_parking": [
+    {
+      "index": 20,
+      "name": "Free Parking"
+    }
+  ],
+  "go_to_jail": [
+    {
+      "index": 30,
+      "name": "Go to Jail"
+    }
+  ]
+}

@@ -10,7 +10,8 @@
     verb and possibly an object phrase. *)
 type command =
   | Roll
-  | Purchase of string list 
+  | Purchase
+  | EndTurn
   | Quit
 
 exception Empty
@@ -20,9 +21,11 @@ exception Malformed
 (** Raised when a malformed command is parsed. *)
 
 val parse : string -> command
-(** [parse str] parses a player's input into a [command].
-    Requires: [str] contains only alphanumeric (A-Z, a-z, 0-9) and space
-    characters (only ASCII character code 32; not tabs or newlines, etc.).
+(** [parse str] parses a player's input into a [command]. Requires: [str]
+    contains only alphanumeric (A-Z, a-z, 0-9) and space characters (only ASCII
+    character code 32; not tabs or newlines, etc.). The first instance of a
+    command in [str] is recognized even if there are multiple possible command
+    words or other noise in [str].
 
     Raises: [Empty] if [str] is the empty string or contains only spaces.
 

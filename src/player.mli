@@ -7,30 +7,67 @@
 type t
 (** The abstract type of values representing players. *)
 
-val new_player : string -> t
+val new_player : string -> Raylib.Color.t -> t
 (** [new_player s] is the player that [s] represents. *)
 
-val get_board : t -> Board.t
-(** [get_board p] is the board that [p] represents. *)
+(*_______Functions that give data about the player_______*)
 
-val get_owned_properties : t -> string list
-(** [get_owned_properties p] is the list of owned properties of player [p]
-    categorized by the string titles of the tiles*)
+val get_name : t -> string
+(** [get_name player] is the string representation of the [player]. *)
 
-val current_location : t -> int
+val account : t -> int
+(** [account p] is the amount of money in the bank account for the player that
+    [p] represents. *)
+
+val get_color : t -> Raylib.Color.t
+(** [get_color player] is the color of the dot representing [player] on the gui*)
+
+val get_owned_properties : t -> Position.square list
+(** [get_owned_properties p] is the list of owned properties (including
+    railroads and utilities) of player [p] categorized by the string titles of
+    the tiles. *)
+
+val current_location : t -> Position.square
 (** [current_location p] is the current board position of the player [p]. *)
 
-val move : int -> t -> t
-(** [move x p] is the new position of the player [p] after rolling the die. *)
-
-val tile_owned : t -> string -> bool
+val tile_owned : t -> Position.square -> bool
 (** [tile_owned pl pr] returns true if the property [pr] is owned by player [pl]*)
 
-val buy_property : string -> t -> t
-(** [buy_property pr pl] adds the property string title [pr] to the purchased
-    properties of player [pl]*)
+val get_jail : t -> bool
+(** [get_jail player] is the boolean value reprersenting whether [player] is in
+    jail *)
 
-(** questions about buy_property: what happens when: a misspelled or nonexistant
-    property is bought, if a property is bought twice by the same player, when
-    the same property is bought by a different player, how is the string list of
-    properties sortged?*)
+(*_______Functions that return a changed player_______*)
+
+val move : int -> Position.t -> t -> t
+(** [move x b p] is the new position of the player [p] after rolling the die. *)
+
+val go_to_jail : t -> t
+(** [go_to_jail player] sets the [player] jail record field to true. *)
+
+val free_from_jail : t -> t
+(** [free_from_jail player] sets the [player] jail record field to false. *)
+
+exception ExpensiveProperty
+
+val buy_property : Position.square -> t -> t
+(** [buy_property pr pl] adds the property square representation [pr] to the
+    purchased properties of player [pl], but will not allow the player to
+    purchase the property if they cannot afford it (raises ExpensiveProperty)*)
+
+val rails_owned : Position.t -> t -> int
+(** [rails_owned b pl] is the number of railroad squares owned by player [pl] in
+    board [b] *)
+
+val util_owned : Position.t -> t -> int
+(** [util_owned b pl] is the number of utility squares owned by player [pl] in
+    board [b] *)
+
+exception Broke
+
+val deposit : int -> t -> t
+(** [deposit i pl] deposits [i] dollars into the account of the player [pl]*)
+
+val withdraw : int -> t -> t
+(** [withdraw i pl] removes [i] dollars from the account of the player [pl]. If
+    [pl] has less than [i] dollars in their account then raises Broke. *)
