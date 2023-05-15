@@ -46,7 +46,6 @@ let move (x : int) (b : Position.t) (p : t) : t =
     {
       (* move backwards *)
       name = p.name;
-<<<<<<< HEAD
       account = p.account;
       current = Position.square_index b (40 + new_position);
       properties = p.properties;
@@ -99,19 +98,6 @@ let util_owned (b : Position.t) (pl : t) : int =
   helper p_lst
 
 let deposit (i : int) (pl : t) : t =
-=======
-      board = Board.move_to p.board x;
-      current = current_location p + x;
-      properties = p.properties;
-    }
-
-let tile_owned (pl : t) (pr : string) : bool = List.mem pr pl.properties
-
-let buy_property (pr : string) (pl : t) : t =
-  let n_prop =
-    if tile_owned pl pr then pl.properties else pr :: pl.properties
-  in
->>>>>>> e1c094dbd2c1ea62abcea831fe28120cb09c7d8e
   {
     name = pl.name;
     account = pl.account + i;

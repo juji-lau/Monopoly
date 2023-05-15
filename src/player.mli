@@ -12,14 +12,8 @@ val new_player : string -> Raylib.Color.t -> t
 
 (*_______Functions that give data about the player_______*)
 
-<<<<<<< HEAD
 val get_name : t -> string
 (** [get_name player] is the string representation of the [player]. *)
-=======
-val get_owned_properties : t -> string list
-(** [get_owned_properties p] is the list of owned properties of player [p]
-    categorized by the string titles of the tiles*)
->>>>>>> e1c094dbd2c1ea62abcea831fe28120cb09c7d8e
 
 val account : t -> int
 (** [account p] is the amount of money in the bank account for the player that
