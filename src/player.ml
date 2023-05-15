@@ -10,6 +10,7 @@ type t = {
   jail : bool;
 }
 
+<<<<<<< HEAD
 let new_player (name : string) (color : Raylib.Color.t) : t =
   {
     name;
@@ -33,6 +34,19 @@ let get_color (player : t) : Raylib.Color.t = player.color
 let move (x : int) (b : Position.t) (p : t) : t =
   let new_position = Position.get_index p.current + x in
   if new_position >= 0 then
+=======
+let new_player s =
+  { name = s; board = Board.init; current = 0; properties = [] }
+
+let get_board p = p.board
+let current_location p = p.current
+let get_owned_properties (p : t) : string list = p.properties;;
+
+Random.self_init ()
+
+let move x p =
+  if x >= 36 then
+>>>>>>> e1c094dbd2c1ea62abcea831fe28120cb09c7d8e
     {
       (* move fowards *)
       name = p.name;
@@ -46,6 +60,7 @@ let move (x : int) (b : Position.t) (p : t) : t =
     {
       (* move backwards *)
       name = p.name;
+<<<<<<< HEAD
       account = p.account;
       current = Position.square_index b (40 + new_position);
       properties = p.properties;
@@ -98,10 +113,24 @@ let util_owned (b : Position.t) (pl : t) : int =
   helper p_lst
 
 let deposit (i : int) (pl : t) : t =
+=======
+      board = Board.move_to p.board x;
+      current = current_location p + x;
+      properties = p.properties;
+    }
+
+let tile_owned (pl : t) (pr : string) : bool = List.mem pr pl.properties
+
+let buy_property (pr : string) (pl : t) : t =
+  let n_prop =
+    if tile_owned pl pr then pl.properties else pr :: pl.properties
+  in
+>>>>>>> e1c094dbd2c1ea62abcea831fe28120cb09c7d8e
   {
     name = pl.name;
     account = pl.account + i;
     current = pl.current;
+<<<<<<< HEAD
     properties = pl.properties;
     color = pl.color;
     jail = pl.jail;
@@ -123,3 +152,7 @@ let withdraw (i : int) (pl : t) : t =
 
 let go_to_jail (p : t) = { p with jail = true }
 let free_from_jail (p : t) = { p with jail = false }
+=======
+    properties = n_prop;
+  }
+>>>>>>> e1c094dbd2c1ea62abcea831fe28120cb09c7d8e

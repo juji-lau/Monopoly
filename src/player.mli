@@ -12,8 +12,14 @@ val new_player : string -> Raylib.Color.t -> t
 
 (*_______Functions that give data about the player_______*)
 
+<<<<<<< HEAD
 val get_name : t -> string
 (** [get_name player] is the string representation of the [player]. *)
+=======
+val get_owned_properties : t -> string list
+(** [get_owned_properties p] is the list of owned properties of player [p]
+    categorized by the string titles of the tiles*)
+>>>>>>> e1c094dbd2c1ea62abcea831fe28120cb09c7d8e
 
 val account : t -> int
 (** [account p] is the amount of money in the bank account for the player that
@@ -30,6 +36,7 @@ val get_owned_properties : t -> Position.square list
 val current_location : t -> Position.square
 (** [current_location p] is the current board position of the player [p]. *)
 
+<<<<<<< HEAD
 val tile_owned : t -> Position.square -> bool
 (** [tile_owned pl pr] returns true if the property [pr] is owned by player [pl]*)
 
@@ -71,3 +78,19 @@ val deposit : int -> t -> t
 val withdraw : int -> t -> t
 (** [withdraw i pl] removes [i] dollars from the account of the player [pl]. If
     [pl] has less than [i] dollars in their account then raises Broke. *)
+=======
+val move : int -> t -> t
+(** [move x p] is the new position of the player [p] after rolling the die. *)
+
+val tile_owned : t -> string -> bool
+(** [tile_owned pl pr] returns true if the property [pr] is owned by player [pl]*)
+
+val buy_property : string -> t -> t
+(** [buy_property pr pl] adds the property string title [pr] to the purchased
+    properties of player [pl]*)
+
+(** questions about buy_property: what happens when: a misspelled or nonexistant
+    property is bought, if a property is bought twice by the same player, when
+    the same property is bought by a different player, how is the string list of
+    properties sortged?*)
+>>>>>>> e1c094dbd2c1ea62abcea831fe28120cb09c7d8e
