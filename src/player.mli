@@ -56,12 +56,12 @@ val buy_property : Position.square -> t -> t
     purchase the property if they cannot afford it (raises ExpensiveProperty)*)
 
 val rails_owned : Position.t -> t -> int
-(*[rails_owned b pl] is the number of railroad squares owned by player [pl] in
-  board [b] *)
+(** [rails_owned b pl] is the number of railroad squares owned by player [pl] in
+    board [b] *)
 
 val util_owned : Position.t -> t -> int
-(*[util_owned b pl] is the number of utility squares owned by player [pl] in
-  board [b] *)
+(** [util_owned b pl] is the number of utility squares owned by player [pl] in
+    board [b] *)
 
 exception Broke
 
