@@ -52,8 +52,6 @@ let setup () =
   Raylib.init_window width height "MONOPOLY!!!";
   Raylib.set_target_fps 60
 
-(** [print_insns insns color] prints the instructions [insns] at the bottom of
-    the page, under the board. *)
 let print_insns insns color =
   let font_size = (height / 55) + 1 in
   let x_indent = fst board_bl in
@@ -61,11 +59,6 @@ let print_insns insns color =
   draw_text "Instructions:  " x_indent y_indent font_size text_color;
   draw_text insns (x_indent + (start_prop * 10 / 9)) y_indent font_size color
 
-(** [center_text line_num total_lines string color] prints [string] in the
-    middle of the page with the color [color]. To print longer messages, call
-    [center_text] should be called for each line. [line_num] is the line number
-    of the message and [total_lines] is the total number of lines in the
-    message. *)
 let center_text line_num total_lines string color =
   let font_size =
     int_of_float
@@ -379,7 +372,6 @@ let player_position player1 player2 =
     draw_circle p2_rightx p2_bottomy p_radius color2
 
 let rec draw_player_window player1 player2 =
-  (* if Raylib.window_should_close () then Raylib.close_window () else*)
   begin_drawing ();
   clear_background Color.white;
   draw_board_base ();
@@ -387,7 +379,7 @@ let rec draw_player_window player1 player2 =
   print_player_stats player1;
   print_insns "Press B to return to the terminal" fine_text_color;
   end_drawing ();
-  if is_key_down Key.B = false then draw_player_window player1 player2 
+  if is_key_down Key.B = false then draw_player_window player1 player2
 
 let rec draw_intro () =
   begin_drawing ();
