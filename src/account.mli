@@ -18,14 +18,7 @@ val current : t -> int
 
 val pay : int -> t -> t
 (** [pay i a] removes [i] dollars from account [a]. If [a] has less than [i]
-<<<<<<< HEAD
     dollars in their account then raises Broke. Requires: [i] >= 0*)
 
 val receive : int -> t -> t
 (** [ receive i a ] adds [i] dollars to account [a]. Requires: [i] >= 0*)
-=======
-    dollars in their account then raises Broke. Requires: [i] is >= 0*)
-
-val recieve : int -> t -> t
-(** [ recieve i a ] adds [i] dollars to account [a]. Requires: [i] is >= 0*)
->>>>>>> e1c094dbd2c1ea62abcea831fe28120cb09c7d8e

@@ -203,7 +203,6 @@ let get_name (s : square) : string =
   | Tax t -> t.name
   | Start s -> s.name
 
-<<<<<<< HEAD
 let get_index (s : square) : int =
   match s with
   | Property p -> p.index
@@ -216,11 +215,6 @@ let get_index (s : square) : int =
   | Free_Parking f -> f.index
   | Tax t -> t.index
   | Start s -> s.index
-=======
-
-
-exception UnknownBoard of string
->>>>>>> e1c094dbd2c1ea62abcea831fe28120cb09c7d8e
 
 let get_cost (s : square) : int =
   match s with

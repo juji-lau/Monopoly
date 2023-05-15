@@ -10,7 +10,6 @@ type t = {
   jail : bool;
 }
 
-<<<<<<< HEAD
 let new_player (name : string) (color : Raylib.Color.t) : t =
   {
     name;
@@ -34,19 +33,6 @@ let get_color (player : t) : Raylib.Color.t = player.color
 let move (x : int) (b : Position.t) (p : t) : t =
   let new_position = Position.get_index p.current + x in
   if new_position >= 0 then
-=======
-let new_player s =
-  { name = s; board = Board.init; current = 0; properties = [] }
-
-let get_board p = p.board
-let current_location p = p.current
-let get_owned_properties (p : t) : string list = p.properties;;
-
-Random.self_init ()
-
-let move x p =
-  if x >= 36 then
->>>>>>> e1c094dbd2c1ea62abcea831fe28120cb09c7d8e
     {
       (* move fowards *)
       name = p.name;
