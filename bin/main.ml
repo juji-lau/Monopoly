@@ -6,7 +6,7 @@ open Player
 
 exception EndGame
 
-let gui_flag = true
+let gui_flag = false
 let board : Position.t = Position.new_board
 
 type flow =
