@@ -23,17 +23,17 @@ Players interact with the game through a combination of command-line input (CLI)
     `git clone https://github.com/juji-lau/Monopoly`
 
 (2) Install Dependencies:
-    `opam install ANSITerminal`
-    `opam install Yojson`
-    `opam install Raylib`
+    <br>`opam install ANSITerminal`
+    <br>`opam install Yojson`
+    <br>`opam install Raylib`
 
 (3) Clean and build:
-    `make clean`
-    `make build`
+    <br>`make clean`
+    <br>`make build`
 
 (4) Play the game:
-    `make clean`
-    `make play`
+    <br>`make clean`
+    <br>`make play`
 
 
 #### File Breakdown:
