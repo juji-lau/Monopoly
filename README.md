@@ -20,7 +20,7 @@ Players interact with the game through a combination of command-line input (CLI)
 ### How to Run:
 (1) Clone the code: 
     `cd <target directory>`
-    `git clone https://github.coecis.cornell.edu/sz266/CS-3110-Final-Project/tree/working_json/src`
+    `git clone https://github.com/juji-lau/Monopoly`
 
 (2) Install Dependencies:
     `opam install ANSITerminal`
